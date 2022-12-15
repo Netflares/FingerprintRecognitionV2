@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Emgu.CV" Version="4.6.0.5131" />
+    <PackageReference Include="Emgu.CV.runtime.windows" Version="4.6.0.5131" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DataStructure\" />
+    <Folder Include="Algorithm\" />
+    <Folder Include="_dat\" />
+    <Folder Include="_log\" />
+    <Folder Include="Util\Comparator\" />
+    <Folder Include="Util\Singularity\" />
+    <Folder Include="Util\Preprocessing\" />
+  </ItemGroup>
+
+</Project>
