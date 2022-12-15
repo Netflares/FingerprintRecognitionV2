@@ -1,0 +1,10 @@
+# ignore local directories
+.vs
+_dat
+_log
+bin
+obj
+
+# ignore local files
+*.exe
+*.log
