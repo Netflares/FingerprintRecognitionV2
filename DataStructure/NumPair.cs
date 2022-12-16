@@ -64,17 +64,5 @@ namespace FingerprintRecognitionV2.DataStructure
 
         public static NumPair<A, B> operator %(NumPair<A, B> a, NumPair<A, B> b)
             => new(a.St % b.St, a.Nd % b.Nd);
-
-        public static NumPair<A, B> operator /(NumPair<A, B> a, NumPair<A, B> b)
-            => new(a.St / b.St, a.Nd / b.Nd);
-
-        public static NumPair<A, B> operator |(NumPair<A, B> a, NumPair<A, B> b)
-            => new(a.St | b.St, a.Nd | b.Nd);
-
-        public static NumPair<A, B> operator ^(NumPair<A, B> a, NumPair<A, B> b)
-            => new(a.St ^ b.St, a.Nd ^ b.Nd);
-
-        public static NumPair<A, B> operator &(NumPair<A, B> a, NumPair<A, B> b)
-            => new(a.St & b.St, a.Nd & b.Nd);
     }
 }
