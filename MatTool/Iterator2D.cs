@@ -38,6 +38,14 @@ namespace FingerprintRecognitionV2.MatTool
             Forward(t, l, d, r, f);
         }
 
+        static public void ForwardBlock<T>(T[,] mat, int y, int x, int blockSize, Func<int, int, bool> f) 
+        {
+            // iterate through the (y, x) block of the mat
+            int t = y * blockSize;
+            int l = x * blockSize;
+            Forward(mat, t, l, t + blockSize, l + blockSize, f);
+        }
+
         /** 
          * @ emgu image
          * */
@@ -55,6 +63,15 @@ namespace FingerprintRecognitionV2.MatTool
             d = Min(img.Height, d);
             r = Min(img.Width, r);
             Forward(t, l, d, r, f);
+        }
+
+        static public void ForwardBlock<T>(Image<Gray, T> img, int y, int x, int blockSize, Func<int, int, bool> f) 
+            where T : new()
+        {
+            // iterate through the (y, x) block of the img
+            int t = y * blockSize;
+            int l = x * blockSize;
+            Forward(img, t, l, t + blockSize, l + blockSize, f);
         }
     }
 }
