@@ -10,14 +10,14 @@ namespace FingerprintRecognitionV2.MatTool
         /** 
          * @ core
          * */
-        static public void Forward(int t, int l, int d, int r, Func<int, int, bool> f)
+        static public void Forward(int t, int l, int d, int r, Func<int, int, object> f)
         {
             for (int y = t; y < d; y++)
                 for (int x = l; x < r; x++)
                     f(y, x);
         }
 
-        static public void Forward(int h, int w, Func<int, int, bool> f)
+        static public void Forward(int h, int w, Func<int, int, object> f)
         {
             Forward(0, 0, h, w, f);
         }
@@ -47,12 +47,12 @@ namespace FingerprintRecognitionV2.MatTool
         /** 
          * @ 2d-array forward
          * */
-        static public void Forward<T>(T[,] mat, Func<int, int, bool> f)
+        static public void Forward<T>(T[,] mat, Func<int, int, object> f)
         {
             Forward(0, 0, mat.GetLength(0), mat.GetLength(1), f);
         }
 
-        static public void Forward<T>(T[,] mat, int t, int l, int d, int r, Func<int, int, bool> f)
+        static public void Forward<T>(T[,] mat, int t, int l, int d, int r, Func<int, int, object> f)
         {
             t = Max(0, t);
             l = Max(0, l);
@@ -61,7 +61,7 @@ namespace FingerprintRecognitionV2.MatTool
             Forward(t, l, d, r, f);
         }
 
-        static public void ForwardBlock<T>(T[,] mat, int y, int x, int blockSize, Func<int, int, bool> f) 
+        static public void ForwardBlock<T>(T[,] mat, int y, int x, int blockSize, Func<int, int, object> f) 
         {
             // iterate through the (y, x) block of the mat
             int t = y * blockSize;
@@ -100,13 +100,13 @@ namespace FingerprintRecognitionV2.MatTool
         /** 
          * @ emgu image forward
          * */
-        static public void Forward<T>(Image<Gray, T> img, Func<int, int, bool> f)
+        static public void Forward<T>(Image<Gray, T> img, Func<int, int, object> f)
             where T : new()
         {
             Forward(img.Height, img.Width, f);
         }
 
-        static public void Forward<T>(Image<Gray, T> img, int t, int l, int d, int r, Func<int, int, bool> f)
+        static public void Forward<T>(Image<Gray, T> img, int t, int l, int d, int r, Func<int, int, object> f)
             where T : new()
         {
             t = Max(0, t);
@@ -116,7 +116,7 @@ namespace FingerprintRecognitionV2.MatTool
             Forward(t, l, d, r, f);
         }
 
-        static public void ForwardBlock<T>(Image<Gray, T> img, int y, int x, int blockSize, Func<int, int, bool> f) 
+        static public void ForwardBlock<T>(Image<Gray, T> img, int y, int x, int blockSize, Func<int, int, object> f) 
             where T : new()
         {
             // iterate through the (y, x) block of the img
