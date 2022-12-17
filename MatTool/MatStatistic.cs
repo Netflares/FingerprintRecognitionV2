@@ -3,10 +3,10 @@ using static System.Math;
 
 namespace FingerprintRecognitionV2.MatTool
 {
-    static public class MatOperator
+    static public class MatStatistic
     {
         /**
-         * @ extracts data from mat
+         * @ avg
          * */
         static public double Avg<T>(T[,] src, int t, int l, int d, int r)
             where T : INumber<T>, new()
@@ -22,6 +22,23 @@ namespace FingerprintRecognitionV2.MatTool
             return cnt == 0 ? 0 : res / cnt;
         }
 
+        static public double Avg<T>(T[,] src)
+            where T : INumber<T>, new()
+        {
+            return Avg(src, 0, 0, src.GetLength(0), src.GetLength(1));
+        }
+
+        static public double Avg<T>(T[,] src, int y, int x, int bs)
+            where T : INumber<T>, new()
+        {
+            // get avg value of block (y, x)
+            int t = y * bs, l = x * bs;
+            return Avg(src, t, l, t + bs, l + bs);
+        }
+
+        /** 
+         * @ std
+         * */
         static public double Std<T>(T[,] src, int t, int l, int d, int r)
             where T : INumber<T>, new()
         {
@@ -36,27 +53,10 @@ namespace FingerprintRecognitionV2.MatTool
             return cnt == 0 ? 0 : Sqrt(res / cnt);
         }
 
-        /** 
-         * @ extracts data from mat - extension
-         * */
-        static public double Avg<T>(T[,] src)
-            where T : INumber<T>, new()
-        {
-            return Avg(src, 0, 0, src.GetLength(0), src.GetLength(1));
-        }
-
         static public double Std<T>(T[,] src)
             where T : INumber<T>, new()
         {
             return Std(src, 0, 0, src.GetLength(0), src.GetLength(1));
-        }
-
-        static public double Avg<T>(T[,] src, int y, int x, int bs)
-            where T : INumber<T>, new()
-        {
-            // get avg value of block (y, x)
-            int t = y * bs, l = x * bs;
-            return Avg(src, t, l, t + bs, l + bs);
         }
 
         static public double Std<T>(T[,] src, int y, int x, int bs)
@@ -66,10 +66,6 @@ namespace FingerprintRecognitionV2.MatTool
             int t = y * bs, l = x * bs;
             return Std(src, t, l, t + bs, l + bs);
         }
-
-        /** 
-         * @ modifies mat
-         * */
 
         /** 
          * @ calculator
