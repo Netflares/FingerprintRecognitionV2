@@ -35,7 +35,7 @@ namespace FingerprintRecognitionV2.DataStructure
 
         public override int GetHashCode() 
         {
-            throw new NotImplementedException();
+            return HashCode.Combine(St, Nd);
         }
     }
 }
