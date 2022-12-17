@@ -1,9 +1,22 @@
-﻿using Emgu.CV;
+﻿using System.Numerics;
+using Emgu.CV;
 using Emgu.CV.Structure;
 
 namespace FingerprintRecognitionV2.MatTool
 {
-    public class MatConverter
+    static public class MatConverter
     {
+        // from a matrix to a display image
+        static public Image<Gray, byte> Mat2Disp<T>(T[,] src)
+            where T : INumber<T>, new()
+        {
+            Image<Gray, byte> res = new(src.GetLength(1), src.GetLength(0));
+            Iterator2D.Forward(src, (y, x) =>
+            {
+                res[y, x] = new Gray(Convert.ToDouble(src[y, x]));
+                return true;
+            });
+            return res;
+        }
     }
 }

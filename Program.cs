@@ -1,6 +1,9 @@
-﻿using FingerprintRecognitionV2.DataStructure;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using FingerprintRecognitionV2;
+using FingerprintRecognitionV2.DataStructure;
+using FingerprintRecognitionV2.Util.Preprocessing;
 
-NumPair<int, int> a = new(20, 20);
-NumPair<int, int> b = new(10, 5);
-a += b;
-Console.WriteLine(a);
+ProcImg img = new(
+    new Image<Gray, byte>(Constants.DAT_DIR + "i\\0.jpg")
+);

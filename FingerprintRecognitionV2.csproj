@@ -27,7 +27,6 @@
     <Folder Include="_log\" />
     <Folder Include="Util\Comparator\" />
     <Folder Include="Util\Singularity\" />
-    <Folder Include="Util\Preprocessing\" />
   </ItemGroup>
 
 </Project>
