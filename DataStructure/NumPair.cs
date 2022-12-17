@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using Emgu.CV;
 
 namespace FingerprintRecognitionV2.DataStructure
 {
