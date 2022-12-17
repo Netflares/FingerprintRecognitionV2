@@ -1,0 +1,1 @@
+dotnet.exe build && ./bin/Debug/net7.0/FingerprintRecognitionV2.exe
