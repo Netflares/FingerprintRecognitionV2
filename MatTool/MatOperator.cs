@@ -1,8 +1,16 @@
-﻿using static System.Math;
+﻿
+using System.Numerics;
 
 namespace FingerprintRecognitionV2.MatTool
 {
-    public class MatOperator
+    static public class MatOperator
     {
+        /**
+         * @ extracts data from mat
+         * */
+
+        /** 
+         * @ modifies mat
+         * */
     }
 }

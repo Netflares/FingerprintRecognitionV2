@@ -1,4 +1,5 @@
-﻿using Emgu.CV;
+﻿using System.Numerics;
+using Emgu.CV;
 using Emgu.CV.Structure;
 using static System.Math;
 
@@ -22,7 +23,29 @@ namespace FingerprintRecognitionV2.MatTool
         }
 
         /** 
-         * @ 2d-array
+         * @ core, but with return value
+         * */
+        static public TRes Sum<TRes>(int t, int l, int d, int r, Func<int, int, TRes> f)
+            where TRes : INumber<TRes>, new()
+        {
+            // res = sigma{ f(y, x) }
+            TRes res = new();
+            for (int y = t; y < d; y++)
+                for (int x = l; x < r; x++)
+                    res += f(y, x);
+            return res;
+        }
+
+        static public TRes Sum<TRes>(int h, int w, Func<int, int, TRes> f)
+            where TRes : INumber<TRes>, new()
+        {
+            // res = sigma{ f(y, x) }
+            TRes res = new();
+            return Sum(0, 0, h, w, f);
+        }
+
+        /** 
+         * @ 2d-array forward
          * */
         static public void Forward<T>(T[,] mat, Func<int, int, bool> f)
         {
@@ -47,7 +70,35 @@ namespace FingerprintRecognitionV2.MatTool
         }
 
         /** 
-         * @ emgu image
+         * @ 2d-array sum
+         * */
+        static public TRes Sum<TRes, T>(T[,] mat, Func<int, int, TRes> f)
+            where TRes : INumber<TRes>, new()
+        {
+            return Sum(0, 0, mat.GetLength(0), mat.GetLength(1), f);
+        }
+
+        static public TRes Sum<TRes, T>(T[,] mat, int t, int l, int d, int r, Func<int, int, TRes> f)
+            where TRes : INumber<TRes>, new()
+        {
+            t = Max(0, t);
+            l = Max(0, l);
+            d = Min(mat.GetLength(0), d);
+            r = Min(mat.GetLength(1), r);
+            return Sum(t, l, d, r, f);
+        }
+
+        static public TRes SumBlock<TRes, T>(T[,] mat, int y, int x, int blockSize, Func<int, int, TRes> f)
+            where TRes : INumber<TRes>, new()
+        {
+            // iterate through the (y, x) block of the mat
+            int t = y * blockSize;
+            int l = x * blockSize;
+            return Sum(mat, t, l, t + blockSize, l + blockSize, f);
+        }
+
+        /** 
+         * @ emgu image forward
          * */
         static public void Forward<T>(Image<Gray, T> img, Func<int, int, bool> f)
             where T : new()
@@ -72,6 +123,37 @@ namespace FingerprintRecognitionV2.MatTool
             int t = y * blockSize;
             int l = x * blockSize;
             Forward(img, t, l, t + blockSize, l + blockSize, f);
+        }
+
+        /** 
+         * @ emgu image sum
+         * */
+        static public TRes Sum<TRes, T>(Image<Gray, T> img, Func<int, int, TRes> f)
+            where TRes : INumber<TRes>, new()
+            where T : new()
+        {
+            return Sum(0, 0, img.Height, img.Width, f);
+        }
+
+        static public TRes Sum<TRes, T>(Image<Gray, T> img, int t, int l, int d, int r, Func<int, int, TRes> f)
+            where TRes : INumber<TRes>, new()
+            where T : new()
+        {
+            t = Max(0, t);
+            l = Max(0, l);
+            d = Min(img.Height, d);
+            r = Min(img.Width, r);
+            return Sum(t, l, d, r, f);
+        }
+
+        static public TRes SumBlock<TRes, T>(Image<Gray, T> img, int y, int x, int blockSize, Func<int, int, TRes> f)
+            where TRes : INumber<TRes>, new()
+            where T : new()
+        {
+            // iterate through the (y, x) block of the mat
+            int t = y * blockSize;
+            int l = x * blockSize;
+            return Sum(img, t, l, t + blockSize, l + blockSize, f);
         }
     }
 }
