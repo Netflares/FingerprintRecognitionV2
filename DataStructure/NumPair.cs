@@ -42,50 +42,50 @@ namespace FingerprintRecognitionV2.DataStructure
         /** 
          * @ operators
          * */
-        public static NumPair<A, B> operator +(NumPair<A, B> a) 
+        static public NumPair<A, B> operator +(NumPair<A, B> a) 
             => new(a.St, a.Nd);
 
-        public static NumPair<A, B> operator -(NumPair<A, B> a) 
+        static public NumPair<A, B> operator -(NumPair<A, B> a) 
             => new(-a.St, -a.Nd);
 
-        public static NumPair<A, B> operator +(NumPair<A, B> a, NumPair<A, B> b)
+        static public NumPair<A, B> operator +(NumPair<A, B> a, NumPair<A, B> b)
             => new(a.St + b.St, a.Nd + b.Nd);
 
-        public static NumPair<A, B> operator -(NumPair<A, B> a, NumPair<A, B> b)
+        static public NumPair<A, B> operator -(NumPair<A, B> a, NumPair<A, B> b)
             => new(a.St - b.St, a.Nd - b.Nd);
 
-        public static NumPair<A, B> operator *(NumPair<A, B> a, NumPair<A, B> b)
+        static public NumPair<A, B> operator *(NumPair<A, B> a, NumPair<A, B> b)
             => new(a.St * b.St, a.Nd * b.Nd);
 
-        public static NumPair<A, B> operator /(NumPair<A, B> a, NumPair<A, B> b)
+        static public NumPair<A, B> operator /(NumPair<A, B> a, NumPair<A, B> b)
             => new(a.St / b.St, a.Nd / b.Nd);
 
-        public static NumPair<A, B> operator %(NumPair<A, B> a, NumPair<A, B> b)
+        static public NumPair<A, B> operator %(NumPair<A, B> a, NumPair<A, B> b)
             => new(a.St % b.St, a.Nd % b.Nd);
 
         /** 
          * @ comparison operator
          * */
-        public static bool operator ==(NumPair<A, B> a, NumPair<A, B> b)
+        static public bool operator ==(NumPair<A, B> a, NumPair<A, B> b)
             => a.St == b.St && a.Nd == b.Nd;
 
-        public static bool operator !=(NumPair<A, B> a, NumPair<A, B> b)
+        static public bool operator !=(NumPair<A, B> a, NumPair<A, B> b)
             => !(a == b);
 
-        public static bool operator <(NumPair<A, B> a, NumPair<A, B> b)
+        static public bool operator <(NumPair<A, B> a, NumPair<A, B> b)
         {
             if (a.St == b.St)
                 return a.Nd < b.Nd;
             return a.St < b.St;
         }
 
-        public static bool operator <=(NumPair<A, B> a, NumPair<A, B> b)
+        static public bool operator <=(NumPair<A, B> a, NumPair<A, B> b)
             => (a < b) && (a == b);
 
-        public static bool operator >(NumPair<A, B> a, NumPair<A, B> b)
+        static public bool operator >(NumPair<A, B> a, NumPair<A, B> b)
             => !(a <= b);
 
-        public static bool operator >=(NumPair<A, B> a, NumPair<A, B> b)
+        static public bool operator >=(NumPair<A, B> a, NumPair<A, B> b)
             => !(a < b);
     }
 }
