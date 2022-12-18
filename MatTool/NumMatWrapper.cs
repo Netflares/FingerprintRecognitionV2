@@ -14,6 +14,28 @@ namespace FingerprintRecognitionV2.MatTool
             Arr = src;
         }
 
+        public NumMatWrapper(NumMatWrapper<T> src)
+        {
+            Arr = src.Arr.Clone() as T[,];
+        }
+
+        /** 
+         * @ dynamic operators with a real value
+         * */
+        public void Mul<TOther>(TOther v)
+            where TOther : INumber<TOther>, new()
+        {
+            Merge(v, (a, b) => a * b);
+        }
+
+        public void Merge<TOther>(TOther v, Func<T, T, T> f)
+            where TOther : INumber<TOther>, new()
+        {
+            for (int y = 0; y < Arr.GetLength(0); y++)
+                for (int x = 0; x < Arr.GetLength(1); x++)
+                    Arr[y, x] = f(Arr[y, x], (T)(object)v);
+        }
+
         /** 
          * @ dynamic operators between matrices
          * 
@@ -34,20 +56,35 @@ namespace FingerprintRecognitionV2.MatTool
         }
 
         /** 
-         * @ dynamic operators with a real value
+         * @ static operators with a real value
          * */
-        public void Mul<TOther>(TOther v)
-            where TOther : INumber<TOther>, new()
+        static public NumMatWrapper<T> operator +(NumMatWrapper<T> a)
+            => new(a);
+        static public NumMatWrapper<T> operator +(NumMatWrapper<T> a, T v)
         {
-            Merge(v, (a, b) => a * b);
+            NumMatWrapper<T> res = new(a);
+            res.Merge(v, (i, v) => i + v);
+            return res;
         }
 
-        public void Merge<TOther>(TOther v, Func<T, T, T> f)
-            where TOther : INumber<TOther>, new()
+        static public NumMatWrapper<T> operator -(NumMatWrapper<T> a)
         {
-            for (int y = 0; y < Arr.GetLength(0); y++)
-                for (int x = 0; x < Arr.GetLength(1); x++)
-                    Arr[y, x] = f(Arr[y, x], (T)(object) v);
+            NumMatWrapper<T> res = new(a);
+            Iterator2D.Forward<T>(res.Arr, (y, x) => res.Arr[y, x] = -res.Arr[y, x]);
+            return res;
+        }
+        static public NumMatWrapper<T> operator -(NumMatWrapper<T> a, T v)
+        {
+            NumMatWrapper<T> res = new(a);
+            res.Merge(v, (i, v) => i - v);
+            return res;
+        }
+
+        static public NumMatWrapper<T> operator *(NumMatWrapper<T> a, T v)
+        {
+            NumMatWrapper<T> res = new(a);
+            res.Mul(v);
+            return res;
         }
 
         /** 
@@ -55,14 +92,35 @@ namespace FingerprintRecognitionV2.MatTool
          * */
         static public NumMatWrapper<T> operator +(NumMatWrapper<T> a, T[,] b)
         {
-            NumMatWrapper<T> res = new(a.Arr.Clone() as T[,]);
-            res.Merge(b, (a, b) => a + b);
+            NumMatWrapper<T> res = new(a);
+            res.Merge(b, (i, j) => i + j);
             return res;
         }
-
         static public NumMatWrapper<T> operator +(NumMatWrapper<T> a, NumMatWrapper<T> b)
         {
             return a + b.Arr;
+        }
+
+        static public NumMatWrapper<T> operator -(NumMatWrapper<T> a, T[,] b)
+        {
+            NumMatWrapper<T> res = new(a);
+            res.Merge(b, (i, j) => i + j);
+            return res;
+        }
+        static public NumMatWrapper<T> operator -(NumMatWrapper<T> a, NumMatWrapper<T> b)
+        {
+            return a - b.Arr;
+        }
+
+        static public NumMatWrapper<T> operator *(NumMatWrapper<T> a, T[,] b)
+        {
+            NumMatWrapper<T> res = new(a);
+            res.Mul(b);
+            return res;
+        }
+        static public NumMatWrapper<T> operator *(NumMatWrapper<T> a, NumMatWrapper<T> b)
+        {
+            return a * b.Arr;
         }
     }
 }
