@@ -22,18 +22,16 @@ namespace FingerprintRecognitionV2.MatTool
         /** 
          * @ dynamic operators with a real value
          * */
-        public void Mul<TOther>(TOther v)
-            where TOther : INumber<TOther>, new()
+        public void Mul(T v)
         {
             Merge(v, (a, b) => a * b);
         }
 
-        public void Merge<TOther>(TOther v, Func<T, T, T> f)
-            where TOther : INumber<TOther>, new()
+        public void Merge(T v, Func<T, T, T> f)
         {
             for (int y = 0; y < Arr.GetLength(0); y++)
                 for (int x = 0; x < Arr.GetLength(1); x++)
-                    Arr[y, x] = f(Arr[y, x], (T)(object)v);
+                    Arr[y, x] = f(Arr[y, x], v);
         }
 
         /** 
@@ -41,18 +39,16 @@ namespace FingerprintRecognitionV2.MatTool
          * 
          * assume that two matrices in a binary operator have the same size
          * */
-        public void Mul<TOther>(TOther[,] v)
-            where TOther : INumber<TOther>, new()
+        public void Mul(T[,] v)
         {
             Merge(v, (a, b) => a * b);
         }
 
-        public void Merge<TOther>(TOther[,] v, Func<T, T, T> f)
-            where TOther : INumber<TOther>, new()
+        public void Merge(T[,] v, Func<T, T, T> f)
         {
             for (int y = 0; y < Arr.GetLength(0); y++)
                 for (int x = 0; x < Arr.GetLength(1); x++)
-                    Arr[y, x] = f(Arr[y, x], (T)(object)v[y, x]);
+                    Arr[y, x] = f(Arr[y, x], v[y, x]);
         }
 
         /** 
