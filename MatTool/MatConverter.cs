@@ -11,11 +11,9 @@ namespace FingerprintRecognitionV2.MatTool
             where T : INumber<T>, new()
         {
             Image<Gray, byte> res = new(src.GetLength(1), src.GetLength(0));
-            Iterator2D.Forward(src, (y, x) =>
-            {
-                res[y, x] = new Gray(Convert.ToDouble(src[y, x]));
-                return true;
-            });
+            Iterator2D.Forward(src, (y, x) => 
+                res[y, x] = new Gray(Convert.ToDouble(src[y, x]))
+            );
             return res;
         }
 

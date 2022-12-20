@@ -19,6 +19,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * to optimize memory resources
          * */
         static readonly int Height = 480, Width = 320, BlockSize = 16;
+        static readonly double AVG0 = 100;
 
         static public double[,] NormMat = new double[Height, Width];
 
@@ -30,10 +31,10 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             Stopwatch timer = new();
             timer.Start();
 
-            NormMat = Normalization.Normalize(src, 100, 100);
+            NormMat = Normalization.Normalize(src, AVG0, 100);
             PrintTime(timer, "normalize");
 
-            SegmentMsk = Segmentation.CreateMask(NormMat, BlockSize);
+            SegmentMsk = Segmentation.CreateMask(NormMat, AVG0, BlockSize);
             PrintTime(timer, "segmentation");
         }
 
