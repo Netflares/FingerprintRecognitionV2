@@ -30,8 +30,10 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             double std = Iterator2D.Sum(src, (y, x) => Sqr(src[y, x].Intensity - avg));
             std = Sqrt(std / (src.Height * src.Width));
 
+            double v0sqrt = Sqrt(v0);
+
             Iterator2D.Forward(
-                res, (y, x) => res[y, x] = NormalizePixel(m0, v0, src[y, x].Intensity, avg, std)
+                res, (y, x) => res[y, x] = NormalizePixel(m0, v0sqrt, src[y, x].Intensity, avg, std)
             );
 
             return res;
@@ -42,11 +44,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */
         static private double Sqr(double x) => x * x;
 
-        static private double NormalizePixel(double m0, double v0, double px, double m, double v)
+        static private double NormalizePixel(double m0, double v0sqrt, double px, double avg, double std)
         {
-            double coeff = Sqrt(v0 * ((px - m) * (px - m))) / v;
+            double coeff = Abs(px - avg) * v0sqrt / std;
             // flip fg/bg color here
-            if (px < m)
+            if (px < std)
                 return m0 + coeff;
             return m0 - coeff;
         }

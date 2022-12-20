@@ -18,5 +18,13 @@ namespace FingerprintRecognitionV2.MatTool
             });
             return res;
         }
+
+        // from a binary matrix
+        static public Image<Gray, byte> Bool2Disp(bool[,] src)
+        {
+            Image<Gray, byte> res = new(src.GetLength(1), src.GetLength(0));
+            Iterator2D.Forward(src, (y, x) => res[y, x] = new Gray(src[y, x] ? 255 : 0));
+            return res;
+        }
     }
 }

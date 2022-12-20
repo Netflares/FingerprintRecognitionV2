@@ -11,15 +11,16 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         /** 
          * @ public attrs
          * */
+        public bool[,] SegmentMsk;
 
         /** 
          * @ shared attrs
          * 
          * to optimize memory resources
          * */
-        static readonly int Height = 480, Width = 320;
+        static readonly int Height = 480, Width = 320, BlockSize = 16;
 
-        static double[,] NormMat = new double[Height, Width];
+        static public double[,] NormMat = new double[Height, Width];
 
         /** 
          * @ pipline
@@ -31,15 +32,18 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             NormMat = Normalization.Normalize(src, 100, 100);
             PrintTime(timer, "normalize");
+
+            SegmentMsk = Segmentation.CreateMask(NormMat, BlockSize);
+            PrintTime(timer, "segmentation");
         }
 
         /** 
          * @ debug
          * */
-        static private void PrintTime(Stopwatch timer, string m)
+        static public void PrintTime(Stopwatch timer, string m)
         {
             Console.WriteLine(string.Format(
-                "{0}: {1}.{2}", m, timer.Elapsed.Seconds, timer.Elapsed.Milliseconds
+                "{0}: {1}:{2}.{3}", m, timer.Elapsed.Minutes, timer.Elapsed.Seconds, timer.Elapsed.Milliseconds
             ));
         }
     }
