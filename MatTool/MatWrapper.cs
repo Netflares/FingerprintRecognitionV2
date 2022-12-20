@@ -25,7 +25,7 @@ namespace FingerprintRecognitionV2.MatTool
 
         public override string ToString()
         {
-            string str = string.Format("Size = [{0}, {1}]", Arr.GetLength(0), Arr.GetLength(1));
+            string str = string.Format("Size = [{0}, {1}]\n", Arr.GetLength(0), Arr.GetLength(1));
             for (int y = 0; y < Arr.GetLength(0); y++)
             {
                 for (int x = 0; x < Arr.GetLength(1); x++)

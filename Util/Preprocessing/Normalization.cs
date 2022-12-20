@@ -27,14 +27,12 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             double[,] res = new double[src.Height, src.Width];
 
             double avg = src.GetAverage().Intensity;
-            double std = Iterator2D.Sum<double, byte>(src, (y, x) => Sqr(src[y, x].Intensity - avg));
+            double std = Iterator2D.Sum(src, (y, x) => Sqr(src[y, x].Intensity - avg));
             std = Sqrt(std / (src.Height * src.Width));
 
-            Iterator2D.Forward(res, (y, x) =>
-            {
-                res[y, x] = NormalizePixel(m0, v0, src[y, x].Intensity, avg, std);
-                return true;
-            });
+            Iterator2D.Forward(
+                res, (y, x) => res[y, x] = NormalizePixel(m0, v0, src[y, x].Intensity, avg, std)
+            );
 
             return res;
         }
