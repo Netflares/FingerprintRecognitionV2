@@ -2,7 +2,7 @@
 
 namespace FingerprintRecognitionV2.MatTool
 {
-    public class MatWrapper<T>
+    public class Mat<T>
         where T : new()
     {
         public T[,] Arr;
@@ -10,7 +10,7 @@ namespace FingerprintRecognitionV2.MatTool
         /** 
          * @ constructors
          * */
-        protected MatWrapper()
+        protected Mat()
         {
             Arr = new T[0, 0];
         }
@@ -18,9 +18,10 @@ namespace FingerprintRecognitionV2.MatTool
         /// <summary>
         /// Perform a SHALLOW COPY of `T[,] src`. Any modification in this wrapper will be written directly to `src`
         /// </summary>
-        public MatWrapper(T[,] src)
+        public Mat(T[,] src)
         {
             Arr = src;
+            
         }
 
         public override string ToString()
@@ -52,9 +53,9 @@ namespace FingerprintRecognitionV2.MatTool
          * 
          * assume that two matrices in a binary operator have the same size
          * */
-        static public MatWrapper<T> operator &(MatWrapper<T> a, bool[,] b)
+        static public Mat<T> operator &(Mat<T> a, bool[,] b)
         {
-            MatWrapper<T> res = new(a.Arr.Clone() as T[,]);
+            Mat<T> res = new(a.Arr.Clone() as T[,]);
             res.And(b);
             return res;
         }
