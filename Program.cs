@@ -14,6 +14,13 @@ void BenchMark()
     {
         Image<Gray, byte> src = new(Constants.DAT_DIR + "set00\\" + i + ".bmp");
         ProcImg img = new(src);
+
+        /*
+        CvInvoke.Imwrite(
+            String.Format("{0}o\\msk-{1}.png", Constants.DAT_DIR, i), 
+            MatConverter.Bool2Disp(img.SegmentMsk)
+        );
+        */
     }
     timer.Stop();
     ProcImg.PrintTime(timer, "Benchmarked 500 images");
@@ -27,6 +34,6 @@ void SingleProc()
     CvInvoke.Imwrite(Constants.DAT_DIR + "i\\0-mask-smooth.png", MatConverter.Bool2Disp(img.SegmentMsk));
 }
 
-SingleProc();
+BenchMark();
 
 Console.WriteLine("Program Executed Sucessfully / Returned Code 0");

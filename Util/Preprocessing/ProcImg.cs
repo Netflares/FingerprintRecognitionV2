@@ -30,15 +30,12 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */
         public ProcImg(Image<Gray, byte> src)
         {
-            Stopwatch timer = new();
-            timer.Start();
-
+            // remove finger pressure differences
             NormMat = Normalization.Normalize(src, AVG0, 100);
-            PrintTime(timer, "normalize");
 
+            // segmentation
             SegmentMsk = Segmentation.CreateMask(NormMat, AVG0, BlockSize);
             Segmentation.SmoothMask(SegmentMsk, BlockSize);
-            PrintTime(timer, "segmentation");
         }
 
         /** 
