@@ -1,4 +1,5 @@
 ﻿
+using FingerprintRecognitionV2.Algorithm;
 using FingerprintRecognitionV2.MatTool;
 using static System.Math;
 
@@ -25,6 +26,12 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             // morphology here
 
             return res;
+        }
+
+        static public void SmoothMask(bool[,] src, int bs)
+        {
+            MorphologyR4.Open(src, bs<<1);  // heavily segmentated
+            MorphologyR4.Close(src, bs);
         }
     }
 }

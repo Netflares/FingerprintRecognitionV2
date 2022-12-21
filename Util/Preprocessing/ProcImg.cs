@@ -35,6 +35,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             PrintTime(timer, "normalize");
 
             SegmentMsk = Segmentation.CreateMask(NormMat, AVG0, BlockSize);
+            Segmentation.SmoothMask(SegmentMsk, BlockSize);
             PrintTime(timer, "segmentation");
         }
 
