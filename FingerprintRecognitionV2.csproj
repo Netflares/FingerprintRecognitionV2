@@ -37,7 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Algorithm\" />
     <Folder Include="_dat\" />
     <Folder Include="_log\" />
     <Folder Include="Util\Comparator\" />
