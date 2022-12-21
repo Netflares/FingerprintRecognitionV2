@@ -9,18 +9,6 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>preview</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LangVersion>preview</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>preview</LangVersion>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
@@ -28,7 +16,6 @@
   <ItemGroup>
     <PackageReference Include="Emgu.CV" Version="4.6.0.5131" />
     <PackageReference Include="Emgu.CV.runtime.windows" Version="4.6.0.5131" />
-    <PackageReference Include="System.Runtime.Experimental" Version="6.0.2" />
   </ItemGroup>
 
   <ItemGroup>
