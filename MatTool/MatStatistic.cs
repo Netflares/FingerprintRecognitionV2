@@ -56,30 +56,54 @@ namespace FingerprintRecognitionV2.MatTool
         /** 
          * @ std
          * */
-        unsafe static public double Std(double[,] src, double avg, int t, int l, int d, int r)
+        unsafe static public double Std(Span<double> span, double avg, int w, int t, int l, int d, int r)
         {
-            int h = src.GetLength(0), w = src.GetLength(1); // size of the matrix
-            int len = h * w;        // size of the matrix
             int col = r - l;        // the width of the block
             int itr = t * w + l;    // the first pointer of this block
             int end = d * w;        // the itr won't go here
 
             double std = 0;         // the result
 
-            fixed (double* p = src)
+            while (itr < end)
             {
-                Span<double> span = new(p, len);
-                while (itr < end)
-                {
-                    Span<double> arr = span.Slice(itr, col);
-                    foreach (double v in arr)
-                        std += (v - avg) * (v - avg);
-                    // jump to next row
-                    itr += w;
-                }
+                Span<double> arr = span.Slice(itr, col);
+                foreach (double v in arr)
+                    std += (v - avg) * (v - avg);
+                // jump to next row
+                itr += w;
             }
 
             return Sqrt(std / ((d - t) * col));
+        }
+
+        unsafe static public double Std(Span<double> span, double avg, int w)
+        {
+            return Std(span, avg, w, 0, 0, span.Length / w, w);
+        }
+
+        unsafe static public double StdBlock(Span<double> span, double avg, int w, int y, int x, int bs)
+        {
+            int t = y * bs, l = x * bs;
+            return Std(span, avg, w, t, l, t + bs, l + bs);
+        }
+
+        /** 
+         * @ std without span
+         * */
+        unsafe static public double Std(double[,] src, double avg, int t, int l, int d, int r)
+        {
+            int h = src.GetLength(0), w = src.GetLength(1); // size of the matrix
+            int len = h * w;        // size of the matrix
+
+            double std = 0;         // the result
+
+            fixed (double* p = src)
+            {
+                Span<double> span = new(p, len);
+                std = Std(span, avg, w, t, l, d, r);
+            }
+
+            return std;
         }
 
         unsafe static public double Std(double[,] src, double avg)

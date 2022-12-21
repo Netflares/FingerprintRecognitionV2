@@ -18,7 +18,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 double avg = MatStatistic.SumBlock(norm, i, j, bs) / bsSqr;
                 double std = MatStatistic.StdBlock(norm, avg, i, j, bs);
                 if (std >= threshold)
-                    Iterator2D.ForwardBlock(i, j, bs, (y, x) => res[y, x] = true);
+                    SpanIter.ForwardBlock(res, i, j, bs, true);
                 return 0;
             });
 
