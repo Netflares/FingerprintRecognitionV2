@@ -22,6 +22,12 @@ namespace FingerprintRecognitionV2.MatTool
             Forward(0, 0, h, w, f);
         }
 
+        static public void ForwardBlock(int i, int j, int bs, Func<int, int, object> f)
+        {
+            int t = i * bs, l = j * bs;
+            Forward(t, l, t + bs, l + bs, f);
+        }
+
         /** 
          * @ core, but with return value
          * */
