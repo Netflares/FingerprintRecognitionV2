@@ -6,9 +6,27 @@ using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.Util.Preprocessing;
 
-Image<Gray, byte> src = new(Constants.DAT_DIR + "i\\0.jpg");
-ProcImg img = new(src);
+void BenchMark()
+{
+    Stopwatch timer = new();
+    timer.Start();
+    for (int i = 0; i < 500; i++)
+    {
+        Image<Gray, byte> src = new(Constants.DAT_DIR + "set00\\" + i + ".bmp");
+        ProcImg img = new(src);
+    }
+    timer.Stop();
+    ProcImg.PrintTime(timer, "Benchmarked 500 images");
+}
 
-CvInvoke.Imwrite(Constants.DAT_DIR + "i\\0-mask-smooth.png", MatConverter.Bool2Disp(img.SegmentMsk));
+void SingleProc()
+{
+    Image<Gray, byte> src = new(Constants.DAT_DIR + "i\\0.jpg");
+    ProcImg img = new(src);
+
+    CvInvoke.Imwrite(Constants.DAT_DIR + "i\\0-mask-smooth.png", MatConverter.Bool2Disp(img.SegmentMsk));
+}
+
+SingleProc();
 
 Console.WriteLine("Program Executed Sucessfully / Returned Code 0");

@@ -1,6 +1,7 @@
 ﻿
 using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.MatTool;
+using FingerprintRecognitionV2.Util.Preprocessing;
 
 namespace FingerprintRecognitionV2.Algorithm
 {
@@ -8,6 +9,7 @@ namespace FingerprintRecognitionV2.Algorithm
      * @ usage:
      * 
      * apply morphology operations via a dirty circle kernel
+     * the input image MUST HAVE THE SAME SIZE as declared in ProcImg
      * */
     static public class MorphologyR4
     {
@@ -31,13 +33,19 @@ namespace FingerprintRecognitionV2.Algorithm
         static readonly int[] RX = { 0, 1, 0, -1 };
 
         /** 
+         * @ static memory
+         * */
+        static readonly int Height = ProcImg.Height, Width = ProcImg.Width, ImgSize = ProcImg.ImgSize;
+        static bool[,] Visited = new bool[Height, Width];
+
+        /** 
          * @ core
          * */
-        static private bool[,] BFS(bool[,] src, bool tar, int h, int w, int bs)
+        static private bool[,] BFS(bool[,] src, bool tar, int bs)
         {
             Deque<Position> q = new();
-            bool[,] visited = new bool[h, w];
-            Init(visited, q, src, tar, h, w);
+            InitVisited();
+            InitDeque(q, src, tar);
 
             while (q.Count > 0)
             {
@@ -49,46 +57,42 @@ namespace FingerprintRecognitionV2.Algorithm
                 for (int t = 0; t < 4; t++)
                 {
                     int nxtY = cr.Y + RY[t], nxtX = cr.X + RX[t];
-                    if (nxtY < 0 || nxtX < 0 || h <= nxtY || w <= nxtX)
+                    if (nxtY < 0 || nxtX < 0 || Height <= nxtY || Width <= nxtX)
                         continue;
 
-                    if (src[nxtY, nxtX] != tar && !visited[nxtY, nxtX])
+                    if (src[nxtY, nxtX] != tar && !Visited[nxtY, nxtX])
                     {
-                        visited[nxtY, nxtX] = true;
+                        Visited[nxtY, nxtX] = true;
                         q.PushBack(new(nxtY, nxtX, cr.Depth + 1));
                     }
                 }
             }
 
-            return visited;
+            return Visited;
         }
 
         unsafe static public void Dilate(bool[,] src, int bs)
         {
-            int h = src.GetLength(0), w = src.GetLength(1);
-            int sze = h * w;
-            bool[,] res = BFS(src, true, h, w, bs);     // dilate `1` cells
+            bool[,] res = BFS(src, true, bs);   // dilate `1` cells
 
-            Span<bool> srcSpan; fixed (bool* p = src) srcSpan = new(p, sze);
-            Span<bool> resSpan; fixed (bool* p = res) resSpan = new(p, sze);
+            Span<bool> srcSpan; fixed (bool* p = src) srcSpan = new(p, ImgSize);
+            Span<bool> resSpan; fixed (bool* p = res) resSpan = new(p, ImgSize);
 
             int i = 0;
-            while (i < sze)
+            while (i < ImgSize)
                 // if (resSpan[i]) srcSpan[i] = true;
                 srcSpan[i] |= resSpan[i++];
         }
 
         unsafe static public void Erose(bool[,] src, int bs)
         {
-            int h = src.GetLength(0), w = src.GetLength(1);
-            int sze = h * w;
-            bool[,] res = BFS(src, false, h, w, bs);    // dilate `0` cells
+            bool[,] res = BFS(src, false, bs);    // dilate `0` cells
 
-            Span<bool> srcSpan; fixed (bool* p = src) srcSpan = new(p, sze);
-            Span<bool> resSpan; fixed (bool* p = res) resSpan = new(p, sze);
+            Span<bool> srcSpan; fixed (bool* p = src) srcSpan = new(p, ImgSize);
+            Span<bool> resSpan; fixed (bool* p = res) resSpan = new(p, ImgSize);
 
             int i = 0;
-            while (i < sze)
+            while (i < ImgSize)
                 // if (srcSpan[i] && resSpan[i]) srcSpan[i] = false;
                 srcSpan[i] &= !resSpan[i++];
         }
@@ -108,9 +112,9 @@ namespace FingerprintRecognitionV2.Algorithm
         /** 
          * @ supporting methods
          * */
-        static private void Init(bool[,] visited, Deque<Position> q, bool[,] src, bool tar, int h, int w)
+        static private void InitDeque(Deque<Position> q, bool[,] src, bool tar)
         {
-            Iterator2D.Forward(1, 1, h - 1, w - 1, (y, x) =>
+            Iterator2D.Forward(1, 1, Height - 1, Width - 1, (y, x) =>
             {
                 if (src[y, x] != tar)
                     return false;
@@ -127,6 +131,13 @@ namespace FingerprintRecognitionV2.Algorithm
                 }
                 return false;
             });
+        }
+
+        unsafe static private void InitVisited()
+        {
+            Span<bool> span; fixed (bool* p = Visited) span = new(p, ProcImg.ImgSize);
+            foreach (ref bool i in span)
+                i = false;
         }
     }
 }

@@ -18,9 +18,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * 
          * to optimize memory resources
          * */
-        static readonly int Height = 480, Width = 320, BlockSize = 16;
-        static readonly double AVG0 = 100;
+        // these properties should be public
+        static public readonly int Height = 480, Width = 320, ImgSize = Height * Width, BlockSize = 16;
+        static public readonly double AVG0 = 100;
 
+        // these should be private
         static public double[,] NormMat = new double[Height, Width];
 
         /** 
