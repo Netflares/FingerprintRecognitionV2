@@ -44,7 +44,7 @@ namespace FingerprintRecognitionV2.Algorithm
         static private bool[,] BFS(bool[,] src, bool tar, int bs)
         {
             Deque<Position> q = new();
-            InitVisited();
+            Visited = new bool[Height, Width];
             InitDeque(q, src, tar);
 
             while (q.Count > 0)
@@ -131,13 +131,6 @@ namespace FingerprintRecognitionV2.Algorithm
                 }
                 return false;
             });
-        }
-
-        unsafe static private void InitVisited()
-        {
-            Span<bool> span; fixed (bool* p = Visited) span = new(p, ProcImg.ImgSize);
-            foreach (ref bool i in span)
-                i = false;
         }
     }
 }
