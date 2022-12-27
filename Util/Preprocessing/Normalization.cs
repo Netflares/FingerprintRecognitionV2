@@ -39,6 +39,14 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             );
         }
 
+        unsafe static public void SelfNormalize(double[,] mat, int size, double avg, double std)
+        {
+            Span<double> arr;
+            fixed (double* p = mat) arr = new(p, size);
+            foreach (ref double v in arr) 
+                v = (v - avg) / std;
+        }
+
         /** 
          * @ calculator
          * */
