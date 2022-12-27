@@ -20,6 +20,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */
         // these properties should be public
         static public readonly int Height = 480, Width = 320, ImgSize = Height * Width, BlockSize = 16;
+
         static public readonly double AVG0 = 100;
 
         // these should be private
@@ -31,7 +32,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         public ProcImg(Image<Gray, byte> src)
         {
             // remove finger pressure differences
-            NormMat = Normalization.Normalize(src, AVG0, 100);
+            Normalization.Normalize(src, NormMat, AVG0, 100);
 
             // segmentation
             SegmentMsk = Segmentation.CreateMask(NormMat, AVG0, BlockSize);
