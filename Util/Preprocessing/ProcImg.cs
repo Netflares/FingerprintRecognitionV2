@@ -47,7 +47,10 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         static public void PrintTime(Stopwatch timer, string m)
         {
             Console.WriteLine(string.Format(
-                "{0}: {1}:{2}.{3}", m, timer.Elapsed.Minutes, timer.Elapsed.Seconds, timer.Elapsed.Milliseconds
+                "{0}: {1}:{2}.{3}", m, 
+                timer.Elapsed.Minutes, 
+                timer.Elapsed.Seconds.ToString("D2"), 
+                timer.Elapsed.Milliseconds.ToString("D3")
             ));
         }
     }

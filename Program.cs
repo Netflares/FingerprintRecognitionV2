@@ -37,7 +37,6 @@ void SingleProc()
     Image<Gray, byte> src = new(Constants.DAT_DIR + "i\\0.jpg");
     ProcImg img = new(src);
 
-    CvInvoke.Imwrite(Constants.DAT_DIR + "i\\0-mask-smooth.png", MatConverter.Bool2Img(img.SegmentMsk));
 }
 
 BenchMark();
