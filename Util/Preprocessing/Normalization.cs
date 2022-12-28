@@ -28,9 +28,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             src.AvgSdv(out avgObj, out stdObj);
             double avg = avgObj.Intensity, std = stdObj.V0;
 
-            Iterator2D.Forward(
-                res, (y, x) => res[y, x] = NormalizePixel(src[y, x].Intensity, avg, std)
-            );
+            for (int y = 0; y < ProcImg.Height; y++)
+                for (int x = 0; x < ProcImg.Width; x++)
+                    res[y, x] = NormalizePixel(src[y, x].Intensity, avg, std);
         }
 
         static private double NormalizePixel(double px, double avg, double std)
