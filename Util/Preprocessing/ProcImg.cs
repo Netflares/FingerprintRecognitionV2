@@ -44,7 +44,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             Segmentation.SmoothMask(SegmentMsk, BlockSize);
 
             // orientation
-            OrientMat = Orientation.Create(NormMat, BlockSize);
+            OrientMat = Orientation.Create(NormMat);
         }
 
         /** 
