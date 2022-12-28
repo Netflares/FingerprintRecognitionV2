@@ -11,7 +11,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         /** 
          * @ First Normalization stage
          * */
-        static public void Normalize(Image<Gray, byte> src, double[,] res, double m0, double v0)
+        static public void Normalize(Image<Gray, byte> src, double[,] res)
         {
             /*
                 `src`:
@@ -20,10 +20,6 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 `res`:
                     the img after normalization
                     black fg, white bg
-                `m0`:
-                    avg value of `res`
-                `v0`:
-                    color span of `res`
             */
 
             // std = sqrt( sum((src - avg)**2) / size )
@@ -32,34 +28,18 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             src.AvgSdv(out avgObj, out stdObj);
             double avg = avgObj.Intensity, std = stdObj.V0;
 
-            double modifier = Sqrt(v0) / std;
-
             Iterator2D.Forward(
-                res, (y, x) => res[y, x] = NormalizePixel(m0, modifier, src[y, x].Intensity, avg, std)
+                res, (y, x) => res[y, x] = NormalizePixel(src[y, x].Intensity, avg, std)
             );
         }
 
-        unsafe static public void SelfNormalize(double[,] mat, int size, double avg, double std)
+        static private double NormalizePixel(double px, double avg, double std)
         {
-            Span<double> arr;
-            fixed (double* p = mat) arr = new(p, size);
-            foreach (ref double v in arr) 
-                v = (v - avg) / std;
-        }
-
-        /** 
-         * @ calculator
-         * */
-        static private double Sqr(double x) => x * x;
-
-        static private double NormalizePixel(double m0, double modifier, double px, double avg, double std)
-        {
-            // double coeff = Sqrt( v0 * (px - avg)**2 ) / std
-            double coeff = Abs(px - avg) * modifier;
+            double coeff = Abs(px - avg) / std;
             // flip fg/bg color here
-            if (px < std)
-                return m0 + coeff;
-            return m0 - coeff;
+            if (px < avg) 
+                return coeff;   // positive --> background
+            return -coeff;      // negative --> foreground
         }
     }
 }

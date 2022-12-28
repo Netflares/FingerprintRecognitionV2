@@ -16,9 +16,15 @@ void BenchMark()
         ProcImg img = new(src);
 
         /*
+        Iterator2D.Forward(src, (y, x) =>
+        {
+            if (!img.SegmentMsk[y, x]) src[y, x] = new Gray(50);
+            return true;
+        });
+
         CvInvoke.Imwrite(
-            String.Format("{0}o\\msk-{1}.png", Constants.DAT_DIR, i), 
-            MatConverter.Bool2Disp(img.SegmentMsk)
+            String.Format("{0}o\\msk-quick-{1}.png", Constants.DAT_DIR, i), 
+            src
         );
         */
     }

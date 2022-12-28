@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.Intrinsics.X86;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.MatTool;
@@ -21,7 +22,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         // these properties should be public
         static public readonly int Height = 480, Width = 320, ImgSize = Height * Width, BlockSize = 16;
 
-        static public readonly double AVG0 = 100, STD0 = 100, SQRT_STD0 = 10;
+        static public readonly double AVG0 = 100;
 
         // these should be private
         static public double[,] NormMat = new double[Height, Width];
@@ -31,15 +32,13 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */
         public ProcImg(Image<Gray, byte> src)
         {
-            // remove finger pressure differences
-            Normalization.Normalize(src, NormMat, AVG0, STD0);
+            // @ usage: remove finger pressure differences
+            // @ result: avg(NormMat) = 0, std(NormMat) = 1
+            Normalization.Normalize(src, NormMat);
 
             // segmentation
-            SegmentMsk = Segmentation.CreateMask(NormMat, AVG0, BlockSize);
+            SegmentMsk = Segmentation.CreateMask(NormMat, BlockSize);
             Segmentation.SmoothMask(SegmentMsk, BlockSize);
-
-            // orientation
-            Normalization.SelfNormalize(NormMat, ImgSize, AVG0, SQRT_STD0);
         }
 
         /** 
