@@ -1,6 +1,4 @@
 ﻿
-using FingerprintRecognitionV2.MatTool;
-
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     static public class SobelOperator
@@ -8,7 +6,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         /** 
          * @ static memory
          * */
-        static private readonly int Height = ProcImg.Height, Width = ProcImg.Width, Size = ProcImg.ImgSize;
+        static private readonly int Height = ProcImg.Height, Width = ProcImg.Width;
 
         // Prefix(img[y, x]) = P[y*Width + x]
         static private double[,] P = new double[Height, Width];
@@ -29,7 +27,13 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
         unsafe static public void SobelY(double[,] norm, double[,] res)
         {
-            
+            for (int x = 1; x < Width - 1; x++)
+                for (int y = 0; y < Height; y++)
+                    P[y, x] = norm[y, x - 1] + norm[y, x] + norm[y, x] + norm[y, x + 1];
+
+            for (int y = 1; y < Height - 1; y++)
+                for (int x = 1; x < Width - 1; x++)
+                    res[y, x] = P[y + 1, x] - P[y - 1, x];
         }
     }
 }

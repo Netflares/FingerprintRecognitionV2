@@ -12,7 +12,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         /** 
          * @ public attrs
          * */
-        public bool[,] SegmentMsk;
+        // size: (Height / BlockSize) * (Width / BlockSize)
+        // keep this for Singularity detector
+        public double[,] OrientMat;
 
         /** 
          * @ shared attrs
@@ -26,6 +28,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
         // these should be private
         static public double[,] NormMat = new double[Height, Width];
+        static public bool[,] SegmentMsk = new bool[Height, Width];
 
         /** 
          * @ pipline
@@ -39,6 +42,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             // segmentation
             SegmentMsk = Segmentation.CreateMask(NormMat, BlockSize);
             Segmentation.SmoothMask(SegmentMsk, BlockSize);
+
+            // orientation
+            OrientMat = Orientation.Create(NormMat, BlockSize);
         }
 
         /** 
