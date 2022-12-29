@@ -53,5 +53,36 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             return res;
         }
+
+        /*
+        the special affine rotation function, only for the Wavelength Matrix
+
+        src:    the whole image, size = ProcImg.Height * ProcImg.Width
+        t, l:   the coord of the block's first pixel
+        ss:     the size of the block
+        rs:     the size of the result block, this should equal to floor( 16/sqrt(2) )
+        rad:    angle to rotate, measured in rad
+        */
+        static public double[,] NoBackgroundRotate(double[,] src, int t, int l, int ss, int rs, double rad)
+        {
+            double[,] res = new double[rs, rs];
+            int scy = t + (ss >> 1), scx = l + (ss >> 1);   // src center y coord, src center x coord
+            int rcy = rs >> 1, rcx = rs >> 1;               // res center y coord, res center x coord
+            double ca = Cos(rad), sa = Sin(rad);
+
+            for (int y = 0; y < rs; y++)
+            {
+                for (int x = 0; x < rs; x++)
+                {
+                    int ry = y - rcy, rx = x - rcx;             // res y, res x
+                    int sy = scy + (int)(-rx * sa + ry * ca),   // src y
+                        sx = scx + (int)(+rx * ca + ry * sa);   // src x
+                    // be careful
+                    res[y, x] = src[sy, sx];
+                }
+            }
+
+            return res;
+        }
     }
 }

@@ -43,6 +43,10 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             // orientation
             OrientMat = Orientation.Create(NormMat);
+
+            // wavelength (frequency)
+            Normalization.ExcludeBackground(NormMat, SegmentMsk);
+            double waveLen = Wavelength.GetMedianWavelength();
         }
 
         /** 

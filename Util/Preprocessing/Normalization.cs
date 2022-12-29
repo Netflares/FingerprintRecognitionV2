@@ -1,7 +1,5 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using FingerprintRecognitionV2.MatTool;
-using System.Collections;
 using static System.Math;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
@@ -9,7 +7,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
     static public class Normalization
     {
         /** 
-         * @ First Normalization stage
+         * @ usage: remove finger pressure differences
+         * @ result: avg(NormMat) = 0, std(NormMat) = 1
          * */
         static public void Normalize(Image<Gray, byte> src, double[,] res)
         {
@@ -40,6 +39,35 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             if (px < avg) 
                 return coeff;   // positive --> background
             return -coeff;      // negative --> foreground
+        }
+
+        /** 
+         * @ result: ridge regions have avg = 0, std = 1
+         * */
+        unsafe static public void ExcludeBackground(double[,] src, bool[,] msk)
+        {
+            /*
+            this code but written in python:
+                avg = np.mean(src[msk==0])
+                std = np.std(src[msk==0])
+                src = (src - avg) / std
+            */
+
+            double sum = 0, avg = 0, std = 0;
+            int len = ProcImg.ImgSize, n = 0;
+
+            Span<double> srcArr;
+            fixed (double* p = src) srcArr = new(p, len);
+            Span<bool> mskArr;
+            fixed (bool* p = msk) mskArr = new(p, len);
+
+            for (int i = 0; i < len; i++) if (!mskArr[i]) { sum += srcArr[i]; n++; }
+            avg = sum / n;
+
+            for (int i = 0; i < len; i++) if (!mskArr[i]) { double v = srcArr[i] - avg; std += v * v; }
+            std = Sqrt(std / n);
+
+            foreach (ref double i in srcArr) i = (i - avg) / std;
         }
     }
 }
