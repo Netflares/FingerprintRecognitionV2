@@ -1,7 +1,4 @@
-﻿
-using FingerprintRecognitionV2.Algorithm;
-using FingerprintRecognitionV2.MatTool;
-using static System.Math;
+﻿using FingerprintRecognitionV2.MatTool;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {

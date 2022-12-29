@@ -1,9 +1,7 @@
-﻿
-using FingerprintRecognitionV2.DataStructure;
+﻿using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.MatTool;
-using FingerprintRecognitionV2.Util.Preprocessing;
 
-namespace FingerprintRecognitionV2.Algorithm
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     /**
      * @ usage:
@@ -17,7 +15,7 @@ namespace FingerprintRecognitionV2.Algorithm
         private class Position
         {
             public int Y, X, Depth;
-            
+
             public Position(int y, int x, int d)
             {
                 Y = y;

@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Runtime.Intrinsics.X86;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using FingerprintRecognitionV2.MatTool;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {

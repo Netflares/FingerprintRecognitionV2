@@ -1,8 +1,4 @@
-﻿
-using Emgu.CV.Structure;
-using Emgu.CV;
-using System.Drawing;
-using FingerprintRecognitionV2.MatTool;
+﻿using FingerprintRecognitionV2.MatTool;
 using static System.Math;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
