@@ -19,12 +19,20 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         // msk size:    Height * Width
         static public double GetMedianWavelength(double[,] norm, double[,] orient, bool[,] msk)
         {
+            List<double> res = new();
             Iterator2D.Forward(Height / BS, Width / BS, (i, j) =>
             {
                 double wave = Query(norm, i, j, orient[i, j], 5, 15);
+                if (wave > 0)
+                    Iterator2D.ForwardBlock(i, j, BS, (y, x) =>
+                    {
+                        if (msk[y, x]) res.Add(wave);
+                        return true;
+                    });
                 return true;
             });
-            return 0.14;    // implement later
+            res.Sort();
+            return res[res.Count >> 1]; // if your res.Count == 0, you deserve a crash
         }
 
         // get ridge wavelength of block (i,j) size=BS*BS
@@ -63,7 +71,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 return 0.0;
             double waveLength = (double)(peaks.Last() - peaks.First()) / (peaks.Count - 1);
             if (minWavelen <= waveLength && waveLength <= maxWavelen)
-                return 1.0 / waveLength;    // THIS IS FREQUENCY
+                return waveLength;
             return 0.0;
         }
 
