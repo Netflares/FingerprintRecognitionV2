@@ -1,5 +1,4 @@
-﻿using Emgu.CV.DepthAI;
-using static System.Math;
+﻿using static System.Math;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {
@@ -23,6 +22,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
     static public class AffineRotation
     {
         /*
+        performs a CLOCKWISE rotatation, not a TRIGONOMETRY rotation
+
         you can still rotate an image without losing any pixel
         which increase the res image size to:
             [w * cos(rad) + h * sin(rad)] * [w * sin(rad) + h * cos(rad)]
@@ -46,7 +47,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                     int sy = cy + (int)(-rx * sa + ry * ca),    // src y
                         sx = cx + (int)(+rx * ca + ry * sa);    // src x
                     if (0 <= sy && sy < h && 0 <= sx && sx < w)
-                        res[ry, rx] = src[sy, sx];
+                        res[y, x] = src[sy, sx];
                 }
             }
 

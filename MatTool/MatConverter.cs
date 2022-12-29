@@ -8,7 +8,7 @@ namespace FingerprintRecognitionV2.MatTool
     // therefore it's not optimized
     static public class MatConverter
     {
-        //
+        // copy the values from a mat to an img
         static public Image<Gray, byte> Mat2Img<T>(T[,] src)
             where T : INumber<T>, new()
         {
