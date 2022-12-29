@@ -44,7 +44,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         /** 
          * @ result: ridge regions have avg = 0, std = 1
          * */
-        unsafe static public void ExcludeBackground(double[,] src, bool[,] msk)
+        unsafe static public void ExcludeBackground(double[,] srcMat, bool[,] mskMat)
         {
             /*
             this code but written in python:
@@ -56,18 +56,18 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             double sum = 0, avg = 0, std = 0;
             int len = ProcImg.ImgSize, n = 0;
 
-            Span<double> srcArr;
-            fixed (double* p = src) srcArr = new(p, len);
-            Span<bool> mskArr;
-            fixed (bool* p = msk) mskArr = new(p, len);
+            Span<double> src;
+            fixed (double* p = srcMat) src = new(p, len);
+            Span<bool> msk;
+            fixed (bool* p = mskMat) msk = new(p, len);
 
-            for (int i = 0; i < len; i++) if (!mskArr[i]) { sum += srcArr[i]; n++; }
+            for (int i = 0; i < len; i++) if (!msk[i]) { sum += src[i]; n++; }
             avg = sum / n;
 
-            for (int i = 0; i < len; i++) if (!mskArr[i]) { double v = srcArr[i] - avg; std += v * v; }
+            for (int i = 0; i < len; i++) if (!msk[i]) { double v = src[i] - avg; std += v * v; }
             std = Sqrt(std / n);
 
-            foreach (ref double i in srcArr) i = (i - avg) / std;
+            foreach (ref double i in src) i = (i - avg) / std;
         }
     }
 }
