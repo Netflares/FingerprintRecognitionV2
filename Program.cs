@@ -39,6 +39,6 @@ void SingleProc()
 
 }
 
-BenchMark();
+SingleProc();
 
 Console.WriteLine("Program Executed Sucessfully / Returned Code 0");
