@@ -13,6 +13,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         // size: (Height / BlockSize) * (Width / BlockSize)
         // keep this for Singularity detector
         public double[,] OrientMat;
+        // distance between ridges is also a vital information
+        public double WaveLen;
 
         /** 
          * @ shared attrs
@@ -46,8 +48,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             // wavelength (frequency)
             Normalization.ExcludeBackground(NormMat, SegmentMsk);
-            double waveLen = Wavelength.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
-            Console.WriteLine(Math.Round(100/waveLen) / 100);
+            WaveLen = Wavelength.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
         }
 
         /** 

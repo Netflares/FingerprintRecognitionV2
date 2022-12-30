@@ -118,6 +118,46 @@ namespace FingerprintRecognitionV2.MatTool
         }
 
         /** 
+         * @ for bool
+         * */
+        unsafe static public int Sum(bool[,] src, int t, int l, int d, int r)
+        {
+            int h = src.GetLength(0), w = src.GetLength(1); // size of the matrix
+            int len = h * w;        // size of the matrix
+            int col = r - l;        // the width of the block
+            int itr = t * w + l;    // the first pointer of this block
+            int end = d * w;        // the itr won't go here
+
+            int res = 0;            // the result
+
+            fixed (bool* p = src)
+            {
+                Span<bool> span = new Span<bool>(p, len);
+                while (itr < end)
+                {
+                    Span<bool> arr = span.Slice(itr, col);
+                    foreach (bool v in arr)
+                        if (v) res++;
+                    itr += w;
+                }
+            }
+
+            return res;
+        }
+
+        unsafe static public int Sum(bool[,] src)
+        {
+            return Sum(src, 0, 0, src.GetLength(0), src.GetLength(1));
+        }
+
+        unsafe static public int SumBlock(bool[,] src, int y, int x, int bs)
+        {
+            // get std value of block (y, x)
+            int t = y * bs, l = x * bs;
+            return Sum(src, t, l, t + bs, l + bs);
+        }
+
+        /** 
          * @ calculator
          * */
         static private double Sqr(double x) => x * x;

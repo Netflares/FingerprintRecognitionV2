@@ -10,10 +10,9 @@ void BenchMark()
 {
     Stopwatch timer = new();
     timer.Start();
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 500; i++)
     {
-        Image<Gray, byte> src = new(Constants.DAT_DIR + "set01\\" + i + ".bmp");
-        Console.Write(i + " ");
+        Image<Gray, byte> src = new(Constants.DAT_DIR + "set00\\" + i + ".bmp");
         ProcImg img = new(src);
     }
     timer.Stop();

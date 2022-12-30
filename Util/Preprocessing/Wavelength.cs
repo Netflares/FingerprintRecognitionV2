@@ -11,8 +11,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
     static public class Wavelength
     {
         // block size, block size after rotation
-        static readonly int BS = ProcImg.BlockSize, KS = (int) Floor(BS / Sqrt(2)), KS2 = KS * KS;
-        static readonly int Height = ProcImg.Height, Width = ProcImg.Width;
+        static readonly int 
+            BS = ProcImg.BlockSize, BS2 = BS * BS, 
+            KS = (int) Floor(BS / Sqrt(2)), KS2 = KS * KS;
+        static readonly int 
+            Height = ProcImg.Height, Width = ProcImg.Width;
 
         // norm size:   Height * Width
         // orient size: (Height / BS) * (Width / BS)
@@ -22,13 +25,12 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             List<double> res = new();
             Iterator2D.Forward(Height / BS, Width / BS, (i, j) =>
             {
-                double wave = Query(norm, i, j, orient[i, j], 5, 15);
-                if (wave > 0)
-                    Iterator2D.ForwardBlock(i, j, BS, (y, x) =>
-                    {
-                        if (msk[y, x]) res.Add(wave);
-                        return true;
-                    });
+                int cnt = MatStatistic.SumBlock(msk, i, j, BS);
+                if (cnt == BS2)
+                {
+                    double wave = Query(norm, i, j, orient[i, j], 5, 15);
+                    if (wave > 0) res.Add(wave);
+                }
                 return true;
             });
             res.Sort();
