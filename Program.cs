@@ -10,23 +10,11 @@ void BenchMark()
 {
     Stopwatch timer = new();
     timer.Start();
-    for (int i = 0; i < 500; i++)
+    for (int i = 0; i < 20; i++)
     {
-        Image<Gray, byte> src = new(Constants.DAT_DIR + "set00\\" + i + ".bmp");
+        Image<Gray, byte> src = new(Constants.DAT_DIR + "set01\\" + i + ".bmp");
+        Console.Write(i + " ");
         ProcImg img = new(src);
-
-        /*
-        Iterator2D.Forward(src, (y, x) =>
-        {
-            if (!img.SegmentMsk[y, x]) src[y, x] = new Gray(50);
-            return true;
-        });
-
-        CvInvoke.Imwrite(
-            String.Format("{0}o\\msk-quick-{1}.png", Constants.DAT_DIR, i), 
-            src
-        );
-        */
     }
     timer.Stop();
     ProcImg.PrintTime(timer, "Benchmarked 500 images");
@@ -39,6 +27,6 @@ void SingleProc()
 
 }
 
-SingleProc();
+BenchMark();
 
 Console.WriteLine("Program Executed Sucessfully / Returned Code 0");

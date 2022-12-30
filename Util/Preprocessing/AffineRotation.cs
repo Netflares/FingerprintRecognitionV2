@@ -74,9 +74,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             {
                 for (int x = 0; x < rs; x++)
                 {
-                    int ry = y - rcy, rx = x - rcx;             // res y, res x
-                    int sy = scy + (int)(-rx * sa + ry * ca),   // src y
-                        sx = scx + (int)(+rx * ca + ry * sa);   // src x
+                    int ry = y - rcy, rx = x - rcx;                 // res y, res x
+                    int sy = scy + (int)Round(-rx * sa + ry * ca),  // src y
+                        sx = scx + (int)Round(+rx * ca + ry * sa);  // src x
                     // be careful
                     res[y, x] = src[sy, sx];
                 }

@@ -47,6 +47,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             // wavelength (frequency)
             Normalization.ExcludeBackground(NormMat, SegmentMsk);
             double waveLen = Wavelength.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
+            Console.WriteLine(Math.Round(100/waveLen) / 100);
         }
 
         /** 

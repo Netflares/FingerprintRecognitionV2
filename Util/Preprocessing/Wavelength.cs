@@ -36,7 +36,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         }
 
         // get ridge wavelength of block (i,j) size=BS*BS
-        static private double Query(double[,] norm, int i, int j, double orient, int minWavelen, int maxWavelen)
+        static private double Query(double[,] norm, int i, int j, double orient, double minWavelen, double maxWavelen)
         {
             double cosOrient = Cos(2.0 * orient);
             double sinOrient = Sin(2.0 * orient);
@@ -53,7 +53,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             avg /= KS;
 
             // get dilation and filter out noises
-            double[] dilation = Morphology1D.SimpleGrayDilation(ridgeSum, 5, 1);
+            double[] dilation = Morphology1D.GrayDilation(ridgeSum, 5, 1);
             double[] ridgeNoise = new double[KS];
             for (int y = 0; y < KS; y++)
                 ridgeNoise[y] = Abs(dilation[y] - ridgeSum[y]);
