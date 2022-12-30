@@ -42,7 +42,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         }
 
         /** 
-         * @ result: ridge regions have avg = 0, std = 1
+         * @ result: ridge regions have std = 1
          * */
         unsafe static public void ExcludeBackground(double[,] srcMat, bool[,] mskMat)
         {
