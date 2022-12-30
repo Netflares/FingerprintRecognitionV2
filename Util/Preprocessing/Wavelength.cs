@@ -1,5 +1,4 @@
-﻿using Emgu.CV;
-using FingerprintRecognitionV2.MatTool;
+﻿using FingerprintRecognitionV2.MatTool;
 using static System.Math;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
@@ -61,7 +60,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 ridgeNoise[y] = Abs(dilation[y] - ridgeSum[y]);
 
             // get peaks
-            List<int> peaks = new List<int>();
+            List<int> peaks = new();
             for (int y = 0; y < KS; y++)
                 if (ridgeNoise[y] < 2 && ridgeSum[y] > avg)
                     peaks.Add(y);
