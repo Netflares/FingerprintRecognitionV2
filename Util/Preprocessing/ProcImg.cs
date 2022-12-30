@@ -50,6 +50,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             // wavelength (frequency)
             Normalization.ExcludeBackground(NormMat, SegmentMsk);
             WaveLen = Wavelength.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
+
+            // gabor filter
+            GaborFilter.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, GaborMat);
         }
 
         /** 

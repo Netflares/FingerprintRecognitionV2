@@ -22,10 +22,16 @@ void BenchMark()
 void SingleProc()
 {
     Image<Gray, byte> src = new(Constants.DAT_DIR + "i\\0.jpg");
-    ProcImg img = new(src);
 
+    Stopwatch timer = new();
+    timer.Start();
+    ProcImg img = new(src);
+    timer.Stop();
+    ProcImg.PrintTime(timer, "proc an image");
+
+    CvInvoke.Imwrite("gabor.png", MatConverter.Bool2Img(ProcImg.GaborMat));
 }
 
-BenchMark();
+SingleProc();
 
 Console.WriteLine("Program Executed Sucessfully / Returned Code 0");

@@ -10,22 +10,49 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
     {
         static readonly int 
             Height = ProcImg.Height, Width = ProcImg.Width, ImgSize = ProcImg.ImgSize,
-            BS = ProcImg.BlockSize;
+            BS = ProcImg.BlockSize, OrientSize = ProcImg.ImgSize / BS / BS;
 
-        static public void Apply(double[,] norm, double[,] orient, double waveLen, bool[,] msk)
+        static public void Apply(double[,] norm, double[,] orient, double waveLen, bool[,] msk, bool[,] res)
         {
-            Image<Gray, double> kernel = CreateBaseFilter(waveLen);
+            double sigma = waveLen * 0.65;
+            int kr = (int)Round(3 * sigma); // kernel radius
+            int ks = kr << 1 | 1;           // kernel size
 
+            Image<Gray, double> kernel = CreateBaseFilter(sigma, kr, ks, waveLen);
+            Image<Gray, double> src = new(Width, Height);
+            Iterator2D.Forward(src, (y, x) => src[y, x] = new Gray(norm[y, x]));
+
+            List<double> angles = CompressAngle(orient);
+            List<Image<Gray, double>> filters = new(angles.Count);
+            for (int i = 0; i < angles.Count; i++)
+                filters.Add(kernel.Rotate(- angles[i] * 180 / PI, new Gray(0)));
+
+            List<Image<Gray, double>> imgs = new(angles.Count);
+            for (int i = 0; i < angles.Count; i++)
+            {
+                Image<Gray, double> img = new(Width, Height);
+                CvInvoke.Filter2D(src, img, filters[i], new System.Drawing.Point(-1, -1));
+                imgs.Add(img);
+            }
+
+            Iterator2D.Forward(Height / BS, Width / BS, (i, j) =>
+            {
+                double angle = PI / 2 - orient[i, j];
+                int angleInd = LowerBound(angles, angle);
+
+                Iterator2D.ForwardBlock(i, j, BS, (y, x) =>
+                {
+                    res[y, x] = msk[y, x] && (imgs[angleInd][y, x].Intensity < 0);
+                });
+            });
         }
 
         /** 
          * @ the base kernel for gabor filter
          * */
-        static private Image<Gray, double> CreateBaseFilter(double wave)
+        static private Image<Gray, double> CreateBaseFilter(double sigma, int kr, int ks, double wave)
         {
-            double sigma = wave * 0.65;
-            int kr = (int) Round(3 * sigma);    // kernel radius
-            int ks = kr << 1 | 1;               // kernel size
+            double freq = 1 / wave;
 
             double[,] mx = new double[ks, ks];
             double[,] my = new double[ks, ks];
@@ -37,20 +64,61 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             });
 
             // gabor filter kernel equation:
-            //      refa = - ( mx/(sigma**2) + my/(sigma**2) )
+            //      refa = - ( mx/(sigma**2) + my/(sigma**2) ) / 2
             //      refb = 2 * PI * waveLen * mx
             //      kernel = exp(refa) * cos(refb)
             Image<Gray, double> kernel = new(ks, ks);
-            double sig2 = sigma * sigma, wpi = wave * PI;   // store what can be store (I don't trust O3)
+            double sig2 = sigma * sigma, wpi = 2 * freq * PI;   // store what can be store (I don't trust O3)
             Iterator2D.Forward(ks, ks, (y, x) =>
             {
-                double v = wpi * mx[y, x];
                 kernel[y, x] = new Gray(
-                    Exp(- mx[y, x] / sig2 - my[y, x] / sig2) * Cos(v + v)
+                    Exp(- (mx[y, x] / sig2 + my[y, x] / sig2) / 2) * Cos(wpi * mx[y, x])
                 );
             });
 
             return kernel;
+        }
+
+        /** 
+         * @ collection helpers
+         * */
+        static private List<double> AcceptedAngles = new();
+
+        // compress the orient matrix into unique value set
+        unsafe static private List<double> CompressAngle(double[,] orient)
+        {
+            // this is kinda awkward rn
+            if (AcceptedAngles.Count == 0)
+            {
+                double angleInc = 3 * PI / 180;
+                for (double i = -PI / 2; i <= PI / 2; i += angleInc)
+                    AcceptedAngles.Add(i);
+            }
+
+            SortedSet<double> compressed = new();
+            fixed (double* p = orient)
+            {
+                Span<double> arr = new(p, OrientSize);
+                foreach (double v in arr)
+                    compressed.Add(AcceptedAngles[LowerBound(AcceptedAngles, PI / 2 - v)]);
+            }
+            return new List<double>(compressed);
+        }
+
+        // find the index of value `x` in `a`
+        // only used in this class only
+        static private int LowerBound(List<double> a, double x)
+        {
+            int l = 0, r = a.Count - 1;    // there's no a.end() returned
+            while (l < r)
+            {
+                int m = (l + r + 0) >> 1;
+                if (a[m] >= x)
+                    r = m;
+                else
+                    l = m + 1;
+            }
+            return r;
         }
     }
 }
