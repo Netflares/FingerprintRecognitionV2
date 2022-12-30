@@ -29,6 +29,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         // these should be private
         static public double[,] NormMat = new double[Height, Width];
         static public bool[,] SegmentMsk = new bool[Height, Width];
+        static public bool[,] GaborMat = new bool[Height, Width];
 
         /** 
          * @ pipline
