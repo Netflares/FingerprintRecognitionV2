@@ -30,7 +30,6 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                     double wave = Query(norm, i, j, orient[i, j], 5, 15);
                     if (wave > 0) res.Add(wave);
                 }
-                return true;
             });
             res.Sort();
             return res[res.Count >> 1]; // if your res.Count == 0, you deserve a crash

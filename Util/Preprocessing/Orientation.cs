@@ -29,11 +29,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                     double vy = GY[y, x], vx = GX[y, x];
                     a += 2.0 * vy * vx;
                     b += vx * vx - vy * vy;
-                    return true;
                 });
                 if (a != 0 || b != 0)
                     res[i, j] = (PI + Atan2(a, b)) / 2;
-                return true;
             });
 
             return res;

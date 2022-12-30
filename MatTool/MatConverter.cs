@@ -35,7 +35,6 @@ namespace FingerprintRecognitionV2.MatTool
             {
                 mn = mn < src[y, x] ? mn : src[y, x];
                 mx = mx > src[y, x] ? mx : src[y, x];
-                return true;
             });
 
             double span = mx - mn;

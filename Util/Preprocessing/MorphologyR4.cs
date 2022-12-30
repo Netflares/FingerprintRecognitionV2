@@ -114,8 +114,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         {
             Iterator2D.Forward(1, 1, Height - 1, Width - 1, (y, x) =>
             {
-                if (src[y, x] != tar)
-                    return false;
+                if (src[y, x] != tar) return;
                 // assert src[y, x] == tar
                 for (int t = 0; t < 4; t++)
                 {
@@ -124,10 +123,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                     {
                         // src[y, x] == margin
                         q.PushBack(new(y, x, 0));
-                        return true;
+                        return;
                     }
                 }
-                return false;
             });
         }
     }

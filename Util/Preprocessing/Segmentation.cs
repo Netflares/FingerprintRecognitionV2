@@ -16,7 +16,6 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 double std = MatStatistic.StdBlock(norm, avg, i, j, bs);
                 if (std >= 0.2 || avg < -0.2)
                     SpanIter.ForwardBlock(res, i, j, bs, true);
-                return 0;
             });
 
             return res;
