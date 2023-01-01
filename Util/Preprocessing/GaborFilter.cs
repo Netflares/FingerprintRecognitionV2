@@ -20,11 +20,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             int ks = kr << 1 | 1;           // kernel size
 
             Image<Gray, double> kernel = CreateBaseFilter(sigma, kr, ks, waveLen);
-            Image<Gray, double> src = new(Width, Height);
-            Iterator2D.Forward(src, (y, x) => src[y, x] = new Gray(norm[y, x]));
 
             List<double> angles = CompressAngle(orient);
-            List<Image<Gray, double>> imgs = CreateOrientFilter(angles, kernel);
+            List<Image<Gray, double>> imgs = CreateOrientFilter(norm, angles, kernel);
 
             Iterator2D.Forward(Height / BS, Width / BS, (i, j) =>
             {
@@ -41,8 +39,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         /**
          * @ rotate the base kernel for each orientation in `angles`
          * */
-        static private List<Image<Gray, double>> CreateOrientFilter(List<double> angles, Image<Gray, double> kernel)
+        static private List<Image<Gray, double>> CreateOrientFilter(double[,] norm, List<double> angles, Image<Gray, double> kernel)
         {
+            Image<Gray, double> src = new(Width, Height);
+            Iterator2D.Forward(src, (y, x) => src[y, x] = new Gray(norm[y, x]));
+
             List<Image<Gray, double>> filters = new(angles.Count);
             for (int i = 0; i < angles.Count; i++)
                 filters.Add(kernel.Rotate(-angles[i] * 180 / PI, new Gray(0)));
