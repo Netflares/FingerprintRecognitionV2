@@ -21,7 +21,7 @@ void BenchMark()
 
 void SingleProc()
 {
-    Image<Gray, byte> src = new(Constants.DAT_DIR + "i\\0.jpg");
+    Image<Gray, byte> src = new(Constants.DAT_DIR + "i\\8.bmp");
 
     Stopwatch timer = new();
     timer.Start();

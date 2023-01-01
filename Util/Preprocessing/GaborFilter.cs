@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Emgu.CV;
+using Emgu.CV.Ocl;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.MatTool;
 using static System.Math;
@@ -23,17 +24,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             Iterator2D.Forward(src, (y, x) => src[y, x] = new Gray(norm[y, x]));
 
             List<double> angles = CompressAngle(orient);
-            List<Image<Gray, double>> filters = new(angles.Count);
-            for (int i = 0; i < angles.Count; i++)
-                filters.Add(kernel.Rotate(- angles[i] * 180 / PI, new Gray(0)));
-
-            List<Image<Gray, double>> imgs = new(angles.Count);
-            for (int i = 0; i < angles.Count; i++)
-            {
-                Image<Gray, double> img = new(Width, Height);
-                CvInvoke.Filter2D(src, img, filters[i], new System.Drawing.Point(-1, -1));
-                imgs.Add(img);
-            }
+            List<Image<Gray, double>> imgs = CreateOrientFilter(angles, kernel);
 
             Iterator2D.Forward(Height / BS, Width / BS, (i, j) =>
             {
@@ -45,6 +36,26 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                     res[y, x] = msk[y, x] && (imgs[angleInd][y, x].Intensity < 0);
                 });
             });
+        }
+
+        /**
+         * @ rotate the base kernel for each orientation in `angles`
+         * */
+        static private List<Image<Gray, double>> CreateOrientFilter(List<double> angles, Image<Gray, double> kernel)
+        {
+            List<Image<Gray, double>> filters = new(angles.Count);
+            for (int i = 0; i < angles.Count; i++)
+                filters.Add(kernel.Rotate(-angles[i] * 180 / PI, new Gray(0)));
+
+            List<Image<Gray, double>> imgs = new(angles.Count);
+            for (int i = 0; i < angles.Count; i++)
+            {
+                Image<Gray, double> img = new(Width, Height);
+                CvInvoke.Filter2D(src, img, filters[i], new System.Drawing.Point(-1, -1));
+                imgs.Add(img);
+            }
+
+            return filters;
         }
 
         /** 
