@@ -19,19 +19,19 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             int kr = (int)Round(3 * sigma); // kernel radius
             int ks = kr << 1 | 1;           // kernel size
 
-            Image<Gray, double> kernel = CreateBaseFilter(sigma, kr, ks, waveLen);
-
             List<double> angles = CompressAngle(orient);
-            List<Image<Gray, double>> imgs = CreateOrientFilter(norm, angles, kernel);
+            List<Image<Gray, double>> img = CreateOrientFilter(
+                norm, angles, CreateBaseFilter(sigma, kr, ks, waveLen)
+            );
 
             Iterator2D.Forward(Height / BS, Width / BS, (i, j) =>
             {
-                double angle = PI / 2 - orient[i, j];
-                int angleInd = LowerBound(angles, angle);
+                double ang = PI / 2 - orient[i, j];
+                int angInd = LowerBound(angles, ang);
 
                 Iterator2D.ForwardBlock(i, j, BS, (y, x) =>
                 {
-                    res[y, x] = msk[y, x] && (imgs[angleInd][y, x].Intensity < 0);
+                    res[y, x] = msk[y, x] && (img[angInd][y, x].Intensity < 0);
                 });
             });
         }
@@ -44,19 +44,17 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             Image<Gray, double> src = new(Width, Height);
             Iterator2D.Forward(src, (y, x) => src[y, x] = new Gray(norm[y, x]));
 
-            List<Image<Gray, double>> filters = new(angles.Count);
-            for (int i = 0; i < angles.Count; i++)
-                filters.Add(kernel.Rotate(-angles[i] * 180 / PI, new Gray(0)));
-
             List<Image<Gray, double>> imgs = new(angles.Count);
             for (int i = 0; i < angles.Count; i++)
             {
+                Image<Gray, double> filter = kernel.Rotate(-angles[i] * 180 / PI, new Gray(0));
+
                 Image<Gray, double> img = new(Width, Height);
-                CvInvoke.Filter2D(src, img, filters[i], new System.Drawing.Point(-1, -1));
+                CvInvoke.Filter2D(src, img, filter, new System.Drawing.Point(-1, -1));
                 imgs.Add(img);
             }
 
-            return filters;
+            return imgs;
         }
 
         /** 

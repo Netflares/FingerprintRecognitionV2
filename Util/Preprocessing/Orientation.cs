@@ -26,7 +26,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 double a = 0, b = 0;
                 Iterator2D.ForwardBlock(norm, i, j, BS, (y, x) =>
                 {
-                    double vy = GY[y, x], vx = GX[y, x];
+                    double vy = Round(GY[y, x]), vx = Round(GX[y, x]);
                     a += 2.0 * vy * vx;
                     b += vx * vx - vy * vy;
                 });
