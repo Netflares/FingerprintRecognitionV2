@@ -69,8 +69,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             Iterator2D.Forward(ks, ks, (y, x) =>
             {
-                mx[y, x] = x - kr;
-                my[y, x] = y - kr;
+                mx[y, x] = x - kr; mx[y, x] *= mx[y, x];
+                my[y, x] = y - kr; my[y, x] *= my[y, x];
             });
 
             // gabor filter kernel equation:
@@ -82,7 +82,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             Iterator2D.Forward(ks, ks, (y, x) =>
             {
                 kernel[y, x] = new Gray(
-                    Exp(- (mx[y, x] / sig2 + my[y, x] / sig2) / 2) * Cos(wpi * mx[y, x])
+                    Exp(- (mx[y, x] / sig2 + my[y, x] / sig2)) * Cos(wpi * mx[y, x])
                 );
             });
 

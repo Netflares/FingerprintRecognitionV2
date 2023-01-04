@@ -21,7 +21,7 @@ void BenchMark()
 
 void SingleProc()
 {
-    Image<Gray, byte> src = new(Constants.DAT_DIR + "i\\8.bmp");
+    Image<Gray, byte> src = new(Constants.DAT_DIR + "i\\60.bmp");
 
     Stopwatch timer = new();
     timer.Start();
@@ -29,7 +29,7 @@ void SingleProc()
     timer.Stop();
     ProcImg.PrintTime(timer, "proc an image");
 
-    CvInvoke.Imwrite("gabor.png", MatConverter.Bool2Img(ProcImg.GaborMat));
+    CvInvoke.Imwrite("_dat/gabor.png", MatConverter.Bool2Img(ProcImg.GaborMat));
 }
 
 SingleProc();
