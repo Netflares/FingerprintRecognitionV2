@@ -29,7 +29,7 @@ void SingleProc()
     timer.Stop();
     ProcImg.PrintTime(timer, "proc an image");
 
-    CvInvoke.Imwrite("_dat/gabor.png", MatConverter.Bool2Img(ProcImg.GaborMat));
+    CvInvoke.Imwrite("_dat/quick-ske.png", MatConverter.Bool2Img(ProcImg.GaborMat));
 }
 
 SingleProc();

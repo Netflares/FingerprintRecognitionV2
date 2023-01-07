@@ -6,7 +6,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         static readonly int Height = ProcImg.Height, Width = ProcImg.Width;
         static readonly int MaxIterations = 7;
 
-        static public void ZhangSuenThinning(bool[,] src)
+        static public void Thinning(bool[,] src)
         {
             var tmp = (bool[,])src.Clone();
             int cnt = 0;
