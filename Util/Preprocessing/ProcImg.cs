@@ -55,7 +55,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             GaborFilter.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, GaborMat);
 
             // skeletonization
-            Skeletonization.ZhangSuenThinning(GaborMat);
+            ZhangBruteThinning.ZhangSuenThinning(GaborMat);
         }
 
         /** 

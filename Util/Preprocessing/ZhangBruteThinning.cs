@@ -1,9 +1,7 @@
-using System;
-using System.Threading.Tasks;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing 
 {
-	static public class Skeletonization
+	static public class ZhangBruteThinning
 	{
         static readonly int Height = ProcImg.Height, Width = ProcImg.Width;
         static readonly int MaxIterations = 7;
