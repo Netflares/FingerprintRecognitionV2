@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using Emgu.CV;
-using Emgu.CV.Ocl;
+﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.MatTool;
 using static System.Math;
@@ -30,9 +28,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 int angInd = LowerBound(angles, ang);
 
                 Iterator2D.ForwardBlock(i, j, BS, (y, x) =>
-                {
-                    res[y, x] = msk[y, x] && (img[angInd][y, x].Intensity < 0);
-                });
+                    res[y, x] = msk[y, x] && (img[angInd][y, x].Intensity < 0)
+                );
             });
         }
 
@@ -48,7 +45,6 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             for (int i = 0; i < angles.Count; i++)
             {
                 Image<Gray, double> filter = kernel.Rotate(-angles[i] * 180 / PI, new Gray(0));
-
                 Image<Gray, double> img = new(Width, Height);
                 CvInvoke.Filter2D(src, img, filter, new System.Drawing.Point(-1, -1));
                 imgs.Add(img);
@@ -69,8 +65,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             Iterator2D.Forward(ks, ks, (y, x) =>
             {
-                mx[y, x] = x - kr; mx[y, x] *= mx[y, x];
-                my[y, x] = y - kr; my[y, x] *= my[y, x];
+                mx[y, x] = Sqr(x - kr);
+                my[y, x] = Sqr(y - kr);
             });
 
             // gabor filter kernel equation:
@@ -130,5 +126,10 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             }
             return r;
         }
+
+        /** 
+         * @ calculators
+         * */
+        static private int Sqr(int x) => x * x;
     }
 }
