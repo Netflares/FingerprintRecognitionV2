@@ -10,12 +10,16 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             bool[,] res = new bool[height, width];
             double bsSqr = bs * bs;
 
-            Iterator2D.Forward(height / bs, width / bs, (i, j) =>
+            int mxI = height / bs, mxJ = width / bs;
+            Parallel.For(0, mxI, (i) =>
             {
-                double avg = MatStatistic.SumBlock(norm, i, j, bs) / bsSqr;
-                double std = MatStatistic.StdBlock(norm, avg, i, j, bs);
-                if (std >= 0.2 || avg < -0.2)
-                    SpanIter.ForwardBlock(res, i, j, bs, true);
+                for (int j = 0; j < mxJ; j++)
+                {
+                    double avg = MatStatistic.SumBlock(norm, i, j, bs) / bsSqr;
+                    double std = MatStatistic.StdBlock(norm, avg, i, j, bs);
+                    if (std >= 0.2 || avg < -0.2)
+                        SpanIter.ForwardBlock(res, i, j, bs, true);
+                }
             });
 
             return res;
