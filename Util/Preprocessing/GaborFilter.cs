@@ -41,14 +41,14 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             Image<Gray, double> src = new(Width, Height);
             Iterator2D.Forward(src, (y, x) => src[y, x] = new Gray(norm[y, x]));
 
-            List<Image<Gray, double>> imgs = new(angles.Count);
-            for (int i = 0; i < angles.Count; i++)
+            List<Image<Gray, double>> imgs = new( new Image<Gray, double>[angles.Count] );
+            Parallel.For(0, angles.Count, i =>
             {
                 Image<Gray, double> filter = kernel.Rotate(-angles[i] * 180 / PI, new Gray(0));
                 Image<Gray, double> img = new(Width, Height);
                 CvInvoke.Filter2D(src, img, filter, new System.Drawing.Point(-1, -1));
-                imgs.Add(img);
-            }
+                imgs[i] = img;
+            });
 
             return imgs;
         }
