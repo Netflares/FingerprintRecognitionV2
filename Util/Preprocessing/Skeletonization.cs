@@ -1,4 +1,5 @@
 ﻿
+using System.Runtime.InteropServices;
 using FingerprintRecognitionV2.MatTool;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
@@ -8,10 +9,15 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         static readonly int Height = ProcImg.Height, Width = ProcImg.Width;
         static readonly int MaxIterations = 7;
 
+        static readonly int Mask16 = (1 << 16) - 1;
+
         static public void Thinning(bool[,] src)
         {
-            // the location of white cells, decoded by `y * Width + x`
-            HashSet<int> whites = FlattenWhiteCells(src), dumpster = new();
+            // the location of white cells
+            // the 16 bits on the left are `x` loc
+            // the 16 bits on the right are `y` loc
+            HashSet<int> whites = FlattenWhiteCells(src);
+            List<int> dumpster = new();
 
             int itr = 0, cnt = 0;
             do
@@ -20,15 +26,14 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 Update(src, dumpster);
                 cnt += Step(true, src, whites, dumpster);
                 Update(src, dumpster);
-
             } while (cnt > 0 && ++itr < MaxIterations);
         }
 
-        static private int Step(bool step, bool[,] src, HashSet<int> whites, HashSet<int> dumpster)
+        static private int Step(bool step, bool[,] src, HashSet<int> whites, List<int> dumpster)
         {
             foreach (int i in whites)
             {
-                int y = i / Width, x = i % Width;
+                int y = (i >> 16) & Mask16, x = i & Mask16;
                 if (SuenThinningAlg(y, x, src, step))
                 {
                     whites.Remove(i);
@@ -40,13 +45,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
         // update the `src` mat after each step
         // this will clear the dumpster
-        static private void Update(bool[,] src, HashSet<int> dumpster)
+        unsafe static private void Update(bool[,] src, List<int> dumpster)
         {
-            foreach (int i in dumpster)
-            {
-                int y = i / Width, x = i % Width;
-                src[y, x] = false;
-            }
+            Span<int> arr = CollectionsMarshal.AsSpan(dumpster);
+            foreach (int i in arr)
+                src[(i >> 16) & Mask16, i & Mask16] = false;
             dumpster.Clear();
         }
 
@@ -90,11 +93,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             HashSet<int> res = new();
 
             for (int y = 1; y < Height - 1; y++)
-            {
-                int row = y * Width;
                 for (int x = 1; x < Width - 1; x++)
-                    if (src[y, x]) res.Add(row + x);
-            }
+                    if (src[y, x]) res.Add((y<<16) | x);
 
             return res;
         }
