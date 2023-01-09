@@ -14,7 +14,7 @@ void BenchMark()
     {
         Image<Gray, byte> src = new(Constants.DAT_DIR + "set00\\" + i + ".bmp");
         ProcImg img = new(src);
-        // CvInvoke.Imwrite(Constants.DAT_DIR + "o\\ske\\" + i + ".png", MatConverter.Bool2Img(ProcImg.GaborMat));
+        CvInvoke.Imwrite(Constants.DAT_DIR + "o\\ske\\" + i + ".png", MatConverter.Bool2Img(ProcImg.GaborMat));
     }
     timer.Stop();
     ProcImg.PrintTime(timer, "Benchmarked 500 images");
@@ -33,6 +33,6 @@ void SingleProc()
     CvInvoke.Imwrite("_dat/quick-ske.png", MatConverter.Bool2Img(ProcImg.GaborMat));
 }
 
-SingleProc();
+BenchMark();
 
 Console.WriteLine("Program Executed Sucessfully / Returned Code 0");
