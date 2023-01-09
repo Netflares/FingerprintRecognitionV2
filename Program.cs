@@ -14,7 +14,7 @@ void BenchMark()
     {
         Image<Gray, byte> src = new(Constants.DAT_DIR + "set00\\" + i + ".bmp");
         ProcImg img = new(src);
-        CvInvoke.Imwrite(Constants.DAT_DIR + "o\\ske\\" + i + ".png", MatConverter.Bool2Img(ProcImg.GaborMat));
+        // CvInvoke.Imwrite(Constants.DAT_DIR + "o\\ske\\" + i + ".png", MatConverter.Bool2Img(ProcImg.GaborMat));
     }
     timer.Stop();
     ProcImg.PrintTime(timer, "Benchmarked 500 images");
