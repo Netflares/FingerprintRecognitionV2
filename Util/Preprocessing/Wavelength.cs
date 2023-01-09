@@ -24,12 +24,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             List<double> res = new();
             Iterator2D.Forward(Height / BS, Width / BS, (i, j) =>
             {
-                int cnt = MatStatistic.SumBlock(msk, i, j, BS);
-                if (cnt == BS2)
+                double wave = Query(norm, i, j, orient[i, j], 5, 15);
+                Iterator2D.ForwardBlock(i, j, BS, (y, x) =>
                 {
-                    double wave = Query(norm, i, j, orient[i, j], 5, 15);
-                    if (wave > 0) res.Add(wave);
-                }
+                    if (msk[y, x]) res.Add(wave);   // add an item for each cell in the msk
+                });
             });
             res.Sort();
             return res[res.Count >> 1]; // if your res.Count == 0, you deserve a crash
