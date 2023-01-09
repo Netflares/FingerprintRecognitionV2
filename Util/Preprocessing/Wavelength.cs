@@ -25,7 +25,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             Iterator2D.Forward(Height / BS, Width / BS, (i, j) =>
             {
                 double wave = Query(norm, i, j, orient[i, j], 5, 15);
-                Iterator2D.ForwardBlock(i, j, BS, (y, x) =>
+                if (wave > 0) Iterator2D.ForwardBlock(i, j, BS, (y, x) =>
                 {
                     if (msk[y, x]) res.Add(wave);   // add an item for each cell in the msk
                 });
