@@ -1,5 +1,5 @@
 
-## About
+# About
 
 This repository does 3 things:
 
@@ -9,11 +9,30 @@ This repository does 3 things:
 
 Note that this repository is totally an experimental project, developed by a naive 18 y/o. The goal is to get the best results out of every of those 3 things. 
 
-## How to use
+# About the pre-processing module
+
+I'll just leave some results here
+
+Source                     | Gabor Filter               | Skeletonization
+:-------------------------:|:-------------------------: | :-------------------------:
+![src](https://user-images.githubusercontent.com/58514512/211828914-0f4c6fc9-221e-4397-bd63-eb1320f8c7ad.png) | ![gabor](https://user-images.githubusercontent.com/58514512/211828957-6936eb4a-ebd0-4517-99d3-c6552e7707b3.png) | ![ske](https://user-images.githubusercontent.com/58514512/211829002-0b2057ed-cef8-41ff-93a3-2526128071ed.png)
+
+The keypoints detection is handled by *the matching module*, and the singularities detection is handled by *the categorizing module*. So the output of this pre-processing module are:
+
+- A Gabor image
+- A Skeleton image
+- A fingerprint orientation image (which hasn't been visualized here)
+- And the fingerprint's wavelength
+
+There's still one thing I should improve about this module, which is the **Segmentation**. I'll do it later.
+
+# How to use
 
 *I'll make a cli later.*
 
-## Directories
+Note: This project only processes images with the size of 480 pixels in Height and 320 pixels in Width. Additionally, the ridges of the fingerprint should be white, and the background should be black.
+
+# Directories
 
 If you're really into the source code, here's the hierarchy:
 
