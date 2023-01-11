@@ -33,6 +33,6 @@ void SingleProc()
     CvInvoke.Imwrite("_dat/quick-ske.png", MatConverter.Bool2Img(ProcImg.GaborMat));
 }
 
-SingleProc();
+BenchMark();
 
 Console.WriteLine("Program Executed Sucessfully / Returned Code 0");
