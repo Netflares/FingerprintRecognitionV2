@@ -55,9 +55,21 @@ Gets the ridges' median wavelength.
 
 As it says, this step produces a Gabor Image. See more about Gabor Filter [here](https://en.wikipedia.org/wiki/Gabor_filter).
 
+After this step, we obtain a nice, and awesome binary image from an ugly as hell fingerprint.
+
+Source                     | Gabor Filter              |
+:-------------------------:|:-------------------------:|
+![src](https://user-images.githubusercontent.com/58514512/211999043-329071a6-83e8-4324-95d1-d9fc8771432e.png) | ![gabor](https://user-images.githubusercontent.com/58514512/211999052-5f6a2f93-b5d8-4635-ae11-c0f1334af470.png)
+
+Note that there still are some "stray" ridges that don't look nice, noticeably the ones near the edges of the image. The process of cleaning these stray ridges shall be performed later, just like the remaining problem in Step 2 - Segmentation.
+
 ### 7 - Thinning
 
 Achieves the skeleton of the Gabor Image using [Zhang-Suen](https://rosettacode.org/wiki/Zhang-Suen_thinning_algorithm) thinning technique.
+
+Gabor Filter                | Skeletonization            |
+:-------------------------: | :-------------------------:|
+![gabor](https://user-images.githubusercontent.com/58514512/211828957-6936eb4a-ebd0-4517-99d3-c6552e7707b3.png) | ![ske](https://user-images.githubusercontent.com/58514512/211829002-0b2057ed-cef8-41ff-93a3-2526128071ed.png)
 
 # Implementation
 
