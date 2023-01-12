@@ -45,7 +45,7 @@ Calculates the ridges' orientation in every given region. The result of this ste
 
 ### 4 - The Second Normalization
 
-Modifies the initial image into an image that has the standard deviation of its fingerprint regions equals to 1, using the mask obtained in Step 2 - Segmentation.
+Modifies the initial image into an image that has the standard deviation of its fingerprint regions equals to 1, using the mask obtained in [Step 2 - Segmentation](#user-content-2---segmentation).
 
 ### 5 - Wavelength Calculation
 
@@ -61,7 +61,7 @@ Source                     | Gabor Filter              |
 :-------------------------:|:-------------------------:|
 ![src](https://user-images.githubusercontent.com/58514512/211999043-329071a6-83e8-4324-95d1-d9fc8771432e.png) | ![gabor](https://user-images.githubusercontent.com/58514512/211999052-5f6a2f93-b5d8-4635-ae11-c0f1334af470.png)
 
-Note that there still are some "stray" ridges that don't look nice, noticeably the ones near the edges of the image. The process of cleaning these stray ridges shall be performed later, just like the remaining problem in Step 2 - Segmentation.
+Note that there still are some "stray" ridges that don't look nice, noticeably the ones near the edges of the image. The process of cleaning these stray ridges shall be performed later, just like the remaining problem in [Step 2 - Segmentation](#user-content-2---segmentation).
 
 ### 7 - Thinning
 
