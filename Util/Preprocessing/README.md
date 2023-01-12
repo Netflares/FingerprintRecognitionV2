@@ -45,11 +45,11 @@ Gets the ridges' median wavelength.
 
 ### 6 - Gabor Filter
 
-As it says, this step produces a Gabor Image. See more about Gabor Filter ![here](wiki).
+As it says, this step produces a Gabor Image. See more about Gabor Filter ![here](https://en.wikipedia.org/wiki/Gabor_filter).
 
 ### 7 - Thinning
 
-Gets the skeleton of the Gabor Image using ![Zhang Suen](wiki) thinning technique.
+Achieves the skeleton of the Gabor Image using ![Zhang-Suen](https://rosettacode.org/wiki/Zhang-Suen_thinning_algorithm) thinning technique.
 
 # Implementation
 
