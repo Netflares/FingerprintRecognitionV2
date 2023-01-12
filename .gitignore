@@ -1,6 +1,7 @@
 # ignore local directories
 .vs
 _dat
+_doc
 _log
 bin
 obj
