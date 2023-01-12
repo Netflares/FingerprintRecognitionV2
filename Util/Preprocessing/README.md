@@ -7,7 +7,7 @@ This module proposes a fingerprint pre-processing chain based on generic algorit
 
 Simply load an `Emgu.CV.Image<Gray, byte>` object to a new `ProcImg` object, then retrieve the results via the object public fields & `ProcImg` static fields. Like this, for example:
 
-```
+```C#
 Image<Gray, byte> src = new("data/fingerprint.png");
 ProcImg img = new(src);
 
