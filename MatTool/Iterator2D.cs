@@ -75,6 +75,17 @@ namespace FingerprintRecognitionV2.MatTool
             Forward(mat, t, l, t + blockSize, l + blockSize, f);
         }
 
+        static public void PForward<T>(T[,] mat, Action<int, int> f)
+            where T : new()
+        {
+            int h = mat.GetLength(0), w = mat.GetLength(1);
+            Parallel.For(0, h, (y) => 
+            {
+                for (int x = 0; x < w; x++)
+                    f(y, x);
+            });
+        }
+
         /** 
          * @ 2d-array sum
          * */
@@ -129,6 +140,16 @@ namespace FingerprintRecognitionV2.MatTool
             int t = y * blockSize;
             int l = x * blockSize;
             Forward(img, t, l, t + blockSize, l + blockSize, f);
+        }
+
+        static public void PForward<T>(Image<Gray, T> img, Action<int, int> f)
+            where T : new()
+        {
+            Parallel.For(0, img.Height, (y) => 
+            {
+                for (int x = 0; x < img.Width; x++)
+                    f(y, x);
+            });
         }
 
         /** 

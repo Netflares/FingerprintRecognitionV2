@@ -8,8 +8,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
     static public class GaborFilter
     {
         static readonly int 
-            Height = ProcImg.Height, Width = ProcImg.Width, ImgSize = ProcImg.ImgSize,
-            BS = ProcImg.BlockSize, OrientSize = ProcImg.ImgSize / BS / BS;
+            Height = ProcImg.Height, 
+            Width = ProcImg.Width, 
+            ImgSize = ProcImg.ImgSize,
+            BS = ProcImg.BlockSize, 
+            OrientSize = ProcImg.ImgSize / (BS * BS);
 
         static public void Apply(double[,] norm, double[,] orient, double waveLen, bool[,] msk, bool[,] res)
         {
@@ -35,7 +38,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         static private List<Image<Gray, double>> CreateOrientFilter(double[,] norm, List<double> angles, Image<Gray, double> kernel)
         {
             Image<Gray, double> src = new(Width, Height);
-            Iterator2D.Forward(src, (y, x) => src[y, x] = new Gray(norm[y, x]));    // can be paralleled
+            Iterator2D.PForward(src, (y, x) => src[y, x] = new Gray(norm[y, x]));
 
             List<Image<Gray, double>> res = new( new Image<Gray, double>[angles.Count] );
             Parallel.For(0, angles.Count, i =>
