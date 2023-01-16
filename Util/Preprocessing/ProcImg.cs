@@ -9,10 +9,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
     {
         /** 
          * @ public attrs
-         * */
-        // size: (Height / BlockSize) * (Width / BlockSize)
-        // keep this for Singularity detector
-        public double[,] OrientMat;
+         * */      
         // distance between ridges is also a vital information
         public double WaveLen;
 
@@ -29,6 +26,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         // these should be private
         static public double[,] NormMat = new double[Height, Width];
         static public bool[,] SegmentMsk = new bool[Height, Width];
+        static public double[,] OrientMat = new double[Height / BlockSize, Width / BlockSize];
         static public bool[,] GaborMat = new bool[Height, Width];
 
         /** 
