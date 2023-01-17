@@ -2,7 +2,6 @@
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.Util.Comparator;
-using FingerprintRecognitionV2.Util.Preprocessing.Temporary;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {

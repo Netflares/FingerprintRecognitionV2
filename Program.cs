@@ -37,8 +37,10 @@ void SingleProc()
     Image<Bgr, byte> res = Visualization.Bool2Bgr(ProcImg.SkeletonMat);
     foreach (Minutiae i in img.Minutiaes)
     {
+        Bgr color = new(i.T == 1 ? 255 : 0, i.T == 2 ? 255 : 0, 0);
+
         Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
-        Visualization.Plot(res, (int)i.Y, (int)i.X, 1, new Bgr(0, 255, 0));
+        Visualization.Plot(res, (int)i.Y, (int)i.X, 1, color);
     }
     CvInvoke.Imwrite("_dat/minutiae.png", res);
 }

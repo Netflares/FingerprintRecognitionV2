@@ -1,34 +1,36 @@
 ﻿using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.Util.Comparator;
 
-/** @ WARNING: Experimental class */
-namespace FingerprintRecognitionV2.Util.Preprocessing.Temporary
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     static public class MinutiaeExtractor
     {
         /** 
          * @ usage:
-         * extacts minutiae from a skeletonized gabor image
+         * extacts minutiae from a skeleton image
          * 
          * @ note:
          * this is still EXPERIMENTAL
          * 
-         * `bool[,] gabor`:     a skeletonized gabor image
+         * `bool[,] ske`:       a ske image
          * `double[,] orient`:  block orient
          * `int wl`:            ridges' wavelength
          * `int bs`:            block size
          * */
-        static public List<Minutiae> Extract(bool[,] gabor, double[,] orient, bool[,] msk, int wl, int bs)
+        static public List<Minutiae> Extract(bool[,] ske, double[,] orient, bool[,] msk, int wl, int bs)
         {
-            int h = gabor.GetLength(0), w = gabor.GetLength(1);
+            int h = ske.GetLength(0), w = ske.GetLength(1);
             List<Minutiae> res = new();
             bool[,] visited = new bool[h, w];
 
             Iterator2D.Forward(1, 1, h - 1, w - 1, (y, x) =>
             {
-                if (msk[y, x] && !visited[y, x] && IsMinutiae(gabor, y, x))
+                if (msk[y, x] && !visited[y, x])
                 {
-                    res.Add(new(y, x, orient[y / bs, x / bs]));
+                    int t = CheckMinutiae(ske, y, x);
+                    if (t == Minutiae.NO_TYPE) return;
+
+                    res.Add(new(t, y, x, orient[y / bs, x / bs]));
                     // won't accept more minutiae from this area
                     Iterator2D.Forward(
                         // should have t = y - wl,
@@ -41,11 +43,14 @@ namespace FingerprintRecognitionV2.Util.Preprocessing.Temporary
             return res;
         }
 
-        static private bool IsMinutiae(bool[,] img, int y, int x)
+        static private int CheckMinutiae(bool[,] img, int y, int x)
         {
-            if (!img[y, x]) return false;
+            if (!img[y, x]) return Minutiae.NO_TYPE;
             int n = CountTransitions(img, y, x);
-            return n != 0 && n != 2;
+
+            if (n == 1) return Minutiae.ENDING;
+            if (n > 2) return Minutiae.BIFUR;
+            return Minutiae.NO_TYPE;
         }
 
         /** 
