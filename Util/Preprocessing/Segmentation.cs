@@ -30,5 +30,16 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             MorphologyR4.Open(src, bs<<1);  // heavily segmentated
             MorphologyR4.Close(src, bs);
         }
+
+        // @ warning: temporary solution
+        static public void Padding(bool[,] src, int p)
+        {
+            int h = src.GetLength(0), w = src.GetLength(1);
+
+            Iterator2D.Forward(0, 0, p, w, (y, x) => src[y, x] = false);            // top
+            Iterator2D.Forward(h - p, 0, h, w, (y, x) => src[y, x] = false);        // down
+            Iterator2D.Forward(p, 0, h - p, p, (y, x) => src[y, x] = false);        // left
+            Iterator2D.Forward(p, w - p, h - p, w, (y, x) => src[y, x] = false);    // right
+        }
     }
 }

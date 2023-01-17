@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using FingerprintRecognitionV2.Util.Comparator;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {
@@ -12,6 +13,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */      
         // distance between ridges is also a vital information
         public double WaveLen;
+        public List<Minutiae> Minutiaes;
 
         /** 
          * @ shared attrs
@@ -54,6 +56,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             // skeletonization
             ZhangBruteThinning.Thinning(GaborMat);
+
+            // extract informations
+            MorphologyR4.Erose(SegmentMsk, 8);
+            Segmentation.Padding(SegmentMsk, BlockSize);
+            Minutiaes = MinutiaeExtractor.Extract(GaborMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
         }
 
         /** 

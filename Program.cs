@@ -34,11 +34,12 @@ void SingleProc()
 
     // CvInvoke.Imwrite("_dat/quick-ske.png", MatConverter.Bool2Img(ProcImg.GaborMat));
 
-    List<Minutiae> ls = MinutiaeExtractor.Extract(ProcImg.GaborMat, ProcImg.OrientMat, (int) img.WaveLen, ProcImg.BlockSize);
     Image<Bgr, byte> res = Visualization.Bool2Bgr(ProcImg.GaborMat);
-
-    foreach (Minutiae i in ls) Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
-
+    foreach (Minutiae i in img.Minutiaes)
+    {
+        Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
+        Visualization.Plot(res, (int)i.Y, (int)i.X, 1, new Bgr(0, 255, 0));
+    }
     CvInvoke.Imwrite("_dat/minutiae.png", res);
 }
 
