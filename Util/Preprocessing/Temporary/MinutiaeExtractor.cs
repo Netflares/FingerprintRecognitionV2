@@ -1,9 +1,8 @@
-﻿
-using FingerprintRecognitionV2.MatTool;
+﻿using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.Util.Comparator;
 
 /** @ WARNING: Experimental class */
-namespace FingerprintRecognitionV2.Util.Preprocessing
+namespace FingerprintRecognitionV2.Util.Preprocessing.Temporary
 {
     static public class MinutiaeExtractor
     {

@@ -18,6 +18,11 @@ Console.WriteLine(img.WaveLen);
 CvInvoke.Imwrite("skeleton.png", MatConverter.Bool2Img(ProcImg.SkeletonMat));
 ```
 
+Note that this module only accepts fingerprint images that are:
+
+- 480 pixels in Height and 320 pixels in Width
+- Has black background and white foreground
+
 # Pipeline
 
 ### 1 - Image Normalization

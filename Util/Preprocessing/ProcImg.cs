@@ -2,6 +2,7 @@
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.Util.Comparator;
+using FingerprintRecognitionV2.Util.Preprocessing.Temporary;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {
@@ -29,7 +30,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         static public double[,] NormMat = new double[Height, Width];
         static public bool[,] SegmentMsk = new bool[Height, Width];
         static public double[,] OrientMat = new double[Height / BlockSize, Width / BlockSize];
-        static public bool[,] GaborMat = new bool[Height, Width];
+        static public bool[,] SkeletonMat = new bool[Height, Width];
 
         /** 
          * @ pipline
@@ -52,15 +53,15 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             WaveLen = Wavelength.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
 
             // gabor filter
-            GaborFilter.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, GaborMat);
+            GaborFilter.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
 
             // skeletonization
-            ZhangBruteThinning.Thinning(GaborMat);
+            ZhangBruteThinning.Thinning(SkeletonMat);
 
             // extract informations
             MorphologyR4.Erose(SegmentMsk, 8);
             Segmentation.Padding(SegmentMsk, BlockSize);
-            Minutiaes = MinutiaeExtractor.Extract(GaborMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
+            Minutiaes = MinutiaeExtractor.Extract(SkeletonMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
         }
 
         /** 

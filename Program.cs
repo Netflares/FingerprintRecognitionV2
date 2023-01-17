@@ -34,7 +34,7 @@ void SingleProc()
 
     // CvInvoke.Imwrite("_dat/quick-ske.png", MatConverter.Bool2Img(ProcImg.GaborMat));
 
-    Image<Bgr, byte> res = Visualization.Bool2Bgr(ProcImg.GaborMat);
+    Image<Bgr, byte> res = Visualization.Bool2Bgr(ProcImg.SkeletonMat);
     foreach (Minutiae i in img.Minutiaes)
     {
         Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
