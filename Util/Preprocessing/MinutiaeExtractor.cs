@@ -1,5 +1,4 @@
-﻿using Emgu.CV;
-using FingerprintRecognitionV2.MatTool;
+﻿using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.Util.Comparator;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing

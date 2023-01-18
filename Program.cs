@@ -17,9 +17,10 @@ void BenchMark()
         Image<Gray, byte> src = new("_dat/set00/" + i + ".bmp");
         ProcImg img = new(src);
         // CvInvoke.Imwrite("_dat/o/ske/" + i + ".png", MatConverter.Bool2Img(ProcImg.GaborMat));
+        img.Export("_dat/inp/" + i.ToString("D3"));
     }
     timer.Stop();
-    ProcImg.PrintTime(timer, "Benchmarked 500 images");
+    ProcImg.PrintTime(timer, "Exported data from 500 images");
 }
 
 void SingleProc()
@@ -45,6 +46,6 @@ void SingleProc()
     CvInvoke.Imwrite("_dat/minutiae.png", res);
 }
 
-SingleProc();
+BenchMark();
 
 Console.WriteLine("Program Executed Sucessfully / Returned Code 0");

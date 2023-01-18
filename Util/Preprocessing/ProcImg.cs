@@ -63,6 +63,19 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             Minutiaes = MinutiaeExtractor.Extract(SkeletonMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
         }
 
+        public void Export(string fname)
+        {
+            using FileStream f = File.OpenWrite(fname);
+            using StreamWriter o = new(f);
+            foreach (Minutiae i in Minutiaes)
+            {
+                o.Write(i.T + " ");
+                o.Write(i.Y + " ");
+                o.Write(i.X + " ");
+                o.Write(i.A + "\n");
+            }
+        }
+
         /** 
          * @ debug
          * */
