@@ -58,7 +58,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             ZhangBruteThinning.Thinning(SkeletonMat);
 
             // extract informations
-            MorphologyR4.Erose(SegmentMsk, 8);
+            MorphologyR4.Erose(SegmentMsk, BlockSize);
             Segmentation.Padding(SegmentMsk, BlockSize);
             Minutiaes = MinutiaeExtractor.Extract(SkeletonMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
         }

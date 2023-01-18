@@ -1,4 +1,5 @@
-﻿using FingerprintRecognitionV2.MatTool;
+﻿using Emgu.CV;
+using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.Util.Comparator;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
@@ -93,18 +94,20 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */
         static private void ClearNoise(byte[,] src, int h, int w, int wl)
         {
+            int r = wl + (wl >> 1);     // examine a (3wl)**2 area
             bool[,] msk = new bool[h, w];
             int[,] pre = CreatePrefix(src, h, w);
 
-            Iterator2D.Forward(wl, wl, h - wl, w - wl, (y, x) =>
+            Iterator2D.PForward(r + 1, r + 1, h - r, w - r, (y, x) =>
             {
-
+                int cnt = pre[y + r, x + r] - pre[y + r, x - r - 1] - pre[y - r - 1, x + r] + pre[y - r - 1, x - r - 1];
+                if (cnt > 4) msk[y, x] = true;  // there're too many minutiae in a (3wl)**2 region
             });
+            MorphologyR8.Dilate(msk, r);
 
-            MorphologyR4.Close(msk, 8);
             Iterator2D.PForward(msk, (y, x) =>
             {
-                if (msk[y, x]) pre[y, x] = Minutiae.NO_TYPE;
+                if (msk[y, x]) src[y, x] = Minutiae.NO_TYPE;
             });
         }
 
@@ -128,7 +131,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             {
                 for (int x = 1; x < w; x++)
                 {
-                    res[y, x] = res[y - 1, x] + res[y, x - 1];
+                    res[y, x] = res[y - 1, x] + res[y, x - 1] - res[y - 1, x - 1];
                     if (src[y, x] != Minutiae.NO_TYPE) res[y, x]++;
                 }
             }

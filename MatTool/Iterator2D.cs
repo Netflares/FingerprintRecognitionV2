@@ -28,6 +28,20 @@ namespace FingerprintRecognitionV2.MatTool
             Forward(t, l, t + bs, l + bs, f);
         }
 
+        static public void PForward(int t, int l, int d, int r, Action<int, int> f)
+        {
+            Parallel.For(t, d, (y) =>
+            {
+                for (int x = l; x < r; x++)
+                    f(y, x);
+            });
+        }
+
+        static public void PForward(int h, int w, Action<int, int> f)
+        {
+            PForward(0, 0, h, w, f);
+        }
+
         /** 
          * @ core, but with return value
          * */
