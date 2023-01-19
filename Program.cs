@@ -1,51 +1,12 @@
-﻿using System.Diagnostics;
-using Emgu.CV;
+﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using FingerprintRecognitionV2;
-using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.MatTool;
-using FingerprintRecognitionV2.Util;
+using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.Util.Comparator;
 using FingerprintRecognitionV2.Util.Preprocessing;
 
-void BenchMark()
-{
-    Stopwatch timer = new();
-    timer.Start();
-    for (int i = 0; i < 500; i++)
-    {
-        Image<Gray, byte> src = new("_dat/set00/" + i + ".bmp");
-        ProcImg img = new(src);
-        // CvInvoke.Imwrite("_dat/o/ske/" + i + ".png", MatConverter.Bool2Img(ProcImg.GaborMat));
-        img.Export("_dat/inp/" + i.ToString("D3"));
-    }
-    timer.Stop();
-    ProcImg.PrintTime(timer, "Exported data from 500 images");
-}
-
-void SingleProc()
-{
-    Image<Gray, byte> src = new("_dat/set00/60.bmp");
-
-    Stopwatch timer = new();
-    timer.Start();
-    ProcImg img = new(src);
-    timer.Stop();
-    ProcImg.PrintTime(timer, "proc an image");
-
-    // CvInvoke.Imwrite("_dat/quick-ske.png", MatConverter.Bool2Img(ProcImg.GaborMat));
-
-    Image<Bgr, byte> res = Visualization.Bool2Bgr(ProcImg.SkeletonMat);
-    foreach (Minutiae i in img.Minutiaes)
-    {
-        Bgr color = new(i.T == 1 ? 255 : 0, i.T == 2 ? 255 : 0, 0);
-
-        Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
-        Visualization.Plot(res, (int)i.Y, (int)i.X, 1, color);
-    }
-    CvInvoke.Imwrite("_dat/minutiae.png", res);
-}
-
-BenchMark();
-
-Console.WriteLine("Program Executed Sucessfully / Returned Code 0");
+/*
+Image<Gray, byte> src = new("_dat/60.bmp");
+ProcImg img = new(src);
+CvInvoke.Imwrite("_dat/deb.png", MatConverter.Bool2Img(ProcImg.SkeletonMat));
+*/

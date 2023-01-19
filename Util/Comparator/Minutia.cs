@@ -1,7 +1,7 @@
 ﻿
 namespace FingerprintRecognitionV2.Util.Comparator
 {
-    public class Minutiae
+    public class Minutia
     {
         static public readonly byte NO_TYPE = 0, ENDING = 1, BIFUR = 2;
 
@@ -10,7 +10,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
         public double X;    // x location
         public double A;    // the angle
 
-        public Minutiae(byte t, double y, double x, double a)
+        public Minutia(byte t, double y, double x, double a)
         {
             T = t;
             Y = y;

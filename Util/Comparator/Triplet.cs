@@ -4,7 +4,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 {
     public class Triplet
     {
-        static public void ShiftClockwise(Minutiae[] m)
+        static public void ShiftClockwise(Minutia[] m)
         {
             double cx = ((m[0].X + m[1].X) / 2 + m[2].X) / 2;
             double cy = ((m[0].Y + m[1].Y) / 2 + m[2].Y) / 2;
@@ -30,9 +30,9 @@ namespace FingerprintRecognitionV2.Util.Comparator
             }
         }
 
-        static public void Swap(ref Minutiae a, ref Minutiae b)
+        static public void Swap(ref Minutia a, ref Minutia b)
         {
-            Minutiae copy = a;
+            Minutia copy = a;
             a = b;
             b = copy;
         }

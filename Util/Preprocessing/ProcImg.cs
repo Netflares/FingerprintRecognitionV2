@@ -13,7 +13,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */      
         // distance between ridges is also a vital information
         public double WaveLen;
-        public List<Minutiae> Minutiaes;
+        public List<Minutia> Minutiae;
 
         /** 
          * @ shared attrs
@@ -60,14 +60,14 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             // extract informations
             MorphologyR4.Erose(SegmentMsk, BlockSize);
             Segmentation.Padding(SegmentMsk, BlockSize);
-            Minutiaes = MinutiaeExtractor.Extract(SkeletonMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
+            Minutiae = MinutiaeExtractor.Extract(SkeletonMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
         }
 
         public void Export(string fname)
         {
             using FileStream f = File.OpenWrite(fname);
             using StreamWriter o = new(f);
-            foreach (Minutiae i in Minutiaes)
+            foreach (Minutia i in Minutiae)
             {
                 o.Write(i.T + " ");
                 o.Write(i.Y + " ");

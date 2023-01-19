@@ -16,13 +16,13 @@ namespace FingerprintRecognitionV2.Util.Comparator
          * @ the core
          * */
         // calc the euclidean distance between 2 points
-        static public double Dist(Minutiae a, Minutiae b)
+        static public double Dist(Minutia a, Minutia b)
         {
             return Sqrt(DistSqr(a, b));
         }
 
         // square the euclidean distance between 2 points
-        static public double DistSqr(Minutiae a, Minutiae b)
+        static public double DistSqr(Minutia a, Minutia b)
         {
             return Sqr(a.Y - b.Y) + Sqr(a.X - b.X);
         }
@@ -46,7 +46,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
         }
 
         // calc the angle between 2 points
-        static public double Angle(Minutiae a, Minutiae b)
+        static public double Angle(Minutia a, Minutia b)
         {
             double dy = b.Y - a.Y, dx = b.X - a.X;
             if (dx == 0)

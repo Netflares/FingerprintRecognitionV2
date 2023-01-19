@@ -17,7 +17,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * `int wl`:            ridges' wavelength
          * `int bs`:            block size
          * */
-        static public List<Minutiae> Extract(bool[,] ske, double[,] orient, bool[,] msk, int wl, int bs)
+        static public List<Minutia> Extract(bool[,] ske, double[,] orient, bool[,] msk, int wl, int bs)
         {
             int h = ske.GetLength(0), w = ske.GetLength(1);
             bool[,] vst = new bool[h, w];
@@ -27,8 +27,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             {
                 if (msk[y, x] && !vst[y, x])
                 {
-                    byte t = CheckMinutiae(ske, y, x);
-                    if (t == Minutiae.NO_TYPE) return;
+                    byte t = CheckMinutia(ske, y, x);
+                    if (t == Minutia.NO_TYPE) return;
 
                     mat[y, x] = t;
                     // won't accept more minutiae from this area
@@ -41,11 +41,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             });
 
             ClearNoise(mat, h, w, wl);
-            List<Minutiae> res = new();
+            List<Minutia> res = new();
 
             Iterator2D.Forward(mat, (y, x) =>
             {
-                if (mat[y, x] != Minutiae.NO_TYPE) res.Add(
+                if (mat[y, x] != Minutia.NO_TYPE) res.Add(
                     new(mat[y, x], y, x, orient[y / bs, x / bs])
                 );
             });
@@ -53,14 +53,14 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             return res;
         }
 
-        static private byte CheckMinutiae(bool[,] img, int y, int x)
+        static private byte CheckMinutia(bool[,] img, int y, int x)
         {
-            if (!img[y, x]) return Minutiae.NO_TYPE;
+            if (!img[y, x]) return Minutia.NO_TYPE;
             int n = CountTransitions(img, y, x);
 
-            if (n == 1) return Minutiae.ENDING;
-            if (n > 2) return Minutiae.BIFUR;
-            return Minutiae.NO_TYPE;
+            if (n == 1) return Minutia.ENDING;
+            if (n > 2) return Minutia.BIFUR;
+            return Minutia.NO_TYPE;
         }
 
         /** 
@@ -106,7 +106,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             Iterator2D.PForward(msk, (y, x) =>
             {
-                if (msk[y, x]) src[y, x] = Minutiae.NO_TYPE;
+                if (msk[y, x]) src[y, x] = Minutia.NO_TYPE;
             });
         }
 
@@ -131,7 +131,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 for (int x = 1; x < w; x++)
                 {
                     res[y, x] = res[y - 1, x] + res[y, x - 1] - res[y - 1, x - 1];
-                    if (src[y, x] != Minutiae.NO_TYPE) res[y, x]++;
+                    if (src[y, x] != Minutia.NO_TYPE) res[y, x]++;
                 }
             }
 
