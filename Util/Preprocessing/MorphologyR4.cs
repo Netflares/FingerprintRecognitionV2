@@ -27,8 +27,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         /** 
          * @ settings
          * */
-        static readonly int[] RY = { -1, 0, 1, 0 };
-        static readonly int[] RX = { 0, 1, 0, -1 };
+        static public readonly int[] RY = { -1, 0, 1, 0 };
+        static public readonly int[] RX = { 0, 1, 0, -1 };
 
         /** 
          * @ static memory

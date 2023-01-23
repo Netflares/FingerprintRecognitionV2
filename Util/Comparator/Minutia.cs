@@ -17,5 +17,16 @@ namespace FingerprintRecognitionV2.Util.Comparator
             X = x;
             A = a;
         }
+
+        public Minutia(double y, double x) 
+        {
+            Y = y;
+            X = x;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("({0}; {1}) a={2} t={3}", Y, X, A, T);
+        }
     }
 }

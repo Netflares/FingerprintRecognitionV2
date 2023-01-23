@@ -754,6 +754,16 @@ namespace FingerprintRecognitionV2.DataStructure
             return DoRemoveFromFront();
         }
 
+        public T Front()
+        {
+            return this.First();
+        }
+
+        public T Back()
+        {
+            return this.Last();
+        }
+
         /// <summary>
         /// Removes all items from this deque.
         /// </summary>
