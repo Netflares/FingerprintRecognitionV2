@@ -5,13 +5,13 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 {
 	static public class RidgesExtractor
 	{
-		static private int MSK = (1<<8) - 1;	// 11111111
+		static private int MSK = (1<<8) - 1;    // 1111 1111
 
-		// returns a ridge's tree around (y0, x0)
-		static public Dictionary<int, List<int>> BFS(bool[,] ske, int y0, int x0, int r) 
+        // returns 2 things:
+        // - a ridge's tree around (y0, x0)
+		// - list of leaves
+        static public void BFS(bool[,] ske, int y0, int x0, int r, Dictionary<int, List<int>> adj, ref List<int> leaves) 
 		{
-			Dictionary<int, List<int>> adj = new();
-
 			y0 -= r; x0 -= r;		// (y0, x0) translates to (r, r)
 			int rr = r << 1;
 
@@ -19,10 +19,14 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			q.PushBack(r<<8|r);		// first 8 bits: x; second 8 bits: y;
 			bool[,] vst = new bool[r<<1|1, r<<1|1];
 
+			HashSet<int> lvs = new();
+
 			while (q.Count > 0)
 			{
 				int id = q.Front(), y = id >> 8, x = id & MSK;
 				q.PopFront();
+
+				lvs.Add(id);	// if this node can't find any child, it's a leaf
 
 				for (int t = 0; t < 4; t++)
 				{
@@ -37,11 +41,13 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 						if (!adj.ContainsKey(id))
 							adj[id] = new();
 						adj[id].Add(ny<<8|nx);
+
+						lvs.Remove(id);	// found a child, this isn't leaf
 					}
 				}
 			}
 
-			return adj;
+			leaves = lvs.ToList();
 		}
 	}
 }
