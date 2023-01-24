@@ -58,9 +58,12 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             ZhangBruteThinning.Thinning(SkeletonMat);
 
             // extract informations
+            /*
             MorphologyR4.Erose(SegmentMsk, BlockSize);
             Segmentation.Padding(SegmentMsk, BlockSize);
-            Minutiae = MinutiaeExtractor.Extract(SkeletonMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
+            Minutiae = BruteMinutiaeExtractor.Extract(SkeletonMat, OrientMat, SegmentMsk, (int) WaveLen, BlockSize);
+            */
+            Minutiae = MinutiaeExtractor.Extract(SkeletonMat, SegmentMsk, BlockSize);
         }
 
         public void Export(string fname)
@@ -87,6 +90,19 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 timer.Elapsed.Seconds.ToString("D2"), 
                 timer.Elapsed.Milliseconds.ToString("D3")
             ));
+        }
+
+        public Image<Bgr, byte> Visualize()
+        {
+            Image<Bgr, byte> res = Visualization.Bool2Bgr(SkeletonMat);
+
+            foreach (var i in Minutiae)
+            {
+                Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
+                Visualization.Plot(res, (int)i.Y, (int)i.X, 2, new Bgr(255, 0, 0));
+            }
+
+            return res;
         }
     }
 }
