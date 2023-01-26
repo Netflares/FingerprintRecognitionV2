@@ -45,7 +45,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             if (pts.Count == 0) return; // this is a noise
 
             // tolerance: 20deg
-            if (Abs(pts[1] - pts[0]) <= PI / 9 && Abs(pts[2] - pts[1]) <= PI / 6)
+            if (Abs(pts[1] - pts[0]) <= PI / 9 && Abs(pts[2] - pts[1]) <= PI / 9)
                 res.Add(new(Minutia.ENDING, y, x, pts[2]));
         }
 
