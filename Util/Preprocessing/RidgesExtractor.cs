@@ -24,27 +24,49 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 			for (int i = 0; i < step.Length; i++)
 			{
-				List<double> angs = AngleExtract(mat, r, step[i]);
-                if (angs.Count != 1) return new();  // this is a noise
-				res.Add(angs[0]);
+				List<int> pts = AngleExtract(mat, r, step[i]);
+                if (pts.Count != 1) return new();  // this is a noise
+				res.Add(Geometry.Alpha(r, r, pts[0] >> 8, pts[0] & MSK));
 			}
 
 			return res;
 		}
 
-		static public List<List<double>> BifurBFS(bool[,] ske, int y0, int x0, int r, int dpt)
+		static public List<double[]> BifurBFS(bool[,] ske, int y0, int x0, int r, int[] step)
 		{
-			return new();
+			bool[,] mat = RegionalBFS(ske, y0, x0, r);
+			List<double[]> res = new(step.Length);
+
+			for (int i = 0; i < step.Length; i++)
+			{
+				List<int> ls = AngleExtract(mat, r, step[i]);
+				if (ls.Count != 3) return new();
+
+				// clockwise sort
+				Minutia[] pts = new Minutia[3];
+				for (int j = 0; j < 3; j++)
+					pts[j] = new(ls[j] >> 8, ls[j] & MSK);
+				Triplet.ShiftClockwise(pts);
+
+				// append to result
+				double[] ang = new double[3];
+				for (int j = 0; j < 3; j++)
+					ang[j] = Geometry.Alpha(r, r, (int)pts[j].Y, (int)pts[j].X);
+				res.Add(ang);
+			}
+
+			return res;
 		}
 
 		/*
 		Extract the ridge's angle around (c, c)
-
 		This function also merge adj cells
+		
+		The result is encode as `y<<8|x`
 		*/
-		static private List<double> AngleExtract(bool[,] mat, int c, int r)
+		static private List<int> AngleExtract(bool[,] mat, int c, int r)
 		{
-			List<double> res = new();
+			List<int> res = new();
 			bool state = mat[c - r + 1, c - r];	// (top + 1, left)
 
 			// top
@@ -63,9 +85,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			return res;
 		}
 
-		static private void AngleExtractTravel(bool[,] mat, int y, int x, int c, ref bool state, List<double> res)
+		static private void AngleExtractTravel(bool[,] mat, int y, int x, int c, ref bool state, List<int> res)
 		{
-			if (!state && mat[y, x]) res.Add(Geometry.Alpha(c, c, y, x));
+			if (!state && mat[y, x]) res.Add(y<<8|x);
 			state = mat[y, x];
 		}
 

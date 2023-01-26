@@ -98,8 +98,10 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             foreach (var i in Minutiae)
             {
+                Bgr color = new (i.T == Minutia.ENDING ? 255 : 0, i.T == Minutia.BIFUR ? 255 : 0, 0);
+
                 Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
-                Visualization.Plot(res, (int)i.Y, (int)i.X, 2, new Bgr(255, 0, 0));
+                Visualization.Plot(res, (int)i.Y, (int)i.X, 2, color);
             }
 
             return res;
