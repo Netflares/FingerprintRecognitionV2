@@ -25,7 +25,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			for (int i = 0; i < step.Length; i++)
 			{
 				List<double> angs = AngleExtract(mat, r, step[i]);
-				if (angs.Count != 1) return new();  // this is a noise
+                if (angs.Count != 1) return new();  // this is a noise
 				res.Add(angs[0]);
 			}
 
@@ -48,16 +48,16 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			bool state = mat[c - r + 1, c - r];	// (top + 1, left)
 
 			// top
-			for (int x = -r; x <= r; x++)
+			for (int x = -r; x < r; x++)
 				AngleExtractTravel(mat, c - r, c + x, c, ref state, res);
 			// right
-			for (int y = -r; y <= r; y++)
+			for (int y = -r; y < r; y++)
 				AngleExtractTravel(mat, c + y, c + r, c, ref state, res);
 			// down
-			for (int x = r; x >= -r; x--)
+			for (int x = r; x > -r; x--)
 				AngleExtractTravel(mat, c + r, c + x, c, ref state, res);
 			// left
-			for (int y = r; y >= -r; y--)
+			for (int y = r; y > -r; y--)
 				AngleExtractTravel(mat, c + y, c - r, c, ref state, res);
 
 			return res;
