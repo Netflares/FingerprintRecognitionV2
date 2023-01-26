@@ -50,7 +50,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
             return ans >= 0 ? ans : ans + PI;
         }
 
-        // calc the angle between 2 points
+        // ang() in the doc
         static public double Ang(double y0, double x0, double y1, double x1)
         {
             double dy = y1 - y0, dx = x1 - x0;
@@ -60,6 +60,16 @@ namespace FingerprintRecognitionV2.Util.Comparator
             if (dx < 0) return ans + PI;        // dx < 0
             if (dy < 0) return ans + V_2PI;     // dx > 0 & dy < 0
             return ans;                         // dx > 0 & dy > 0
+        }
+
+        // calc geometry angle
+        static public double Alpha(int y0, int x0, int y1, int x1)
+        {
+            double dy = y1 - y0, dx = x1 - x0;
+            double len = Math.Sqrt(dy * dy + dx * dx);
+
+            double ans = Acos(dx / len);
+            return dy >= 0 ? ans : V_2PI - ans;
         }
 
         /** 
