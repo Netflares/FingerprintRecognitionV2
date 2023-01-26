@@ -34,15 +34,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
         static private void HandleEnding(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
-            Dictionary<int, List<int>> adj = new();
-            List<int> margin = new();
-            RidgesExtractor.BFS(ske, y, x, bs, adj, margin);
-
-            // add a noise check here
-            if (margin.Count != 1) return;
-
-            int yy = margin[0] >> 8, xx = margin[0] & RidgesExtractor.MSK;
-            res.Add(new(Minutia.ENDING, y, x, CalcAlpha(yy, xx, bs, bs)));
+            
         }
 
         static private byte CheckMinutia(bool[,] ske, int y, int x)
@@ -53,15 +45,6 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             if (n == 1) return Minutia.ENDING;
             if (n > 2) return Minutia.BIFUR;
             return Minutia.NO_TYPE;
-        }
-
-        static private double CalcAlpha(int y0, int x0, int y1, int x1)
-        {
-            double dy = y1 - y0, dx = x1 - x0;
-            double len = Math.Sqrt(dy * dy + dx * dx);
-
-            double ans = Acos(dx / len);
-            return dy >= 0 ? ans : Geometry.V_2PI - ans;
         }
 
         /** 
