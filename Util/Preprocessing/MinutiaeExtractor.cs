@@ -26,15 +26,32 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             Iterator2D.Forward(bs, bs, h - bs, w - bs, (y, x) =>
             {
-                if (msk[y, x] && CheckMinutia(ske, y, x) == Minutia.ENDING)
-                    HandleEnding(res, ske, y, x, bs);                    
+                if (msk[y, x]) 
+                {
+                    byte typ = CheckMinutia(ske, y, x);
+                    if (typ == Minutia.ENDING)
+                        HandleEnding(res, ske, y, x, bs);
+                    else if (typ == Minutia.BIFUR)
+                        HandleBifur(res, ske, y, x, bs);
+                }
             });
+
             return res;
         }
 
         static private void HandleEnding(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
-            
+            List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, 16, new int[] { 7, 12, 16 });;
+            if (pts.Count == 0) return; // this is a noise
+
+            // tolerance: 20deg
+            if (Abs(pts[1] - pts[0]) <= PI / 9 && Abs(pts[2] - pts[1]) <= PI / 6)
+                res.Add(new(Minutia.ENDING, y, x, pts[2]));
+        }
+
+        static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x, int bs)
+        {
+
         }
 
         static private byte CheckMinutia(bool[,] ske, int y, int x)

@@ -17,17 +17,16 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			res[dpt][], 
 			whose res[d][i] is the i'th ridge's angle at (d + 1) * (r / dpt)
 		*/
-		static public List<List<double>> EndingBFS(bool[,] ske, int y0, int x0, int r, int dpt)
+		static public List<double> EndingBFS(bool[,] ske, int y0, int x0, int r, int[] step)
 		{
 			bool[,] mat = RegionalBFS(ske, y0, x0, r);
-			List<List<double>> res = new();
-			int step = r / dpt;		// make sure r % dpt == 0
+			List<double> res = new(step.Length);
 
-			for (int i = step; i <= r; i += step)
+			for (int i = 0; i < step.Length; i++)
 			{
-				List<double> angs = AngleExtract(mat, r, i);
-				if (angs.Count != 1) return new();	// this is a noise
-				res.Add(angs);
+				List<double> angs = AngleExtract(mat, r, step[i]);
+				if (angs.Count != 1) return new();  // this is a noise
+				res.Add(angs[0]);
 			}
 
 			return res;
@@ -35,7 +34,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 		static public List<List<double>> BifurBFS(bool[,] ske, int y0, int x0, int r, int dpt)
 		{
-			
+			return new();
 		}
 
 		/*
@@ -50,21 +49,21 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 			// top
 			for (int x = -r; x <= r; x++)
-				AngleExtractTravel(mat, c - r, x, c, ref state, res);
+				AngleExtractTravel(mat, c - r, c + x, c, ref state, res);
 			// right
 			for (int y = -r; y <= r; y++)
-				AngleExtractTravel(mat, y, c + r, c, ref state, res);
+				AngleExtractTravel(mat, c + y, c + r, c, ref state, res);
 			// down
 			for (int x = r; x >= -r; x--)
-				AngleExtractTravel(mat, c + r, x, c, ref state, res);
+				AngleExtractTravel(mat, c + r, c + x, c, ref state, res);
 			// left
 			for (int y = r; y >= -r; y--)
-				AngleExtractTravel(mat, y, c - r, c, ref state, res);
+				AngleExtractTravel(mat, c + y, c - r, c, ref state, res);
 
 			return res;
 		}
 
-		static private void AngleExtractTravel(bool[,] mat, int y, int x, int c, ref bool state)
+		static private void AngleExtractTravel(bool[,] mat, int y, int x, int c, ref bool state, List<double> res)
 		{
 			if (!state && mat[y, x]) res.Add(Geometry.Alpha(c, c, y, x));
 			state = mat[y, x];
