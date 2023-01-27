@@ -37,7 +37,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 			double mx = 0;
 			for (int i = 0; i < 6; i++)
 				mx = Max(mx, Geometry.AdPI(a[i], b[i]));
-			return 1 - mx / thresh;
+			return mx >= thresh ? 0 : 1 - mx / thresh;
 		}
 
 		/*
@@ -49,7 +49,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 			double mx = 0;
 			for (int i = 0; i < 3; i++)
 				mx = Max(mx, Geometry.AdPI(a[i], b[i]));
-			return 1 - mx / thresh;
+			return mx >= thresh ? 0 : 1 - mx / thresh;
 		}
 	}
 }
