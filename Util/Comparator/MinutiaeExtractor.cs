@@ -1,9 +1,7 @@
-﻿
-using FingerprintRecognitionV2.MatTool;
-using FingerprintRecognitionV2.Util.Comparator;
+﻿using FingerprintRecognitionV2.MatTool;
 using static System.Math;
 
-namespace FingerprintRecognitionV2.Util.Preprocessing
+namespace FingerprintRecognitionV2.Util.Comparator
 {
     static public class MinutiaeExtractor
     {
@@ -26,7 +24,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
             Iterator2D.Forward(bs, bs, h - bs, w - bs, (y, x) =>
             {
-                if (msk[y, x]) 
+                if (msk[y, x])
                 {
                     byte typ = CheckMinutia(ske, y, x);
                     if (typ == Minutia.ENDING)
@@ -41,7 +39,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
         static private void HandleEnding(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
-            List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, 16, new int[] { 7, 12, 16 });;
+            List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, 16, new int[] { 7, 12, 16 }); ;
             if (pts.Count == 0) return; // this is a noise
 
             // tolerance: 20deg
@@ -61,16 +59,16 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                        a02 = Geometry.AdPI(trp[2][0], trp[2][2]),
                        a12 = Geometry.AdPI(trp[2][1], trp[2][2]);
 
-                if (a01 + a02 + a12 >= PI * 2 - (1e-6))
+                if (a01 + a02 + a12 >= PI * 2 - 1e-6)
                 {
                     double thr = PI / 2;    // threshold = 90deg
-                    double ang = Double.NegativeInfinity;
+                    double ang = double.NegativeInfinity;
 
                     if (a12 <= thr) ang = trp[2][0];
                     if (a01 <= thr) ang = trp[2][2];
                     if (a02 <= thr) ang = trp[2][1];
 
-                    if (ang > Double.NegativeInfinity)
+                    if (ang > double.NegativeInfinity)
                         res.Add(new(Minutia.BIFUR, y, x, ang));
                     else
                         for (int i = 0; i < 3; i++)
@@ -81,8 +79,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
         static private bool CompareTriplets(double[] a, double[] b, double thresh)
         {
-            return Geometry.AdPI(a[0], b[0]) <= thresh && 
-                   Geometry.AdPI(a[1], b[1]) <= thresh && 
+            return Geometry.AdPI(a[0], b[0]) <= thresh &&
+                   Geometry.AdPI(a[1], b[1]) <= thresh &&
                    Geometry.AdPI(a[2], b[2]) <= thresh;
         }
 
