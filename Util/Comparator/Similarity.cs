@@ -5,8 +5,8 @@ namespace FingerprintRecognitionV2.Util.Comparator
 {
 	static public class Similarity
 	{
-		static public readonly double THRESH_D = 4.0;
-		static public readonly double THRESH_A = PI / 36;	// 5deg
+		static public readonly double THRESH_D = 20.0;
+		static public readonly double THRESH_A = PI / 6;
 
 		/*
 		equation 6
