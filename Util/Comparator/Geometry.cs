@@ -47,7 +47,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
         static public double Ad2PI(double a, double b)
         {
             double ans = b - a;
-            return ans >= 0 ? ans : ans + PI;
+            return ans >= 0 ? ans : ans + V_2PI;
         }
 
         // ang() in the doc
