@@ -4,6 +4,23 @@ namespace FingerprintRecognitionV2.Util.Comparator
 {
     public class Triplet
     {
+        /*
+        returns { dMax, dMid, dMin }
+        m.Length = 3
+        */
+        static public double[] CalcSortedDist(Minutia[] m)
+        {
+            double[] res = new double[3]{ 
+                Geometry.Dist(m[0], m[1]), Geometry.Dist(m[1], m[2]), Geometry.Dist(m[0], m[2]) 
+            };
+            Array.Sort(res);
+            return res;
+        }
+
+        /*
+        clockwise sorts the Minutiae set
+        m.Length = 3
+        */
         static public void ShiftClockwise(Minutia[] m)
         {
             double cx = ((m[0].X + m[1].X) / 2 + m[2].X) / 2;
