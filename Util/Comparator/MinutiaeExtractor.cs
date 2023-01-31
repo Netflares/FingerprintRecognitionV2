@@ -39,7 +39,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 
         static private void HandleEnding(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
-            List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, 16, new int[] { 7, 12, 16 }); ;
+            List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, 16, new int[] { 7, 12, 16 });
             if (pts.Count == 0) return; // this is a noise
 
             // tolerance: 20deg
@@ -49,7 +49,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 
         static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
-            List<double[]> trp = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[] { 7, 12, 6 });   // triplets
+            List<double[]> trp = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[] { 7, 12, 16 });   // triplets
             if (trp.Count == 0) return;
 
             // tolerance: 30deg

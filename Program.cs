@@ -6,3 +6,19 @@ using FingerprintRecognitionV2.Util.Comparator;
 using FingerprintRecognitionV2.Util.Preprocessing;
 using System.Diagnostics;
 
+Stopwatch timer = new();
+timer.Start();
+
+for (int i = 0; i < 500; i++)
+{
+	Image<Gray, byte> src = new("_dat/set00/" + i + ".bmp");
+	ProcImg img = new(src);
+	CvInvoke.Imwrite(
+		"_dat/visualize-ver2/" + i.ToString("D3") + ".png", 
+		ProcImg.Visualize(ProcImg.SkeletonMat, img.Minutiae)
+	);
+	img.Export("_dat/inp-ver2/" + i.ToString("D3") + ".inp");
+}
+
+timer.Stop();
+ProcImg.PrintTime(timer, "proc 500 img:");
