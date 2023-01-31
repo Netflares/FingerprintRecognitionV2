@@ -37,6 +37,16 @@ namespace FingerprintRecognitionV2.Util.Comparator
             return res;
         }
 
+        static private byte CheckMinutia(bool[,] ske, int y, int x)
+        {
+            if (!ske[y, x]) return Minutia.NO_TYPE;
+            int n = CountTransitions(ske, y, x);
+
+            if (n == 1) return Minutia.ENDING;
+            if (n > 2) return Minutia.BIFUR;
+            return Minutia.NO_TYPE;
+        }
+
         static private void HandleEnding(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
             List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, 16, new int[] { 7, 12, 16 });
@@ -49,9 +59,10 @@ namespace FingerprintRecognitionV2.Util.Comparator
 
         static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
-            // get triplet
-            double[] trp = RidgesExtractor.BifurBFS(ske, y, x, 16);
-            if (trp.Length == 0) return;
+            // get triplets
+            List<double[]> trps = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[3]{ 3, 10, 16 });
+            if (trps.Count == 0) return;
+            double[] trp = trps[2];
 
             double a01 = Geometry.AdPI(trp[0], trp[1]),
                    a02 = Geometry.AdPI(trp[0], trp[2]),
@@ -69,16 +80,6 @@ namespace FingerprintRecognitionV2.Util.Comparator
             else
                 for (int i = 0; i < 3; i++)
                     res.Add(new(Minutia.BIFUR, y, x, trp[i]));   // a perfecty seperated one
-        }
-
-        static private byte CheckMinutia(bool[,] ske, int y, int x)
-        {
-            if (!ske[y, x]) return Minutia.NO_TYPE;
-            int n = CountTransitions(ske, y, x);
-
-            if (n == 1) return Minutia.ENDING;
-            if (n > 2) return Minutia.BIFUR;
-            return Minutia.NO_TYPE;
         }
 
         /** 

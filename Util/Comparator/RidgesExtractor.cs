@@ -31,23 +31,28 @@ namespace FingerprintRecognitionV2.Util.Comparator
             return res;
         }
 
-        static public double[] BifurBFS(bool[,] ske, int y0, int x0, int r)
+        static public List<double[]> BifurBFS(bool[,] ske, int y0, int x0, int r, int[] step)
         {
             bool[,] mat = RegionalBFS(ske, y0, x0, r);
+            List<double[]> res = new(step.Length);
 
-            List<int> ls = AngleExtract(mat, r, r);
-            if (ls.Count != 3) return new double[0];
+            for (int i = 0; i < step.Length; i++)
+            {
+                List<int> ls = AngleExtract(mat, r, step[i]);
+                if (ls.Count != 3) return new();
 
-            // clockwise sort
-            Minutia[] pts = new Minutia[3];
-            for (int i = 0; i < 3; i++)
-                pts[i] = new(ls[i] >> 8, ls[i] & MSK);
-            Triplet.ShiftClockwise(pts);
+                // clockwise sort
+                Minutia[] pts = new Minutia[3];
+                for (int j = 0; j < 3; j++)
+                    pts[j] = new(ls[j] >> 8, ls[j] & MSK);
+                Triplet.ShiftClockwise(pts);
 
-            // returns
-            double[] res = new double[3];
-            for (int i = 0; i < 3; i++)
-                res[i] = Geometry.Alpha(r, r, (int)pts[i].Y, (int)pts[i].X);
+                // append to result
+                double[] ang = new double[3];
+                for (int j = 0; j < 3; j++)
+                    ang[j] = Geometry.Alpha(r, r, (int)pts[j].Y, (int)pts[j].X);
+                res.Add(ang);
+            }
 
             return res;
         }

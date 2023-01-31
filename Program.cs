@@ -14,10 +14,10 @@ for (int i = 0; i < 500; i++)
 	Image<Gray, byte> src = new("_dat/set00/" + i + ".bmp");
 	ProcImg img = new(src);
 	CvInvoke.Imwrite(
-		"_dat/visualize-ver4/" + i.ToString("D3") + ".png", 
+		"_dat/visualize-ver5/" + i.ToString("D3") + ".png", 
 		ProcImg.Visualize(ProcImg.SkeletonMat, img.Minutiae)
 	);
-	img.Export("_dat/inp-ver4/" + i.ToString("D3") + ".inp");
+	img.Export("_dat/inp-ver5/" + i.ToString("D3") + ".inp");
 }
 
 timer.Stop();
