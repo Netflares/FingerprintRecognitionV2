@@ -49,25 +49,26 @@ namespace FingerprintRecognitionV2.Util.Comparator
 
         static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
-            List<double[]> trp = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[] { 16 });   // triplets
-            if (trp.Count == 0) return;
+            // get triplet
+            double[] trp = RidgesExtractor.BifurBFS(ske, y, x, 16);
+            if (trp.Length == 0) return;
 
-            double a01 = Geometry.AdPI(trp[0][0], trp[0][1]),
-                   a02 = Geometry.AdPI(trp[0][0], trp[0][2]),
-                   a12 = Geometry.AdPI(trp[0][1], trp[0][2]);
+            double a01 = Geometry.AdPI(trp[0], trp[1]),
+                   a02 = Geometry.AdPI(trp[0], trp[2]),
+                   a12 = Geometry.AdPI(trp[1], trp[2]);
 
             double thr = PI / 2;    // threshold = 90deg
             double ang = double.NegativeInfinity;
 
-            if (a12 <= thr) ang = trp[0][0];
-            if (a01 <= thr) ang = trp[0][2];
-            if (a02 <= thr) ang = trp[0][1];
+            if (a12 <= thr) ang = trp[0];
+            if (a01 <= thr) ang = trp[2];
+            if (a02 <= thr) ang = trp[1];
 
             if (ang > double.NegativeInfinity)
                 res.Add(new(Minutia.BIFUR, y, x, ang));
             else
                 for (int i = 0; i < 3; i++)
-                    res.Add(new(Minutia.BIFUR, y, x, trp[0][i]));   // a perfecty seperated one
+                    res.Add(new(Minutia.BIFUR, y, x, trp[i]));   // a perfecty seperated one
         }
 
         static private byte CheckMinutia(bool[,] ske, int y, int x)
