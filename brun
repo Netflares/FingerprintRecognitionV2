@@ -1,1 +1,0 @@
-dotnet.exe build && ./bin/Release/net7.0/FingerprintRecognitionV2.exe
