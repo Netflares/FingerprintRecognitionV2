@@ -49,39 +49,25 @@ namespace FingerprintRecognitionV2.Util.Comparator
 
         static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
-            List<double[]> trp = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[] { 7, 12, 16 });   // triplets
+            List<double[]> trp = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[] { 16 });   // triplets
             if (trp.Count == 0) return;
 
-            // tolerance: 30deg
-            if (CompareTriplets(trp[0], trp[1], PI / 6) && CompareTriplets(trp[1], trp[2], PI / 6))
-            {
-                double a01 = Geometry.AdPI(trp[2][0], trp[2][1]),
-                       a02 = Geometry.AdPI(trp[2][0], trp[2][2]),
-                       a12 = Geometry.AdPI(trp[2][1], trp[2][2]);
+            double a01 = Geometry.AdPI(trp[0][0], trp[0][1]),
+                   a02 = Geometry.AdPI(trp[0][0], trp[0][2]),
+                   a12 = Geometry.AdPI(trp[0][1], trp[0][2]);
 
-                if (a01 + a02 + a12 >= PI * 2 - 1e-6)
-                {
-                    double thr = PI / 2;    // threshold = 90deg
-                    double ang = double.NegativeInfinity;
+            double thr = PI / 2;    // threshold = 90deg
+            double ang = double.NegativeInfinity;
 
-                    if (a12 <= thr) ang = trp[2][0];
-                    if (a01 <= thr) ang = trp[2][2];
-                    if (a02 <= thr) ang = trp[2][1];
+            if (a12 <= thr) ang = trp[0][0];
+            if (a01 <= thr) ang = trp[0][2];
+            if (a02 <= thr) ang = trp[0][1];
 
-                    if (ang > double.NegativeInfinity)
-                        res.Add(new(Minutia.BIFUR, y, x, ang));
-                    else
-                        for (int i = 0; i < 3; i++)
-                            res.Add(new(Minutia.BIFUR, y, x, trp[2][i]));   // a perfecty seperated one
-                }
-            }
-        }
-
-        static private bool CompareTriplets(double[] a, double[] b, double thresh)
-        {
-            return Geometry.AdPI(a[0], b[0]) <= thresh &&
-                   Geometry.AdPI(a[1], b[1]) <= thresh &&
-                   Geometry.AdPI(a[2], b[2]) <= thresh;
+            if (ang > double.NegativeInfinity)
+                res.Add(new(Minutia.BIFUR, y, x, ang));
+            else
+                for (int i = 0; i < 3; i++)
+                    res.Add(new(Minutia.BIFUR, y, x, trp[0][i]));   // a perfecty seperated one
         }
 
         static private byte CheckMinutia(bool[,] ske, int y, int x)
