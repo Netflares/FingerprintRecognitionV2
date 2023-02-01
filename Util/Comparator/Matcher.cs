@@ -1,13 +1,10 @@
 ﻿
-using FingerprintRecognitionV2.DataStructure;
-using FingerprintRecognitionV2.Util.Preprocessing;
-
 namespace FingerprintRecognitionV2.Util.Comparator
 {
     static public class Matcher
     {
         // probe and candidate
-        static public int Match(ProcImg probe, ProcImg candi)
+        static public int Match(Fingerprint probe, Fingerprint candi)
         {
             List<Triplet> probeT = probe.Triplets, candiT = candi.Triplets;
 
