@@ -46,6 +46,8 @@ namespace FingerprintRecognitionV2.Util.Comparator
             }
 
             static public bool operator <(TripletMatchContainer a, TripletMatchContainer b) => a.Score < b.Score;
+
+            static public bool operator >(TripletMatchContainer a, TripletMatchContainer b) => a.Score > b.Score;
         }
     }
 }
