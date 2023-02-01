@@ -1,4 +1,5 @@
-﻿using Emgu.CV;
+﻿using DelaunatorSharp;
+using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.DataStructure;
@@ -6,19 +7,12 @@ using FingerprintRecognitionV2.Util.Comparator;
 using FingerprintRecognitionV2.Util.Preprocessing;
 using System.Diagnostics;
 
-Stopwatch timer = new();
-timer.Start();
+Point[] arr = new Point[4] { new(2, 3), new(5, 1), new(3, 5), new(6, 5) };
+List<IPoint> pts = new(4);
 
-for (int i = 0; i < 500; i++)
-{
-	Image<Gray, byte> src = new("_dat/set00/" + i + ".bmp");
-	ProcImg img = new(src);
-	CvInvoke.Imwrite(
-		"_dat/visualize-ver5/" + i.ToString("D3") + ".png", 
-		ProcImg.Visualize(ProcImg.SkeletonMat, img.Minutiae)
-	);
-	img.Export("_dat/inp-ver5/" + i.ToString("D3") + ".inp");
-}
+for (int i = 0; i < 4; i++) pts.Add(arr[i]);
 
-timer.Stop();
-ProcImg.PrintTime(timer, "proc 500 img:");
+Delaunator d = new(pts.ToArray());
+for (int i = 0; i < d.Triangles.Length; i++)
+    Console.Write(d.Triangles[i] + " ");
+Console.Write("\n");
