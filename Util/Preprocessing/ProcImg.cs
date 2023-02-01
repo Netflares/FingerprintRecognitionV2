@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using FingerprintRecognitionV2.Util.Comparator;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {
@@ -67,6 +68,21 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 timer.Elapsed.Seconds.ToString("D2"), 
                 timer.Elapsed.Milliseconds.ToString("D3")
             ));
+        }
+
+        static public Image<Bgr, byte> Visualize(bool[,] ske, List<Minutia> minutiae)
+        {
+            Image<Bgr, byte> res = Visualization.Bool2Bgr(ske);
+
+            foreach (var i in minutiae)
+            {
+                Bgr color = new(i.T == Minutia.ENDING ? 255 : 0, i.T == Minutia.BIFUR ? 255 : 0, 0);
+
+                Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
+                Visualization.Plot(res, (int)i.Y, (int)i.X, 2, color);
+            }
+
+            return res;
         }
     }
 }

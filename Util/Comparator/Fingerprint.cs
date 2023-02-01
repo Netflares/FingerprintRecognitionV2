@@ -93,20 +93,5 @@ namespace FingerprintRecognitionV2.Util.Comparator
                 o.Write(i.A + "\n");
             }
         }
-
-        static public Image<Bgr, byte> Visualize(bool[,] ske, List<Minutia> minutiae)
-        {
-            Image<Bgr, byte> res = Visualization.Bool2Bgr(ske);
-
-            foreach (var i in minutiae)
-            {
-                Bgr color = new (i.T == Minutia.ENDING ? 255 : 0, i.T == Minutia.BIFUR ? 255 : 0, 0);
-
-                Visualization.DrawLine(res, (int)i.Y, (int)i.X, i.A, 12, 0, new Bgr(0, 0, 255));
-                Visualization.Plot(res, (int)i.Y, (int)i.X, 2, color);
-            }
-
-            return res;
-        }
 	}
 }
