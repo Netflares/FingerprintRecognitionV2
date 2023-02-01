@@ -77,9 +77,6 @@ namespace FingerprintRecognitionV2.Util.Comparator
 
             if (ang > double.NegativeInfinity)
                 res.Add(new(Minutia.BIFUR, y, x, ang));
-            else
-                for (int i = 0; i < 3; i++)
-                    res.Add(new(Minutia.BIFUR, y, x, trp[i]));   // a perfecty seperated one
         }
 
         /** 

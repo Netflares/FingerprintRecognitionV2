@@ -4,6 +4,24 @@ namespace FingerprintRecognitionV2.Util.Comparator
 {
     public class Triplet
     {
+        public Minutia[] Minutiae;
+        public double[] Distances;  // ascending 
+
+        public Triplet(Minutia[] m)
+        {
+            Minutiae = m;
+            ShiftClockwise(Minutiae);
+            Distances = CalcSortedDist(Minutiae);
+        }
+
+        static public bool operator <(Triplet a, Triplet b) => a.Distances[2] < b.Distances[2];
+
+        static public bool operator >(Triplet a, Triplet b) => a.Distances[2] > b.Distances[2];
+
+        static public bool operator <=(Triplet a, Triplet b) => a.Distances[2] <= b.Distances[2];
+
+        static public bool operator >=(Triplet a, Triplet b) => a.Distances[2] >= b.Distances[2];
+
         /*
         returns { dMax, dMid, dMin }
         m.Length = 3

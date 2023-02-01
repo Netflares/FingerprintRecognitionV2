@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using DelaunatorSharp;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.Util.Comparator;
@@ -14,6 +15,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         // distance between ridges is also a vital information
         public double WaveLen;
         public List<Minutia> Minutiae;
+        public List<Triplet> Triplets;
 
         /** 
          * @ shared attrs
@@ -58,9 +60,25 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             ZhangBruteThinning.Thinning(SkeletonMat);
 
             // extract informations
+            // starting from this part, the code is not optimized
             MorphologyR4.Erose(SegmentMsk, BlockSize);
             Segmentation.Padding(SegmentMsk, BlockSize);
             Minutiae = MinutiaeExtractor.Extract(SkeletonMat, SegmentMsk, BlockSize);
+
+            // build m-triplets
+            List<IPoint> pts = new(Minutiae.Count);
+            foreach (Minutia m in Minutiae) pts.Add(new Point(m.X, m.Y));
+            Delaunator d = new(pts.ToArray());
+            int[] t = d.Triangles;
+
+            Triplets = new(t.Length / 3);
+            for (int i = 0; i + 2 < t.Length; i += 3)
+            {
+                Triplets.Add(new Triplet(new Minutia[3]
+                {
+                    Minutiae[i + 0], Minutiae[i + 1], Minutiae[i + 2]
+                }));
+            }
         }
 
         public void Export(string fname)

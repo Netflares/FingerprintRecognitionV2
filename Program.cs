@@ -7,10 +7,12 @@ using FingerprintRecognitionV2.Util.Comparator;
 using FingerprintRecognitionV2.Util.Preprocessing;
 using System.Diagnostics;
 
-Point[] arr = new Point[4] { new(2, 3), new(5, 1), new(3, 5), new(6, 5) };
-List<IPoint> pts = new(4);
+const int n = 5;
 
-for (int i = 0; i < 4; i++) pts.Add(arr[i]);
+Point[] arr = new Point[n] { new(2, 3), new(5, 1), new(3, 5), new(6, 5), new(6, 5) };
+List<IPoint> pts = new(n);
+
+for (int i = 0; i < n; i++) pts.Add(arr[i]);
 
 Delaunator d = new(pts.ToArray());
 for (int i = 0; i < d.Triangles.Length; i++)

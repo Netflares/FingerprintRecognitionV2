@@ -12,12 +12,12 @@ namespace FingerprintRecognitionV2.Util.Comparator
 		equation 6
 
 		*/
-		static public double sPart(Minutia[] a, Minutia[] b)
+		static public double sPart(Triplet a, Triplet b)
 		{
-			if (!sTheta(a, b)) return 0;
-			double sd = sDistance(Triplet.CalcSortedDist(a), Triplet.CalcSortedDist(b), THRESH_D),
-			       sa = sAlpha(CalcAlpha(a), CalcAlpha(b), THRESH_A),
-			       sb = sBeta(CalcBeta(a), CalcBeta(b), THRESH_A);
+			if (!sTheta(a.Minutiae, b.Minutiae)) return 0;
+			double sd = sDistance(a.Distances, b.Distances, THRESH_D),
+			       sa = sAlpha(CalcAlpha(a.Minutiae), CalcAlpha(b.Minutiae), THRESH_A),
+			       sb = sBeta(CalcBeta(a.Minutiae), CalcBeta(b.Minutiae), THRESH_A);
 			if (sd == 0 || sa == 0 || sb == 0)
 				return 0;
 			return 1 - (1 - sd) * (1 - sa) * (1 - sb);
