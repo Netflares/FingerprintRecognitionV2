@@ -79,6 +79,22 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                     Minutiae[i + 0], Minutiae[i + 1], Minutiae[i + 2]
                 }));
             }
+
+            Triplets.Sort();
+        }
+
+        public int LowerBound(double len)
+        {
+            int l = 0, r = Triplets.Count;
+            while (l < r)
+            {
+                int m = (l + r + 0) >> 1;
+                if (Triplets[m].Distances[2] >= len)
+                    r = m;
+                else
+                    l = m + 1;
+            }
+            return r;
         }
 
         public void Export(string fname)

@@ -14,6 +14,11 @@ namespace FingerprintRecognitionV2.Util.Comparator
             Distances = CalcSortedDist(Minutiae);
         }
 
+        public Triplet()
+        {
+
+        }
+
         static public bool operator <(Triplet a, Triplet b) => a.Distances[2] < b.Distances[2];
 
         static public bool operator >(Triplet a, Triplet b) => a.Distances[2] > b.Distances[2];
