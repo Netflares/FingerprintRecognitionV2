@@ -5,7 +5,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 {
     static public class RidgesExtractor
     {
-        static public int MSK = (1 << 8) - 1;    // 1111 1111
+        static private readonly int MSK = (1 << 8) - 1; // 1111 1111
 
         /*
 		params:

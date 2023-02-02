@@ -3,13 +3,15 @@ namespace FingerprintRecognitionV2.Util.Comparator
 {
     static public class Matcher
     {
+        static private readonly int MSK = (1 << 16) - 1;
+
         // probe and candidate
         static public int Match(Fingerprint probe, Fingerprint candi)
         {
             List<Triplet> probeT = probe.Triplets, candiT = candi.Triplets;
 
             // 5.1.2
-            List<TripletMatchContainer> mTriplets = new();
+            List<TripletPair> mTriplets = new();
             foreach (Triplet p in probeT)
             {
                 int l = candi.LowerBound(p.Distances[2] - Similarity.THRESH_D);
@@ -23,28 +25,60 @@ namespace FingerprintRecognitionV2.Util.Comparator
                 }
             }
 
+            // 5.1.3
+            mTriplets.Sort();
+
+            // 5.1.4
+            List<MinutiaPair> mPairs = new();
+
+            // 5.1.5
+            HashSet<int> probeDupes = new(), candidateDupes = new();
+            foreach (TripletPair p in mTriplets)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    Minutia a = p.Probe.Minutiae[i], b = p.Candi.Minutiae[i];
+                    int aKey = Convert.ToInt32(a.Y) << 16 | Convert.ToInt32(a.X),
+                        bKey = Convert.ToInt32(b.Y) << 16 | Convert.ToInt32(b.X);
+                    if (probeDupes.Add(aKey) || candidateDupes.Add(bKey))
+                        mPairs.Add(new(a, b));
+                }
+            }
+
             return -1;
         }
 
         /** 
          * @ containers
          * */
-        private class TripletMatchContainer
+        private class TripletPair
         {
             public Triplet Probe;
-            public Triplet Candidate;
+            public Triplet Candi;
             public double Score;
 
-            public TripletMatchContainer(Triplet probe, Triplet candidate, double score)
+            public TripletPair(Triplet probe, Triplet candidate, double score)
             {
                 Probe = probe;
-                Candidate = candidate;
+                Candi = candidate;
                 Score = score;
             }
 
-            static public bool operator <(TripletMatchContainer a, TripletMatchContainer b) => a.Score < b.Score;
+            static public bool operator <(TripletPair a, TripletPair b) => a.Score < b.Score;
 
-            static public bool operator >(TripletMatchContainer a, TripletMatchContainer b) => a.Score > b.Score;
+            static public bool operator >(TripletPair a, TripletPair b) => a.Score > b.Score;
+        }
+
+        private class MinutiaPair
+        {
+            public Minutia Probe;
+            public Minutia Candi;
+
+            public MinutiaPair(Minutia probe, Minutia candi)
+            {
+                Probe = probe;
+                Candi = candi;
+            }
         }
     }
 }
