@@ -1,5 +1,4 @@
-﻿
-namespace FingerprintRecognitionV2.Util.Comparator
+﻿namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
     static public class Matcher
     {

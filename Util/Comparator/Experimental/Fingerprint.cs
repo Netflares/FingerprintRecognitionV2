@@ -1,20 +1,20 @@
 using DelaunatorSharp;
 using FingerprintRecognitionV2.Util.Preprocessing;
 
-namespace FingerprintRecognitionV2.Util.Comparator
+namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
-	public class Fingerprint
-	{
-		public List<Minutia> Minutiae;
-		public List<Triplet> Triplets;
+    public class Fingerprint
+    {
+        public List<Minutia> Minutiae;
+        public List<Triplet> Triplets;
 
-		/** 
+        /** 
 		 * @ constructors
 		 * */
-		// create fingerprint from inp data
-		public Fingerprint(string fname)
-		{
-			using FileStream fs = File.OpenRead(fname);
+        // create fingerprint from inp data
+        public Fingerprint(string fname)
+        {
+            using FileStream fs = File.OpenRead(fname);
             using StreamReader sr = new(fs);
 
             Minutiae = new();
@@ -29,21 +29,21 @@ namespace FingerprintRecognitionV2.Util.Comparator
             }
 
             BuildTriplets();
-		}
+        }
 
-		// create fingerprint from ProcImg data
-		public Fingerprint(bool[,] SkeletonMat, bool[,] SegmentMsk, int BlockSize)
-		{
-			// extract informations
+        // create fingerprint from ProcImg data
+        public Fingerprint(bool[,] SkeletonMat, bool[,] SegmentMsk, int BlockSize)
+        {
+            // extract informations
             MorphologyR4.Erose(SegmentMsk, BlockSize);
             Segmentation.Padding(SegmentMsk, BlockSize);
             Minutiae = MinutiaeExtractor.Extract(SkeletonMat, SegmentMsk, BlockSize);
 
             BuildTriplets();
-		}
+        }
 
-		private void BuildTriplets()
-		{
+        private void BuildTriplets()
+        {
             List<IPoint> pts = new(Minutiae.Count);
             foreach (Minutia m in Minutiae) pts.Add(new Point(m.X, m.Y));
             Delaunator d = new(pts.ToArray());
@@ -59,9 +59,9 @@ namespace FingerprintRecognitionV2.Util.Comparator
             }
 
             Triplets.Sort();
-		}
+        }
 
-		/** 
+        /** 
 		 * @ util
 		 * */
         public int LowerBound(double len)
@@ -69,7 +69,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
             int l = 0, r = Triplets.Count;
             while (l < r)
             {
-                int m = (l + r + 0) >> 1;
+                int m = l + r + 0 >> 1;
                 if (Triplets[m].Distances[2] >= len)
                     r = m;
                 else
@@ -78,7 +78,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
             return r;
         }
 
-		/**
+        /**
 		 * @ io
 		 * */
         public void Export(string fname)
@@ -93,5 +93,5 @@ namespace FingerprintRecognitionV2.Util.Comparator
                 o.Write(i.A + "\n");
             }
         }
-	}
+    }
 }

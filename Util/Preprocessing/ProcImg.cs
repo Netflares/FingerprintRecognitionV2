@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using FingerprintRecognitionV2.Util.Comparator;
+using FingerprintRecognitionV2.Util.Comparator.Experimental;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {

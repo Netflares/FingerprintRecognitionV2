@@ -1,6 +1,6 @@
 ﻿using static System.Math;
 
-namespace FingerprintRecognitionV2.Util.Comparator
+namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
     public class Triplet
     {
@@ -33,8 +33,8 @@ namespace FingerprintRecognitionV2.Util.Comparator
         */
         static public double[] CalcSortedDist(Minutia[] m)
         {
-            double[] res = new double[3]{ 
-                Geometry.Dist(m[0], m[1]), Geometry.Dist(m[1], m[2]), Geometry.Dist(m[0], m[2]) 
+            double[] res = new double[3]{
+                Geometry.Dist(m[0], m[1]), Geometry.Dist(m[1], m[2]), Geometry.Dist(m[0], m[2])
             };
             Array.Sort(res);
             return res;

@@ -1,5 +1,4 @@
-﻿
-namespace FingerprintRecognitionV2.Util.Comparator
+﻿namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
     public class Minutia
     {
@@ -18,7 +17,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
             A = a;
         }
 
-        public Minutia(double y, double x) 
+        public Minutia(double y, double x)
         {
             Y = y;
             X = x;

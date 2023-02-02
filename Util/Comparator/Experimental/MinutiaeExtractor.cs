@@ -1,7 +1,7 @@
 ﻿using FingerprintRecognitionV2.MatTool;
 using static System.Math;
 
-namespace FingerprintRecognitionV2.Util.Comparator
+namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
     static public class MinutiaeExtractor
     {
@@ -60,7 +60,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
         static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x, int bs)
         {
             // get triplets
-            List<double[]> trps = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[3]{ 3, 10, 16 });
+            List<double[]> trps = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[3] { 3, 10, 16 });
             if (trps.Count == 0) return;
             double[] trp = trps[2];
 

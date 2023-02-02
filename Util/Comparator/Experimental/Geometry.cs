@@ -1,20 +1,19 @@
-﻿
-using static System.Math;
+﻿using static System.Math;
 
 /** 
  * @ desc:
  * this static class provides equations
  * that appear in "_doc/Improving Fingerprint Verification Using Minutiae Triplets.pdf"
  * */
-namespace FingerprintRecognitionV2.Util.Comparator
+namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
     static public class Geometry
     {
         /** 
          * @ some constants
          * */
-        static public readonly double V_2PI  = 2 * PI;
-        static public readonly double V_PI2  = PI / 2;
+        static public readonly double V_2PI = 2 * PI;
+        static public readonly double V_PI2 = PI / 2;
         static public readonly double V_3PI2 = 3 * PI / 2;
 
         /** 
@@ -66,7 +65,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
         static public double Alpha(int y0, int x0, int y1, int x1)
         {
             double dy = y1 - y0, dx = x1 - x0;
-            double len = Math.Sqrt(dy * dy + dx * dx);
+            double len = Sqrt(dy * dy + dx * dx);
 
             double ans = Acos(dx / len);
             return dy >= 0 ? ans : V_2PI - ans;
