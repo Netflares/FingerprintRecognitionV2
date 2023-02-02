@@ -1,4 +1,5 @@
 ﻿using static System.Math;
+using static FingerprintRecognitionV2.Util.Comparator.Experimental.Geometry;
 
 namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
@@ -54,6 +55,8 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
                 Minutia m1 = pair1.Probe, m2 = pair1.Candi;
                 double theta = m2.A - m1.A;
 
+                int matches = 0;
+
                 foreach (MinutiaPair pair2 in mPairs)
                 {
                     if (pair1.Equals(pair2)) continue;
@@ -64,12 +67,17 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
                     // finding p'
                     double x = m2.X + Cos(theta) * (m3.X - m1.X) - Sin(theta) * (m3.Y - m1.Y);
                     double y = m2.Y + Sin(theta) * (m3.X - m1.X) + Cos(theta) * (m3.Y - m1.Y);
+                    double t = m3.A - m1.A + m2.A;
                     double edgeA = x - m4.X, edgeB = y - m4.Y, edgeC = edgeA * edgeA + edgeB * edgeB;
 
                     if (edgeC > Similarity.THRESH_D * Similarity.THRESH_D) continue;
+                    if (AdPI(Ad2PI(m2.A, m1.A), Ad2PI(m4.A, m3.A)) > Similarity.THRESH_A) continue;
+                    if (AdPI(t, m4.A) > Similarity.THRESH_A) continue;
 
-
+                    matches++;
                 }
+
+                bestMatches = Max(bestMatches, matches);
             }
 
             return bestMatches;
