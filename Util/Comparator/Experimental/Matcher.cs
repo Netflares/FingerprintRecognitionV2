@@ -1,4 +1,6 @@
-﻿namespace FingerprintRecognitionV2.Util.Comparator.Experimental
+﻿using static System.Math;
+
+namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
     static public class Matcher
     {
@@ -44,7 +46,33 @@
                 }
             }
 
-            return -1;
+            // global matching
+            int bestMatches = 0;
+
+            foreach (MinutiaPair pair1 in mPairs)
+            {
+                Minutia m1 = pair1.Probe, m2 = pair1.Candi;
+                double theta = m2.A - m1.A;
+
+                foreach (MinutiaPair pair2 in mPairs)
+                {
+                    if (pair1.Equals(pair2)) continue;
+
+                    Minutia m3 = pair2.Probe;
+                    Minutia m4 = pair2.Candi;
+
+                    // finding p'
+                    double x = m2.X + Cos(theta) * (m3.X - m1.X) - Sin(theta) * (m3.Y - m1.Y);
+                    double y = m2.Y + Sin(theta) * (m3.X - m1.X) + Cos(theta) * (m3.Y - m1.Y);
+                    double edgeA = x - m4.X, edgeB = y - m4.Y, edgeC = edgeA * edgeA + edgeB * edgeB;
+
+                    if (edgeC > Similarity.THRESH_D * Similarity.THRESH_D) continue;
+
+
+                }
+            }
+
+            return bestMatches;
         }
 
         /** 
