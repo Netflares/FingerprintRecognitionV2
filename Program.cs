@@ -3,18 +3,14 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.DataStructure;
-using FingerprintRecognitionV2.Util.Comparator;
+using FingerprintRecognitionV2.Util.Comparator.Experimental;
 using FingerprintRecognitionV2.Util.Preprocessing;
 using System.Diagnostics;
 
-const int n = 5;
+ProcImg img0 = new(new Image<Gray, byte>("_dat/set00/0.bmp"));
+Fingerprint probe = new(ProcImg.SkeletonMat, ProcImg.SegmentMsk, 16);
+ProcImg img1 = new(new Image<Gray, byte>("_dat/set00/1.bmp"));
+Fingerprint candi = new(ProcImg.SkeletonMat, ProcImg.SegmentMsk, 16);
 
-Point[] arr = new Point[n] { new(2, 3), new(5, 1), new(3, 5), new(6, 5), new(6, 5) };
-List<IPoint> pts = new(n);
-
-for (int i = 0; i < n; i++) pts.Add(arr[i]);
-
-Delaunator d = new(pts.ToArray());
-for (int i = 0; i < d.Triangles.Length; i++)
-    Console.Write(d.Triangles[i] + " ");
-Console.Write("\n");
+int matches = Matcher.Match(probe, candi);
+Console.WriteLine(matches);

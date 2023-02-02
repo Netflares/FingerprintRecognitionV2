@@ -54,11 +54,11 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
             {
                 Triplets.Add(new Triplet(new Minutia[3]
                 {
-                    Minutiae[i + 0], Minutiae[i + 1], Minutiae[i + 2]
+                    Minutiae[t[i + 0]], Minutiae[t[i + 1]], Minutiae[t[i + 2]]
                 }));
             }
 
-            Triplets.Sort();
+            Triplets.Sort((a, b) => a < b ? -1 : 1);
         }
 
         /** 

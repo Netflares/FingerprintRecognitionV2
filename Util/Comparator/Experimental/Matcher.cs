@@ -28,7 +28,7 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
             }
 
             // 5.1.3
-            mTriplets.Sort();
+            mTriplets.Sort((a, b) => a > b ? -1 : 1);   // descending
 
             // 5.1.4
             List<MinutiaPair> mPairs = new();
