@@ -8,7 +8,7 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
         static private readonly int MSK = (1 << 16) - 1;
 
         // probe and candidate
-        static public int Match(Fingerprint probe, Fingerprint candi)
+        static public int DebugMatch(Fingerprint probe, Fingerprint candi, ref List<Minutia> res0, ref List<Minutia> res1)
         {
             List<Triplet> probeT = probe.Triplets, candiT = candi.Triplets;
 
@@ -57,6 +57,9 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 
                 int matches = 0;
 
+                List<Minutia> ans0 = new(), ans1 = new();
+                ans0.Add(m1); ans1.Add(m2);
+
                 foreach (MinutiaPair pair2 in mPairs)
                 {
                     if (pair1.Equals(pair2)) continue;
@@ -75,9 +78,16 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
                     if (AdPI(t, m4.A) > Similarity.THRESH_A) continue;
 
                     matches++;
+                    ans0.Add(m3);
+                    ans1.Add(m4);
                 }
 
-                bestMatches = Max(bestMatches, matches);
+                if (matches > bestMatches)
+                {
+                    bestMatches = matches;
+                    res0 = ans0;
+                    res1 = ans1;
+                }
             }
 
             return bestMatches;
