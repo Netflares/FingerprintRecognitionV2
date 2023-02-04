@@ -10,9 +10,6 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
          * @ usage:
          * extacts minutiae from a skeleton image
          * 
-         * @ note:
-         * this is still EXPERIMENTAL
-         * 
          * `bool[,] ske`:       a ske image
          * `double[,] orient`:  block orient
          * `int wl`:            ridges' wavelength
@@ -29,9 +26,9 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
                 {
                     byte typ = CheckMinutia(ske, y, x);
                     if (typ == Minutia.ENDING)
-                        HandleEnding(res, ske, y, x, bs);
+                        HandleEnding(res, ske, y, x);
                     else if (typ == Minutia.BIFUR)
-                        HandleBifur(res, ske, y, x, bs);
+                        HandleBifur(res, ske, y, x);
                 }
             });
 
@@ -48,7 +45,7 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
             return Minutia.NO_TYPE;
         }
 
-        static private void HandleEnding(List<Minutia> res, bool[,] ske, int y, int x, int bs)
+        static private void HandleEnding(List<Minutia> res, bool[,] ske, int y, int x)
         {
             List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, 16, new int[] { 7, 12, 16 });
             if (pts.Count == 0) return; // this is a noise
@@ -58,7 +55,7 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
                 res.Add(new(y, x, pts[2]));
         }
 
-        static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x, int bs)
+        static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x)
         {
             // get triplets
             List<double[]> trps = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[3] { 3, 10, 16 });

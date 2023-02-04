@@ -12,6 +12,9 @@
             Distances = CalcSortedDist(Minutiae);
         }
 
+        static public bool operator <(Triplet a, Triplet b) => a.Distances[2] < b.Distances[2];
+        static public bool operator >(Triplet a, Triplet b) => a.Distances[2] > b.Distances[2];
+
         /*
         returns { dMin, dMid, dMax }
         m.Length = 3

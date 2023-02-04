@@ -1,8 +1,8 @@
-using DelaunatorSharp;
+﻿using DelaunatorSharp;
 using FingerprintRecognitionV2.Util.FeaturesExtractor;
 using FingerprintRecognitionV2.Util.Preprocessing;
 
-namespace FingerprintRecognitionV2.Util.Comparator.Experimental
+namespace FingerprintRecognitionV2.Util.Comparator
 {
     public class Fingerprint
     {
@@ -25,7 +25,7 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
             {
                 string[] items = line.Split(' ');
                 Minutiae.Add(new(
-                    Convert.ToByte(items[0]), Convert.ToDouble(items[1]), Convert.ToDouble(items[2]), Convert.ToDouble(items[3])
+                    Convert.ToInt32(items[0]), Convert.ToInt32(items[1]), Convert.ToDouble(items[2])
                 ));
             }
 
@@ -53,13 +53,12 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
             Triplets = new(t.Length / 3);
             for (int i = 0; i + 2 < t.Length; i += 3)
             {
-                Triplets.Add(new Triplet(new Minutia[3]
-                {
+                Triplets.Add(new Triplet(
                     Minutiae[t[i + 0]], Minutiae[t[i + 1]], Minutiae[t[i + 2]]
-                }));
+                ));
             }
 
-            Triplets.Sort((a, b) => a < b ? -1 : 1);
+            Triplets.Sort((a, b) => a < b ? -1 : 1);    // check this out later
         }
 
         /** 
@@ -79,19 +78,18 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
             return r;
         }
 
-        /**
-		 * @ io
-		 * */
+        /** 
+         * @ io
+         * */
         public void Export(string fname)
         {
             using FileStream f = File.OpenWrite(fname);
             using StreamWriter o = new(f);
             foreach (Minutia i in Minutiae)
             {
-                o.Write(i.T + " ");
                 o.Write(i.Y + " ");
                 o.Write(i.X + " ");
-                o.Write(i.A + "\n");
+                o.Write((Math.PI * i.Angle / 128) + "\n");
             }
         }
     }

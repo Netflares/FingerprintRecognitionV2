@@ -6,6 +6,10 @@ using static System.Math;
  * @ desc:
  * this static class provides equations
  * that appear in "_doc/Improving Fingerprint Verification Using Minutiae Triplets.pdf"
+ * 
+ * @ todo:
+ * change the calculation
+ * based on radian -> based on range [0:256)
  * */
 namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 {
