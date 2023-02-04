@@ -1,4 +1,6 @@
 ﻿
+using FingerprintRecognitionV2.Math;
+
 namespace FingerprintRecognitionV2.Util.Comparator
 {
     public class Triplet

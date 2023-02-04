@@ -1,22 +1,21 @@
-﻿
-namespace FingerprintRecognitionV2.Util.Comparator
+﻿namespace FingerprintRecognitionV2.Math
 {
     static public class FastMath
     {
         static public readonly int
-            MaxDistance = 1<<10,
-            MaxAngle = 1<<8;
+            MaxDistance = 1 << 10,
+            MaxAngle = 1 << 8;
 
         static private readonly int[]
             _Sqrt = new int[MaxDistance],   // Sqrt[i] = Round( Sqrt(i) )
-            _Sin = new int[MaxAngle<<1|1],  // Sin[a + MaxAngle] = Round( Sin(a * 2PI / 256) )
-            _Cos = new int[MaxAngle<<1|1],  // Cos[a + MaxAngle] = Round( Cos(a * 2PI / 256) )
-            _Atan2 = new int[1<<22];        // Atan2[((y + MaxDistance)<<11) | (x + MaxDistance)] = Round( Atan2(y, x) )
+            _Sin = new int[MaxAngle << 1 | 1],  // Sin[a + MaxAngle] = Round( Sin(a * 2PI / 256) )
+            _Cos = new int[MaxAngle << 1 | 1],  // Cos[a + MaxAngle] = Round( Cos(a * 2PI / 256) )
+            _Atan2 = new int[1 << 22];        // Atan2[((y + MaxDistance)<<11) | (x + MaxDistance)] = Round( Atan2(y, x) )
 
         static public int Sqrt(int i) => _Sqrt[i];
         static public int Sin(int a) => _Sin[a + MaxAngle];
         static public int Cos(int a) => _Cos[a + MaxAngle];
-        static public int Atan2(int y, int x) => _Atan2[((y + MaxDistance)<<11) | (x + MaxDistance)];
+        static public int Atan2(int y, int x) => _Atan2[y + MaxDistance << 11 | x + MaxDistance];
 
         static public int Cast(double x) => Convert.ToInt32(Math.Round(x));
 
@@ -33,7 +32,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 
             for (int y = -MaxDistance; y < MaxDistance; y++)
                 for (int x = -MaxDistance; x < MaxDistance; x++)
-                    _Atan2[((y + MaxDistance)<<11) | (x + MaxDistance)] = Cast(Math.Atan2(y, x));
+                    _Atan2[y + MaxDistance << 11 | x + MaxDistance] = Cast(Math.Atan2(y, x));
         }
     }
 }
