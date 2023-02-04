@@ -1,7 +1,8 @@
 ﻿using FingerprintRecognitionV2.MatTool;
+using FingerprintRecognitionV2.Util.Comparator;
 using static System.Math;
 
-namespace FingerprintRecognitionV2.Util.Comparator.Experimental
+namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 {
     static public class MinutiaeExtractor
     {
@@ -54,7 +55,7 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 
             // tolerance: 20deg
             if (Abs(pts[1] - pts[0]) <= PI / 9 && Abs(pts[2] - pts[1]) <= PI / 9)
-                res.Add(new(Minutia.ENDING, y, x, pts[2]));
+                res.Add(new(y, x, pts[2]));
         }
 
         static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x, int bs)
@@ -76,7 +77,7 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
             if (a02 <= thr) ang = trp[1];
 
             if (ang > double.NegativeInfinity)
-                res.Add(new(Minutia.BIFUR, y, x, ang));
+                res.Add(new(y, x, ang));
         }
 
         /** 

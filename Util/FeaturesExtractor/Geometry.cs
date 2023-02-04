@@ -1,11 +1,13 @@
-﻿using static System.Math;
+﻿using FingerprintRecognitionV2.Util.Comparator;
+using FingerprintRecognitionV2.Util.Comparator.Experimental;
+using static System.Math;
 
 /** 
  * @ desc:
  * this static class provides equations
  * that appear in "_doc/Improving Fingerprint Verification Using Minutiae Triplets.pdf"
  * */
-namespace FingerprintRecognitionV2.Util.Comparator.Experimental
+namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 {
     static public class Geometry
     {
@@ -19,18 +21,6 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
         /** 
          * @ the core
          * */
-        // calc the euclidean distance between 2 points
-        static public double Dist(Minutia a, Minutia b)
-        {
-            return Sqrt(DistSqr(a, b));
-        }
-
-        // square the euclidean distance between 2 points
-        static public double DistSqr(Minutia a, Minutia b)
-        {
-            return Sqr(a.Y - b.Y) + Sqr(a.X - b.X);
-        }
-
         // calc the angle between 2 vector
         // given their angles `a` and `b`
         // return range: [0: PI]
@@ -70,10 +60,5 @@ namespace FingerprintRecognitionV2.Util.Comparator.Experimental
             double ans = Acos(dx / len);
             return dy >= 0 ? ans : V_2PI - ans;
         }
-
-        /** 
-         * @ tools
-         * */
-        static private double Sqr(double x) => x * x;
     }
 }

@@ -1,7 +1,8 @@
 using FingerprintRecognitionV2.DataStructure;
+using FingerprintRecognitionV2.Util.Comparator;
 using FingerprintRecognitionV2.Util.Preprocessing;
 
-namespace FingerprintRecognitionV2.Util.Comparator.Experimental
+namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 {
     static public class RidgesExtractor
     {

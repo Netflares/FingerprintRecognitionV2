@@ -38,7 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Algorithm\" />
-    <Folder Include="Util\FeaturesExtractor\" />
+    <Folder Include="Math\" />
     <Folder Include="_dat\" />
     <Folder Include="_log\" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 using DelaunatorSharp;
+using FingerprintRecognitionV2.Util.FeaturesExtractor;
 using FingerprintRecognitionV2.Util.Preprocessing;
 
 namespace FingerprintRecognitionV2.Util.Comparator.Experimental

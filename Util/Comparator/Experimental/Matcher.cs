@@ -1,5 +1,5 @@
 ﻿using static System.Math;
-using static FingerprintRecognitionV2.Util.Comparator.Experimental.Geometry;
+using static FingerprintRecognitionV2.Util.FeaturesExtractor.Geometry;
 
 namespace FingerprintRecognitionV2.Util.Comparator.Experimental
 {
