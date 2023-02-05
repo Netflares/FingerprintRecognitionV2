@@ -7,7 +7,7 @@
             MaxAngle = 1 << 8;
 
         static private readonly int[]
-            _Sqrt = new int[MaxDistance],   // Sqrt[i] = Round( Sqrt(i) )
+            _Sqrt = new int[1<<20],         // Sqrt[i] = Round( Sqrt(i) )
             _Sin = new int[MaxAngle<<1|1],  // Sin[a + MaxAngle] = Round( Sin(a * 2PI / 256) )
             _Cos = new int[MaxAngle<<1|1],  // Cos[a + MaxAngle] = Round( Cos(a * 2PI / 256) )
             _Atan2 = new int[1<<22];        // Atan2[((y + MaxDistance)<<11) | (x + MaxDistance)] = Round( Atan2(y, x) )
@@ -21,7 +21,7 @@
 
         static FastMath()
         {
-            for (int i = 0; i < MaxDistance; i++)
+            for (int i = 0; i < (1<<20); i++)
                 _Sqrt[i] = Cast(Math.Sqrt(i));
 
             for (int i = -MaxAngle; i <= MaxAngle; i++)
