@@ -36,7 +36,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 		*/
 		static public int sPart(Triplet a, Triplet b)
 		{
-			if (!sTheta(a.Minutiae, b.Minutiae)) return false;
+			if (!sTheta(a.Minutiae, b.Minutiae)) return 0;
 
 			int sd = sDistance(a.Distances, b.Distances);
 			if (sd >= Param.LocalDistanceTolerance) return 0;
@@ -57,7 +57,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 		static private bool sTheta(Minutia[] a, Minutia[] b)
 		{
 			for (int i = 0; i < 3; i++)
-				if (FastGeometry.AdPI(a[i].A, b[i].A) >= Param.AngleTolerance) return false;
+				if (FastGeometry.AdPI(a[i].Angle, b[i].Angle) >= Param.AngleTolerance) return false;
 			return true;
 		}
 
@@ -81,6 +81,18 @@ namespace FingerprintRecognitionV2.Util.Comparator
 		{
 			int ans = 0;
 			for (int i = 0; i < 6; i++)
+				ans = Math.Max(ans, FastGeometry.AdPI(a[i], b[i]));
+			return ans;
+		}
+
+		/*
+		equation 10
+
+		*/
+		static public int sBeta(int[] a, int[] b)
+		{
+			int ans = 0;
+			for (int i = 0; i < 3; i++)
 				ans = Math.Max(ans, FastGeometry.AdPI(a[i], b[i]));
 			return ans;
 		}

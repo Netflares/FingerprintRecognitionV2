@@ -4,7 +4,7 @@
     {
         static public readonly int
             MaxDistance = 1 << 10,
-            MaxAngle = 1 << 8;
+            MaxAngle = 256;
 
         static private readonly int[]
             _Sqrt = new int[1<<20],         // Sqrt[i] = Round( Sqrt(i) )

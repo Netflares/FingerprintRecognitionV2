@@ -2,6 +2,7 @@
 using Emgu.CV.Structure;
 using Emgu.CV;
 using FingerprintRecognitionV2.MatTool;
+using FingerprintRecognitionV2.Util.Comparator;
 using static System.Math;
 
 // this class serves debug purposes only
@@ -44,6 +45,21 @@ namespace FingerprintRecognitionV2.Util
         {
             for (int i = 0; i < l; i++)
                 Plot(src, (int)Round(y + i * Sin(a)), (int)Round(x + i * Cos(a)), r, c);
+        }
+
+        static public Image<Bgr, byte> Visualize(bool[,] ske, List<Minutia> minutiae)
+        {
+            Image<Bgr, byte> res = Visualization.Bool2Bgr(ske);
+
+            foreach (var i in minutiae)
+            {
+                Bgr color = new(0, 255, 0);
+
+                Visualization.DrawLine(res, i.Y, i.X, i.Angle * Math.PI / 128, 12, 0, new Bgr(0, 0, 255));
+                Visualization.Plot(res, i.Y, i.X, 2, color);
+            }
+
+            return res;
         }
     }
 }

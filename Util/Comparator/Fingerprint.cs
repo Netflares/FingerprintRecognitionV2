@@ -64,12 +64,12 @@ namespace FingerprintRecognitionV2.Util.Comparator
         /** 
 		 * @ util
 		 * */
-        public int LowerBound(double len)
+        public int LowerBound(int len)
         {
             int l = 0, r = Triplets.Count;
             while (l < r)
             {
-                int m = l + r + 0 >> 1;
+                int m = (l + r + 0) >> 1;
                 if (Triplets[m].Distances[2] >= len)
                     r = m;
                 else

@@ -4,12 +4,46 @@ namespace FingerprintRecognitionV2.Util.Comparator
 {
 	static public class Matcher
 	{
-		static List<TripletPair> mTriplets = new(1000);
-		static List<MinutiaPair> mPairs = new(1000);
+		static List<TripletPair> mTriplets = new();
+		static List<MinutiaPair> mPairs = new();
 		static FastHashSet<int> probeDupes = new();
 		static FastHashSet<int> candidateDupes = new();
 
-		static public int Match(Fingerprint probe, Fingerprint candidate)
+		/**
+		 * @ containers
+		 * */
+		private class TripletPair
+		{
+			public Triplet Probe;
+			public Triplet Candidate;
+			public int Score;
+
+			public TripletPair(Triplet probe, Triplet candidate, int score)
+			{
+				Probe = probe;
+				Candidate = candidate;
+				Score = score;
+			}
+		}
+
+		private class MinutiaPair
+		{
+			public Minutia Probe;
+			public Minutia Candidate;
+
+			public MinutiaPair(Minutia probe, Minutia candidate)
+			{
+				Probe = probe;
+				Candidate = candidate;
+			}
+		}
+
+		/** 
+		 * @ debuggers 
+		 * */
+
+		// a cheap copy-pasting, but it works regardless
+		static public int DebugMatch(Fingerprint probe, Fingerprint candidate, ref List<Minutia> ansProbe, ref List<Minutia> ansCandidate)
 		{
 			mTriplets.Clear();
 			mPairs.Clear();
@@ -54,67 +88,50 @@ namespace FingerprintRecognitionV2.Util.Comparator
 			foreach (MinutiaPair pair1 in mPairs)
 			{
 				Minutia m1 = pair1.Probe, m2 = pair1.Candidate;
-				int theta = m2.Angle - m1.Angle,
-					cosTheta = FastMath.Cos(theta),
+				
+				int theta = m2.Angle - m1.Angle;
+				if (theta < 0) theta = FastGeometry.TwoPI + theta;
+
+				int	cosTheta = FastMath.Cos(theta),
 					sinTheta = FastMath.Sin(theta);
 
 				int matches = 0;
+				List<Minutia> mProbe = new(), mCandidate = new();
+				mProbe.Add(m1);
+				mCandidate.Add(m2);
 
 				foreach (MinutiaPair pair2 in mPairs)
 				{
 					if (pair1.Equals(pair2)) continue;
 					Minutia m3 = pair2.Probe, m4 = pair2.Candidate;
 
-					if (FastMath.AdPI(
-						FastMath.Ad2PI(m2.Angle, m1.Angle), FastMath.Ad2PI(m4.angle, m3.Angle)
+					if (FastGeometry.AdPI(
+						FastGeometry.Ad2PI(m2.Angle, m1.Angle), FastGeometry.Ad2PI(m4.Angle, m3.Angle)
 					) > Param.AngleTolerance) continue;
 
 					// finding p'
 					int x = m2.X + cosTheta * (m3.X - m1.X) - sinTheta * (m3.Y - m1.Y),
 						y = m2.Y + sinTheta * (m3.X - m1.X) + cosTheta * (m3.Y - m1.Y),
 						t = m3.Angle - m1.Angle + m2.Angle;
-                    double edgeA = x - m4.X, edgeB = y - m4.Y, edgeC = FastMath.Sqrt(edgeA * edgeA + edgeB * edgeB);
+					int edgeA = x - m4.X, edgeB = y - m4.Y, edgeC = FastMath.Sqrt(edgeA * edgeA + edgeB * edgeB);
 					
 					if (edgeC > Param.GlobalDistanceTolerance) continue;
-					if (FastMath.AdPI(t, m4.Angle) > Param.AngleTolerance) continue;
+					if (FastGeometry.AdPI(t, m4.Angle) > Param.AngleTolerance) continue;
 
 					matches++;
+					mProbe.Add(m3);
+					mCandidate.Add(m4);
 				}
 
 				if (matches > ans)
+				{
 					ans = matches;
+					ansProbe = mProbe;
+					ansCandidate = mCandidate;
+				}
 			}
 
 			return ans;
-		}
-
-		/**
-		 * @ containers
-		 * */
-		private class TripletPair
-		{
-			public Triplet Probe;
-			public Triplet Candidate;
-			public int Score;
-
-			public TripletPair(Triplet probe, Triplet candidate, int score)
-			{
-				Probe = probe;
-				Candidate = candidate;
-				Score = score;
-			}
-		}
-
-		private class MinutiaPair
-		{
-			public Minutia Probe;
-			public Minutia Candidate;
-
-			public MinutiaPair(Minutia probe, Minutia candidate)
-			{
-				Probe = probe;
-				Candidate = candidate;
-			}
 		}
 	}
 }
