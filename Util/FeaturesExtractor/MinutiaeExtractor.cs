@@ -47,7 +47,7 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 
         static private void HandleEnding(List<Minutia> res, bool[,] ske, int y, int x)
         {
-            List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, 16, new int[] { 7, 12, 16 });
+            List<double> pts = RidgesExtractor.EndingBFS(ske, y, x, Param.EndingMinLength, Param.EndingCheckRadius);
             if (pts.Count == 0) return; // this is a noise
 
             // tolerance: 20deg
@@ -58,9 +58,9 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
         static private void HandleBifur(List<Minutia> res, bool[,] ske, int y, int x)
         {
             // get triplets
-            List<double[]> trps = RidgesExtractor.BifurBFS(ske, y, x, 16, new int[3] { 3, 10, 16 });
+            List<double[]> trps = RidgesExtractor.BifurBFS(ske, y, x, Param.BifurMinLength, Param.BifurCheckRadius);
             if (trps.Count == 0) return;
-            double[] trp = trps[2];
+            double[] trp = trps.Last();
 
             double a01 = Geometry.AdPI(trp[0], trp[1]),
                    a02 = Geometry.AdPI(trp[0], trp[2]),

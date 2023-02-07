@@ -1,9 +1,10 @@
 ﻿using DelaunatorSharp;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using FingerprintRecognitionV2.Util;
 using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.DataStructure;
-using FingerprintRecognitionV2.Util.Comparator;
+using FingerprintRecognitionV2.Util.ComparatorSlow;
 using FingerprintRecognitionV2.Util.Preprocessing;
 using System.Diagnostics;
 
@@ -33,14 +34,14 @@ for (int i = 0; i < 500; i++)
     /*
     ProcImg img = new(new Image<Gray, byte>("_dat/set00/" + i + ".bmp"));
     fps[i] = new(ProcImg.SkeletonMat, ProcImg.SegmentMsk, 16);
-    fps[i].Export("_dat/inp-fast/" + i.ToString("D3") + ".inp");
+    fps[i].Export("_dat/inp-fast-v3/" + i.ToString("D3") + ".inp");
+    CvInvoke.Imwrite("_dat/visualize-ver7/" + i.ToString("D3") + ".png", Visualization.Visualize(ProcImg.SkeletonMat, fps[i].Minutiae));
     */
-    fps[i] = new("_dat/inp-fast/" + i.ToString("D3") + ".inp");
+    fps[i] = new("_dat/inp-fast-v3/" + i.ToString("D3") + ".inp");
 }
 
 timer.Stop();
 PrintTime(timer, "preprocessed 500 fingerprints");
-
 
 Console.WriteLine("begins to compare 500*499 pairs of images");
 timer.Restart();
@@ -72,8 +73,6 @@ for (int i = 0; i < 500; i++)
         } catch (Exception e) {Console.WriteLine(i + " " + j);}
     }
 
-    if (bestMatches < 4) return;
-
     Image<Bgr, byte> probe = new("_dat/set00/" + i + ".bmp"), candi = new("_dat/set00/" + k + ".bmp");
     foreach (Minutia a in fansProbe)
         CvInvoke.Circle(probe, new System.Drawing.Point(a.X, a.Y), 4, new(0, 255, 0));
@@ -85,7 +84,7 @@ for (int i = 0; i < 500; i++)
     Iterator2D.Forward(480, 320, (y, x) => ans[y, x + 320] = candi[y, x]);
 
     CvInvoke.Imwrite(
-        String.Format("_dat/cmp-fast/{0}-{1}.png", i.ToString("D3"), k.ToString("D3")), 
+        String.Format("_dat/cmp-v2/{0}-{1}.png", i.ToString("D3"), k.ToString("D3")), 
         ans
     );
 }
