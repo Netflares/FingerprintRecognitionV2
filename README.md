@@ -1,38 +1,92 @@
 
-# About
+# 1. Summary
 
-This repository does 3 things:
+This repository consists of 3 modules:
 
-1. Pre-processing fingerprint images into skeletons
-2. Categorizing them (under progress)
-3. Matching them (under progress)
+- A fingerprint pre-processing chain based on image filtering algorithms
+- An algorithm for extracting fingerprint’s features, which are called “minutiae”
+- A one-to-one fingerprint matching algorithm. 
 
-Note that this repository is totally an experimental project, developed by a naive 18 y/o. The goal is to get the best results out of every of those 3 things. 
+# 2. Dataset
 
-# About the pre-processing module
+The dataset used in this repository consists of 500 fingerprint images, each has the resolution of $320 \times 480$ pixels (Width $\times$ Height), white ridges & black background. You can see the dataset [here](https://drive.google.com/file/d/1kN5-_hYckyTowcTlNFRye7VB1JJX8z5a/view?usp=share_link).
 
-I'll just leave some results here
+# 3. Pre-processing module
 
-Source                     | Gabor Filter               | Skeletonization
-:-------------------------:|:-------------------------: | :-------------------------:
-![src](https://user-images.githubusercontent.com/58514512/211828914-0f4c6fc9-221e-4397-bd63-eb1320f8c7ad.png) | ![gabor](https://user-images.githubusercontent.com/58514512/211828957-6936eb4a-ebd0-4517-99d3-c6552e7707b3.png) | ![ske](https://user-images.githubusercontent.com/58514512/211829002-0b2057ed-cef8-41ff-93a3-2526128071ed.png)
+The first module of this repository transforms a fingerprint image into its skeleton, using [Gabor Filter](https://en.wikipedia.org/wiki/Gabor_filter) and [Morphology Skeletonization](https://homepages.inf.ed.ac.uk/rbf/HIPR2/skeleton.htm). Here are some of its results:
 
-The keypoints detection is handled by *the matching module*, and the singularities detection is handled by *the categorizing module*. So the output of this pre-processing module are:
+|                                            |                                            |
+|------------------------------------------- | ------------------------------------------ |
+| ![00](_doc/images/preproc-showcase-00.png) | ![01](_doc/images/preproc-showcase-01.png) |
+| ![02](_doc/images/preproc-showcase-02.png) | ![03](_doc/images/preproc-showcase-03.png) |
+| ![04](_doc/images/preproc-showcase-04.png) | ![05](_doc/images/preproc-showcase-05.png) |
+| ![06](_doc/images/preproc-showcase-06.png) | ![07](_doc/images/preproc-showcase-07.png) |
 
-- A Gabor image
-- A Skeleton image
-- A fingerprint orientation image (which hasn't been visualized here)
-- And the fingerprint's wavelength
+### Pipeline
 
-There's still one thing I should improve about this module, which is the **Segmentation**. I'll do it later.
+The implemented pipeline is based on [this article](https://airccj.org/CSCP/vol7/csit76809.pdf). The following images show the steps in order, as well as the result of each step:
 
-# How to use
+![pipeline](_doc/images/preproc-pipeline.png)
 
-*I'll make a cli later.*
+![pipeline visualized](_doc/images/preproc-pipeline-visualization.png)
 
-Note: This project only processes images with the size of 480 pixels in Height and 320 pixels in Width. Additionally, the ridges of the fingerprint should be white, and the background should be black.
+### Performance Status
 
-# Directories
+In order to make the benchmark result accurate and reliable, the program is single-thread. The fingerprints will be processed one after another. There is no paralleled process.
+
+- Processed 500 images: **56.599s**
+- Average time per image: **0.1132s**
+- Images per second: **8.83 img/s**
+
+### Development Status
+
+The Gabor Filter is not fully optimized. In fact, **80.35%** of the runtime is spent on a single step in the pipeline.
+
+Documentation for this module will be composed later.
+
+# 4. Feature Extraction Module
+
+This module proposes a simple feature extraction algorithm. It takes a skeleton image of a fingerprint, then returns the *terminations* and *bifurcations*. It also comes with a little noise elimination, which increases the accuracy of the matching module.
+
+|     |     |     |
+| --- | --- | --- |
+| ![00](_doc/images/ext-showcase-00.png) | ![01](_doc/images/ext-showcase-01.png) | ![02](_doc/images/ext-showcase-02.png) |
+
+# 5. Matching Module
+
+Algorithm: [Improving Fingerprint Verification Using Minutiae Triplets](https://doi.org/10.3390/s120303418).
+
+### Benchmark Proposal
+
+*To read more about the matching benchmark, see `_doc/`*
+
+This benchmark uses the same dataset as the one in the **Pre-processing** section. The program is then challenged:
+
+- Given $N$ fingerprints. For each fingerprint, find another one that is of a same finger.
+- Because the project aims at fingerprint recognition, not fingerprint grouping, each comparison must be one-to-one. Thus, for this dataset, there are $500 \times 499$ comparisons expected.
+
+Again, the program is single-thread, which ensures the average time for each comparison is accurate and reliable. Each comparison is performed one after another. There is no paralleled process.
+
+### Benchmark - Accuracy
+
+481 out of 500 given fingerprints successfully found an accurate match. That makes the accuracy of **96.2%**, or **3.8%** mismatch rate. Here are some of the matches:
+
+|                                        |                                        |
+| -------------------------------------- | -------------------------------------- |
+| ![00](_doc/images/cmp-showcase-00.png) | ![01](_doc/images/cmp-showcase-01.png) |
+| ![02](_doc/images/cmp-showcase-02.png) | ![03](_doc/images/cmp-showcase-03.png) |
+| ![04](_doc/images/cmp-showcase-04.png) | ![05](_doc/images/cmp-showcase-05.png) |
+| ![06](_doc/images/cmp-showcase-06.png) | ![07](_doc/images/cmp-showcase-07.png) |
+
+### Benchmark - Performance
+
+- Executed $500 \times 499 = 249500$ comparisons: $37.738$ s
+- Average $0.1512 \times 10^{-3}$ s, or $0.1512$ ms per comparison
+- Speed: $6611.37$ comparisons/s
+
+Which sucks, tbh.
+
+# 6. Directories
 
 If you're really into the source code, here's the hierarchy:
 
@@ -43,7 +97,6 @@ If you're really into the source code, here's the hierarchy:
     - `./Util/Preprocessing`: Pre-process the input images into ridges' skeleton
     - `./Util/Singularity`: Extracts key points from fingerprint images
     - `./Util/Comparator`: Compare fingerprints
-- `./_dat`: Local data files including input images, processed images, images' encoded data and any data which this program processes. *(This directory is ignored by default)*
-- `./_log`: Local log files, mostly used for reports and debugging. *(This directory is ignored by default)*
+- `./_doc`: Document files
 
-Since **Speed** and **Memory Efficiency** are highly prioritized (second only to **Accuracy**), this project's implementations and the algorithms behind them are **absolutely incomprehensible** to anyone without documentation (except me, ofc). Therefore, I'll try to write as many docs as I can to explain my code, I promise.
+Regardless, this project's implementations and the algorithms behind them are **absolutely incomprehensible** to anyone without documentation (except me, ofc). Therefore, I'll try to write as many docs as I can to explain my code, I promise.

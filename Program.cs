@@ -1,4 +1,16 @@
-﻿using DelaunatorSharp;
+﻿
+/**
+ * the parameters used in this program is no longer
+ * suitable for the dataset mentioned in README.md
+ * 
+ * it still returns good accuracy (still around 95%)
+ * but it focuses on smaller dataset now
+ * 
+ * I feel like I really need to make an AI module
+ * that decides these params automatically tbh
+ * */
+
+using DelaunatorSharp;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.Util;
