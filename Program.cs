@@ -10,14 +10,14 @@
  * that decides these params automatically tbh
  * */
 
-using DelaunatorSharp;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using FingerprintRecognitionV2.Util;
 using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.Util.ComparatorSlow;
-using FingerprintRecognitionV2.Util.Preprocessing;
+// using FingerprintRecognitionV2.Util.Preprocessing;
+using FingerprintRecognitionV2.Util.PreprocessingMultithread;
 using System.Diagnostics;
 
 /** 
@@ -39,67 +39,20 @@ static void PrintTime(Stopwatch timer, string m)
 Stopwatch timer = new();
 timer.Start();
 
-Fingerprint[] fps = new Fingerprint[500];
+const int threads = 5, imgsPerThread = 500 / threads;
 
-for (int i = 0; i < 500; i++)
+Parallel.For(0, threads, (t) => 
 {
-    /*
-    ProcImg img = new(new Image<Gray, byte>("_dat/set00/" + i + ".bmp"));
-    fps[i] = new(ProcImg.SkeletonMat, ProcImg.SegmentMsk, 16);
-    fps[i].Export("_dat/inp-fast-v3/" + i.ToString("D3") + ".inp");
-    CvInvoke.Imwrite("_dat/visualize-ver7/" + i.ToString("D3") + ".png", Visualization.Visualize(ProcImg.SkeletonMat, fps[i].Minutiae));
-    */
-    fps[i] = new("_dat/inp-fast-v3/" + i.ToString("D3") + ".inp");
-}
+    int l = t * imgsPerThread, r = (t + 1) * imgsPerThread;
+    Processor proc = new();
 
-timer.Stop();
-PrintTime(timer, "preprocessed 500 fingerprints");
-
-Console.WriteLine("begins to compare 500*499 pairs of images");
-timer.Restart();
-
-for (int i = 0; i < 500; i++)
-{
-    int bestMatches = 0;
-    int k = 0;
-
-    List<Minutia> fansProbe = new(), fansCandi = new();
-
-    for (int j = 0; j < 500; j++)
+    for (int i = l; i < r; i++)
     {
-        if (i == j) continue;
-
-        try{
-        List<Minutia> ansProbe = new(), ansCandi = new();
-
-        int matches = Matcher.DebugMatch(fps[i], fps[j], ref ansProbe, ref ansCandi);
-
-        if (matches > bestMatches)
-        {
-            bestMatches = matches;
-            k = j;
-
-            fansProbe = ansProbe;
-            fansCandi = ansCandi;
-        }
-        } catch (Exception e) {Console.WriteLine(i + " " + j);}
+        Image<Gray, byte> src = new("_dat/set00/" + i + ".bmp");
+        proc.Process(src);
+        CvInvoke.Imwrite("_dat/ske-multithread/" + i + ".png", MatConverter.Bool2Img(proc.SkeletonMat));
     }
-
-    Image<Bgr, byte> probe = new("_dat/set00/" + i + ".bmp"), candi = new("_dat/set00/" + k + ".bmp");
-    foreach (Minutia a in fansProbe)
-        CvInvoke.Circle(probe, new System.Drawing.Point(a.X, a.Y), 4, new(0, 255, 0));
-    foreach (Minutia a in fansCandi)
-        CvInvoke.Circle(candi, new System.Drawing.Point(a.X, a.Y), 4, new(0, 255, 0));
-
-    Image<Bgr, byte> ans = new(320 * 2, 480);
-    Iterator2D.Forward(480, 320, (y, x) => ans[y, x] = probe[y, x]);
-    Iterator2D.Forward(480, 320, (y, x) => ans[y, x + 320] = candi[y, x]);
-
-    CvInvoke.Imwrite(
-        String.Format("_dat/cmp-v2/{0}-{1}.png", i.ToString("D3"), k.ToString("D3")), 
-        ans
-    );
-}
+});
 
 timer.Stop();
-PrintTime(timer, "compared");
+PrintTime(timer, "runtime");
