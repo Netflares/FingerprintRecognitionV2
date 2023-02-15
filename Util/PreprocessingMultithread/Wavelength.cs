@@ -16,11 +16,6 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
         static readonly int
             Area = (Height / BS) * (Width / BS);
 
-        public Wavelength()
-        {
-
-        }
-
         /**
          * @ params:
          * norm size:   Height * Width
@@ -40,10 +35,8 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
                 // if the whole block is within the mask
                 double wave = Query(norm, i, j, orient[i, j], 5, 15);
                 if (wave > 0) waves.Add(wave);
-                Console.WriteLine(wave);
             });
             waves.Sort();
-            Console.WriteLine("waves cnt = " + waves.Count);
             return waves[waves.Count >> 1]; // if your waves.Count == 0, you deserve a crash
         }
 
@@ -65,8 +58,8 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
             double blockOrient = Atan2(sinOrient, cosOrient) / 2.0;
 
             // rotate the block so that all ridges are horizontal
-            AffineRotation.NoBackgroundRotate(norm, kernel, i * BS, j * BS, BS, KS, -blockOrient);
-            SumProjection(kernel, ridgeSum);  // size: KS * KS
+            AffineRotation.NoBackgroundRotate(norm, kernel, i * BS, j * BS, BS, KS, -blockOrient);  // this renews `kernel`
+            SumProjection(kernel, ridgeSum);  // size: KS * KS, this renews `ridgeSum`
 
             // some statistics
             double avg = 0;
@@ -75,9 +68,9 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
             avg /= KS;
 
             // get dilation and filter out noises
-            Morphology1D.GrayDilation(ridgeSum, dilation, 5, 1);
+            Morphology1D.GrayDilation(ridgeSum, dilation, 5, 1);    // this renews `dilation`
             for (int y = 0; y < KS; y++)
-                ridgeNoise[y] = Abs(dilation[y] - ridgeSum[y]);
+                ridgeNoise[y] = Abs(dilation[y] - ridgeSum[y]);     // this renews `ridgeNoise`
 
             // get peaks
             peaks.Clear();
@@ -96,6 +89,8 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
             return 0.0;
         }
 
+        public Wavelength() {}
+
         /** 
          * @ calculator
          * */
@@ -108,6 +103,8 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
 
             while (itr < KS2)
             {
+                res[ind] = 0;   // refresh the result array
+
                 Span<double> row = arr.Slice(itr, KS);
                 foreach (double v in row)
                     res[ind] += v;

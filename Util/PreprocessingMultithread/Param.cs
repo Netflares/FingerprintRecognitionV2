@@ -9,6 +9,6 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
 
 		// Gabor Filter Attributes
 		static public readonly double
-			AngleInc = Math.PI * 3 / 180;
+			AngleInc = Math.PI * 4 / 180;
 	}
 }

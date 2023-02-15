@@ -51,13 +51,13 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
 
 			// wavelength (frequency)
 			Normalization.ExcludeBackground(NormMat, SegmentMsk);
-			WaveLen = FingerprintRecognitionV2.Util.Preprocessing.Wavelength.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
+			WaveLen = waveCalc.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
 
 			// gabor filter
             gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
 
             // skeletonization
-            // ZhangBruteThinning.Thinning(SkeletonMat);
+            ZhangBruteThinning.Thinning(SkeletonMat);
 		}
 	}
 }
