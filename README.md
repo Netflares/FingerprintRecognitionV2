@@ -86,7 +86,32 @@ Again, the program is single-thread, which ensures the average time for each com
 
 Which sucks, tbh.
 
-# 6. Directories
+# 8. How to use
+
+Because I haven't made a cli yet, just edit `Program.cs` for the time being.
+
+For example:
+
+```C#
+// create a new Util.PreprocessingMultithread.Processor object
+Processor proc = new();
+// load a fingerprint image
+Image<Gray, byte> src = new("fingerprint-image.png");
+// process it
+proc.Process(src);
+// export the fingerprint's skeleton
+CvInvoke.Imwrite("skeleton.png", MatConverter.Bool2Img(proc.SkeletonMat));
+// export the fingerprint's minutiae
+proc.PrepareForExtraction();
+MinutiaeExtractor.ExtractAndExport("data-1.inp", proc.SkeletonMat, proc.SegmentMsk);
+
+// load fingerprint's data & match them
+Fingerprint probe = new("data-1.inp");
+Fingerprint candidate = new("data-2.inp");
+Console.WriteLine(Matcher.Match(probe, candidate)); // can be visualized via Matcher.DebugMatch(probe, candidate, probeMatchResult, candidateMatchResult)
+```
+
+# 7. Directories
 
 If you're really into the source code, here's the hierarchy:
 
