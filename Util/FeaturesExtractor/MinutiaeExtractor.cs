@@ -1,5 +1,6 @@
 ﻿using FingerprintRecognitionV2.MatTool;
-using FingerprintRecognitionV2.Util.Comparator;
+using FingerprintRecognitionV2.Util.ComparatorSlow;
+using FingerprintRecognitionV2.Util.PreprocessingMultithread;
 using static System.Math;
 
 namespace FingerprintRecognitionV2.Util.FeaturesExtractor
@@ -9,18 +10,13 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
         /** 
          * @ usage:
          * extacts minutiae from a skeleton image
-         * 
-         * `bool[,] ske`:       a ske image
-         * `double[,] orient`:  block orient
-         * `int wl`:            ridges' wavelength
-         * `int bs`:            block size
          * */
-        static public List<Minutia> Extract(bool[,] ske, bool[,] msk, int bs)
+        static public List<Minutia> Extract(bool[,] ske, bool[,] msk)
         {
             int h = ske.GetLength(0), w = ske.GetLength(1);
             List<Minutia> res = new();
 
-            Iterator2D.Forward(bs, bs, h - bs, w - bs, (y, x) =>
+            Iterator2D.Forward(Param.BlockSize, Param.BlockSize, h - Param.BlockSize, w - Param.BlockSize, (y, x) =>
             {
                 if (msk[y, x])
                 {
@@ -35,6 +31,23 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
             return res;
         }
 
+        static public void ExtractAndExport(string fname, bool[,] ske, bool[,] msk)
+        {
+            List<Minutia> ls = Extract(ske, msk);
+
+            using FileStream f = File.OpenWrite(fname);
+            using StreamWriter o = new(f);
+            foreach (Minutia i in ls)
+            {
+                o.Write(i.Y + " ");
+                o.Write(i.X + " ");
+                o.Write(i.Angle + "\n");
+            }
+        }
+
+        /**
+         * 
+         * */
         static private byte CheckMinutia(bool[,] ske, int y, int x)
         {
             if (!ske[y, x]) return Minutia.NO_TYPE;

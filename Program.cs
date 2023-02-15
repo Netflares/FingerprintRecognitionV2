@@ -16,7 +16,7 @@ using FingerprintRecognitionV2.Util;
 using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.Util.ComparatorSlow;
-// using FingerprintRecognitionV2.Util.Preprocessing;
+using FingerprintRecognitionV2.Util.FeaturesExtractor;
 using FingerprintRecognitionV2.Util.PreprocessingMultithread;
 using System.Diagnostics;
 
@@ -36,23 +36,4 @@ static void PrintTime(Stopwatch timer, string m)
 /** 
  * @ testing here
  * */
-Stopwatch timer = new();
-timer.Start();
-
-const int threads = 5, imgsPerThread = 500 / threads;
-
-Parallel.For(0, threads, (t) => 
-{
-    int l = t * imgsPerThread, r = (t + 1) * imgsPerThread;
-    Processor proc = new();
-
-    for (int i = l; i < r; i++)
-    {
-        Image<Gray, byte> src = new("_dat/set00/" + i + ".bmp");
-        proc.Process(src);
-        CvInvoke.Imwrite("_dat/ske-multithread/" + i + ".png", MatConverter.Bool2Img(proc.SkeletonMat));
-    }
-});
-
-timer.Stop();
-PrintTime(timer, "runtime");
+ 

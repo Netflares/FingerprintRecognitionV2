@@ -1,6 +1,4 @@
 ﻿using DelaunatorSharp;
-using FingerprintRecognitionV2.Util.FeaturesExtractor;
-using FingerprintRecognitionV2.Util.Preprocessing;
 
 namespace FingerprintRecognitionV2.Util.Comparator
 {
@@ -28,17 +26,6 @@ namespace FingerprintRecognitionV2.Util.Comparator
                     Convert.ToInt32(items[0]), Convert.ToInt32(items[1]), Convert.ToDouble(items[2])
                 ));
             }
-
-            BuildTriplets();
-        }
-
-        // create fingerprint from ProcImg data
-        public Fingerprint(bool[,] SkeletonMat, bool[,] SegmentMsk, int BlockSize)
-        {
-            // extract informations
-            MorphologyR4.Erose(SegmentMsk, BlockSize);
-            Segmentation.Padding(SegmentMsk, BlockSize);
-            Minutiae = MinutiaeExtractor.Extract(SkeletonMat, SegmentMsk, BlockSize);
 
             BuildTriplets();
         }
@@ -76,21 +63,6 @@ namespace FingerprintRecognitionV2.Util.Comparator
                     l = m + 1;
             }
             return r;
-        }
-
-        /** 
-         * @ io
-         * */
-        public void Export(string fname)
-        {
-            using FileStream f = File.OpenWrite(fname);
-            using StreamWriter o = new(f);
-            foreach (Minutia i in Minutiae)
-            {
-                o.Write(i.Y + " ");
-                o.Write(i.X + " ");
-                o.Write((Math.PI * i.Angle / 128) + "\n");
-            }
         }
     }
 }

@@ -59,5 +59,11 @@ namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
             // skeletonization
             ZhangBruteThinning.Thinning(SkeletonMat);
 		}
+
+		public void PrepareForExtraction() 
+		{
+            morp4.Erose(SegmentMsk, Param.BlockSize);
+            Segmentation.Padding(SegmentMsk, Param.BlockSize);
+		}
 	}
 }

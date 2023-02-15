@@ -3,6 +3,7 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 	static public class Param
 	{
 		static public readonly int
+			BlockSize = 16,
 			EndingMinLength = 16,
 			BifurMinLength = 10;
 

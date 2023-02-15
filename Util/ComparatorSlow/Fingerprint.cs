@@ -1,6 +1,4 @@
 ﻿using DelaunatorSharp;
-using FingerprintRecognitionV2.Util.FeaturesExtractor;
-using FingerprintRecognitionV2.Util.Preprocessing;
 
 namespace FingerprintRecognitionV2.Util.ComparatorSlow
 {
@@ -65,21 +63,6 @@ namespace FingerprintRecognitionV2.Util.ComparatorSlow
                     l = m + 1;
             }
             return r;
-        }
-
-        /** 
-         * @ io
-         * */
-        public void Export(string fname)
-        {
-            using FileStream f = File.OpenWrite(fname);
-            using StreamWriter o = new(f);
-            foreach (Minutia i in Minutiae)
-            {
-                o.Write(i.Y + " ");
-                o.Write(i.X + " ");
-                o.Write(i.Angle + "\n");
-            }
         }
     }
 }
