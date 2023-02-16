@@ -1,5 +1,4 @@
-﻿using FingerprintRecognitionV2.Util.Comparator;
-using static System.Math;
+﻿using static System.Math;
 
 /** 
  * @ desc:

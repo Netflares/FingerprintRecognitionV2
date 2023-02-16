@@ -1,6 +1,5 @@
 using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.Util.ComparatorSlow;
-using FingerprintRecognitionV2.Util.Preprocessing;
 
 namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 {
@@ -97,6 +96,9 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 		the returning matrix has the size of (2r + 1) ** 2
 		whose (r, r) is relative to the initial (y0, x0)
 		*/
+        static public readonly int[] RY = { -1, -1, -1, 0, 1, 1, 1, 0 };
+        static public readonly int[] RX = { -1, 0, 1, 1, 1, 0, -1, -1 };
+
         static public bool[,] RegionalBFS(bool[,] ske, int y0, int x0, int r)
         {
             y0 -= r; x0 -= r;       // (y0, x0) translates to (r, r)
@@ -114,7 +116,7 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 
                 for (int t = 0; t < 8; t++)
                 {
-                    int ny = y + MorphologyR8.RY[t], nx = x + MorphologyR8.RX[t];
+                    int ny = y + RY[t], nx = x + RX[t];
                     if (ny < 0 || nx < 0 || ny > rr || nx > rr) continue;
 
                     if (ske[ny + y0, nx + x0] && !vst[ny, nx])
