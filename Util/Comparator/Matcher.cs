@@ -2,18 +2,56 @@ using FingerprintRecognitionV2.DataStructure;
 
 namespace FingerprintRecognitionV2.Util.Comparator
 {
-	static public class Matcher
+	public class Matcher
 	{
-		static List<TripletPair> mTriplets = new();
-		static List<MinutiaPair> mPairs = new();
-		static FastHashSet<int> probeDupes = new();
-		static FastHashSet<int> candidateDupes = new();
+		/**
+		 * @ containers
+		 * */
+		private class TripletPair
+		{
+			public Triplet Probe;
+			public Triplet Candidate;
+			public double Score;
+
+			public TripletPair(Triplet probe, Triplet candidate, double score)
+			{
+				Probe = probe;
+				Candidate = candidate;
+				Score = score;
+			}
+		}
+
+		private class MinutiaPair
+		{
+			public Minutia Probe;
+			public Minutia Candidate;
+
+			public MinutiaPair(Minutia probe, Minutia candidate)
+			{
+				Probe = probe;
+				Candidate = candidate;
+			}
+		}
+
+		/** 
+		 * @ init
+		 * */
+
+		List<TripletPair> mTriplets = new();
+		List<MinutiaPair> mPairs = new();
+		FastHashSet<int> probeDupes = new();
+		FastHashSet<int> candidateDupes = new();
+
+		public Matcher() 
+		{
+
+		}
 
 		/** 
 		 * @ the core 
 		 * */
 		// returns the number of matching minutiae
-		static public int Match(Fingerprint probe, Fingerprint candidate)
+		public int Match(Fingerprint probe, Fingerprint candidate)
 		{
 			mTriplets.Clear();
 			mPairs.Clear();
@@ -92,41 +130,11 @@ namespace FingerprintRecognitionV2.Util.Comparator
 			return ans;
 		}
 
-		/**
-		 * @ containers
-		 * */
-		private class TripletPair
-		{
-			public Triplet Probe;
-			public Triplet Candidate;
-			public double Score;
-
-			public TripletPair(Triplet probe, Triplet candidate, double score)
-			{
-				Probe = probe;
-				Candidate = candidate;
-				Score = score;
-			}
-		}
-
-		private class MinutiaPair
-		{
-			public Minutia Probe;
-			public Minutia Candidate;
-
-			public MinutiaPair(Minutia probe, Minutia candidate)
-			{
-				Probe = probe;
-				Candidate = candidate;
-			}
-		}
-
 		/** 
 		 * @ debuggers 
 		 * */
-
 		// a cheap copy-pasting, but it works regardless
-		static public int DebugMatch(Fingerprint probe, Fingerprint candidate, ref List<Minutia> ansProbe, ref List<Minutia> ansCandidate)
+		public int DebugMatch(Fingerprint probe, Fingerprint candidate, ref List<Minutia> ansProbe, ref List<Minutia> ansCandidate)
 		{
 			mTriplets.Clear();
 			mPairs.Clear();
