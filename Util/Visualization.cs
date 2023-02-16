@@ -2,7 +2,7 @@
 using Emgu.CV.Structure;
 using Emgu.CV;
 using FingerprintRecognitionV2.MatTool;
-using FingerprintRecognitionV2.Util.ComparatorSlow;
+using FingerprintRecognitionV2.Util.Comparator;
 using static System.Math;
 
 // this class serves debug purposes only

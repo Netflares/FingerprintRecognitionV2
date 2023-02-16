@@ -1,5 +1,5 @@
 using FingerprintRecognitionV2.DataStructure;
-using FingerprintRecognitionV2.Util.ComparatorSlow;
+using FingerprintRecognitionV2.Util.Comparator;
 
 namespace FingerprintRecognitionV2.Util.FeaturesExtractor
 {

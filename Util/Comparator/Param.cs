@@ -1,5 +1,5 @@
 ﻿
-namespace FingerprintRecognitionV2.Util.ComparatorSlow
+namespace FingerprintRecognitionV2.Util.Comparator
 {
     static public class Param
     {

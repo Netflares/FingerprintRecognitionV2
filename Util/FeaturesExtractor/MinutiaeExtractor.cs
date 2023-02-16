@@ -1,5 +1,5 @@
 ﻿using FingerprintRecognitionV2.MatTool;
-using FingerprintRecognitionV2.Util.ComparatorSlow;
+using FingerprintRecognitionV2.Util.Comparator;
 using static System.Math;
 
 namespace FingerprintRecognitionV2.Util.FeaturesExtractor

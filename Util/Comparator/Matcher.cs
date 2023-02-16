@@ -1,6 +1,6 @@
 using FingerprintRecognitionV2.DataStructure;
 
-namespace FingerprintRecognitionV2.Util.ComparatorSlow
+namespace FingerprintRecognitionV2.Util.Comparator
 {
 	static public class Matcher
 	{

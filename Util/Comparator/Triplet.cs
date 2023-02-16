@@ -1,4 +1,4 @@
-﻿namespace FingerprintRecognitionV2.Util.ComparatorSlow
+﻿namespace FingerprintRecognitionV2.Util.Comparator
 {
     public class Triplet
     {
