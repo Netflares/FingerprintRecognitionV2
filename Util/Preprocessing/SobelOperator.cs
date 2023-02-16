@@ -1,5 +1,5 @@
 
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     public class SobelOperator
     {

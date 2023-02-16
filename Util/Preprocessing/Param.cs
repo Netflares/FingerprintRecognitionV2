@@ -1,4 +1,4 @@
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
 	static public class Param
 	{

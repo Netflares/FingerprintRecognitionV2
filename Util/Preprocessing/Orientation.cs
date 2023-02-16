@@ -1,7 +1,7 @@
 using FingerprintRecognitionV2.MatTool;
 using static System.Math;
 
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     public class Orientation
     {

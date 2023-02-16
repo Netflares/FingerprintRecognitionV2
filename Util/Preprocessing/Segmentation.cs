@@ -1,6 +1,6 @@
 using FingerprintRecognitionV2.MatTool;
 
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     public class Segmentation
     {

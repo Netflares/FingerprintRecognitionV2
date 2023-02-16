@@ -17,7 +17,7 @@ using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.Util.ComparatorSlow;
 using FingerprintRecognitionV2.Util.FeaturesExtractor;
-using FingerprintRecognitionV2.Util.PreprocessingMultithread;
+using FingerprintRecognitionV2.Util.Preprocessing;
 using System.Diagnostics;
 
 /** 

@@ -1,6 +1,6 @@
 using static System.Math;
 
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     // rotate an image by a trigonometry angle
     /*

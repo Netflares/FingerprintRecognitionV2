@@ -1,7 +1,7 @@
 using FingerprintRecognitionV2.DataStructure;
 using FingerprintRecognitionV2.MatTool;
 
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     /**
      * @ usage:

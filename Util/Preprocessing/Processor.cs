@@ -1,7 +1,7 @@
 using Emgu.CV;
 using Emgu.CV.Structure;
 
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
 	public class Processor
 	{

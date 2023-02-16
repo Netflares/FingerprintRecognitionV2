@@ -36,11 +36,4 @@
     <PackageReference Include="Emgu.CV.runtime.windows" Version="4.6.0.5131" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Algorithm\" />
-    <Folder Include="Math\" />
-    <Folder Include="_dat\" />
-    <Folder Include="_log\" />
-  </ItemGroup>
-
 </Project>

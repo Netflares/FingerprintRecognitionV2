@@ -2,7 +2,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using static System.Math;
 
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     static public class Normalization
     {

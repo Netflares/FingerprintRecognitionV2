@@ -1,7 +1,7 @@
 
 using FingerprintRecognitionV2.DataStructure;
 
-namespace FingerprintRecognitionV2.Util.PreprocessingMultithread
+namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     static public class Morphology1D
     {
