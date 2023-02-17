@@ -37,8 +37,6 @@ namespace FingerprintRecognitionV2.Util.Comparator
 		List<MinutiaPair> mPairs = new();
 		FastHashSet<int> probeDupes = new();
 		FastHashSet<int> candidateDupes = new();
-		List<Minutia> probeMatch = new(Param.MaxMinutiae);
-		List<Minutia> candidateMatch = new(Param.MaxMinutiae);
 
 		public Matcher() {}
 
@@ -63,7 +61,7 @@ namespace FingerprintRecognitionV2.Util.Comparator
 					   cosTheta = Math.Cos(theta), 
 					   sinTheta = Math.Sin(theta);
 
-				int matches = 0;
+				int matches = 1;
 
 				foreach (MinutiaPair pair2 in mPairs)
 				{
@@ -91,26 +89,23 @@ namespace FingerprintRecognitionV2.Util.Comparator
 			foreach (MinutiaPair pair1 in mPairs)
 			{
 				Minutia m1 = pair1.Probe, m2 = pair1.Candidate;
-
-				probeMatch.Clear();
-				candidateMatch.Clear();
-				probeMatch.Add(m1);
-				candidateMatch.Add(m2);
 				
 				// a little caching
 				double theta = m2.Angle - m1.Angle,
 					   cosTheta = Math.Cos(theta), 
 					   sinTheta = Math.Sin(theta);
 
-				int matches = 0;
+				int matches = 1;
+				List<Minutia> probeMatch = new();
+				List<Minutia> candidateMatch = new();
+				probeMatch.Add(m1);
+				candidateMatch.Add(m2);
 
 				foreach (MinutiaPair pair2 in mPairs)
 				{
 					if (pair1.Equals(pair2)) continue;
 					Minutia m3 = pair2.Probe, m4 = pair2.Candidate;
-
-					if (!CheckM4(m1, m2, m3, m4, sinTheta, cosTheta))
-						continue;
+					if (!CheckM4(m1, m2, m3, m4, sinTheta, cosTheta)) continue;
 
 					matches++;
 					probeMatch.Add(m3);

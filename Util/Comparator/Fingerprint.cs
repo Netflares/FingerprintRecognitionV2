@@ -10,6 +10,12 @@ namespace FingerprintRecognitionV2.Util.Comparator
         /** 
 		 * @ constructors
 		 * */
+        public Fingerprint(List<Minutia> ls)
+        {
+            Minutiae = ls;
+            BuildTriplets();
+        }
+
         // create fingerprint from inp data
         public Fingerprint(string fname)
         {
