@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using Emgu.CV;
 using FingerprintRecognitionV2.MatTool;
 using FingerprintRecognitionV2.Util.Comparator;
+using System.Drawing;
 using static System.Math;
 
 // this class serves debug purposes only
@@ -23,43 +24,35 @@ namespace FingerprintRecognitionV2.Util
             return res;
         }
 
-        static public void Plot(Image<Bgr, byte> src, int y, int x, int r, Bgr c)
+        static public Image<Bgr, byte> VisualizeImage(bool[,] ske, List<Minutia> minutiae)
         {
-            if (y - r < 0 || src.Height <= y + r || x - r < 0 || src.Width <= x + r)
-                return;
-            for (int i = y - r; i <= y + r; i++)
-                for (int j = x - r; j <= x + r; j++)
-                    src[i, j] = c;
-        }
-
-        /** 
-         * @ params:
-         * src: the source img
-         * y:   first y loc of line
-         * x:   first x loc of line
-         * a:   angle
-         * l:   length
-         * c:   color
-         * */
-        static public void DrawLine(Image<Bgr, byte> src, int y, int x, double a, int l, int r, Bgr c)
-        {
-            for (int i = 0; i < l; i++)
-                Plot(src, (int)Round(y + i * Sin(a)), (int)Round(x + i * Cos(a)), r, c);
-        }
-
-        static public Image<Bgr, byte> Visualize(bool[,] ske, List<Minutia> minutiae)
-        {
-            Image<Bgr, byte> res = Visualization.Bool2Bgr(ske);
+            Image<Bgr, byte> res = Bool2Bgr(ske);
 
             foreach (var i in minutiae)
             {
-                Bgr color = new(0, 255, 0);
-
-                Visualization.DrawLine(res, i.Y, i.X, i.Angle, 12, 0, new Bgr(0, 0, 255));
-                Visualization.Plot(res, i.Y, i.X, 2, color);
+                CvInvoke.Circle(res, new Point(i.X, i.Y), 4, new(0, 255, 0));
+                Point desPt = new(
+                    Convert.ToInt32(i.X + 12 * Cos(i.Angle)), 
+                    Convert.ToInt32(i.Y + 12 * Sin(i.Angle))
+                );
+                CvInvoke.Line(res, new Point(i.X, i.Y), desPt, new(0, 0, 255));
             }
-
             return res;
+        }
+
+        static public Image<Bgr, byte> VisualizeComparison(string fProbe, string fCandi, int h, int w, List<Minutia> mProbe, List<Minutia> mCandi)
+        {
+            Image<Bgr, byte> probe = new(fProbe), candi = new(fCandi);
+            foreach (Minutia m in mProbe)
+                CvInvoke.Circle(probe, new Point(m.X, m.Y), 4, new(0, 255, 0));
+            foreach (Minutia m in mCandi)
+                CvInvoke.Circle(candi, new Point(m.X, m.Y), 4, new(0, 255, 0));
+
+            Image<Bgr, byte> ans = new(w * 2, h);
+            Iterator2D.Forward(h, w, (y, x) => ans[y, x] = probe[y, x]);
+            Iterator2D.Forward(h, w, (y, x) => ans[y, x + w] = candi[y, x]);
+
+            return ans;
         }
     }
 }
