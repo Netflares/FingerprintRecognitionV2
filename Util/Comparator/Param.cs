@@ -10,5 +10,10 @@ namespace FingerprintRecognitionV2.Util.Comparator
 
         static public readonly double
             ToleranceProduct = LocalDistanceTolerance * AngleTolerance * AngleTolerance;
+
+        // input constraints
+        static public readonly int 
+            MinMinutiae = 4,
+            MaxMinutiae = 250;
     }
 }

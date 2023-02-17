@@ -33,18 +33,18 @@ namespace FingerprintRecognitionV2.Util.Comparator
 			}
 		}
 
-		/** 
-		 * @ public
-		 * */
 		List<TripletPair> mTriplets = new();
 		List<MinutiaPair> mPairs = new();
 		FastHashSet<int> probeDupes = new();
 		FastHashSet<int> candidateDupes = new();
-		List<Minutia> probeMatch = new();
-		List<Minutia> candidateMatch = new();
+		List<Minutia> probeMatch = new(Param.MaxMinutiae);
+		List<Minutia> candidateMatch = new(Param.MaxMinutiae);
 
 		public Matcher() {}
 
+		/** 
+		 * @ public
+		 * */
 		// returns the number of matching minutiae
 		public int Match(Fingerprint probe, Fingerprint candidate)
 		{
@@ -117,7 +117,8 @@ namespace FingerprintRecognitionV2.Util.Comparator
 					candidateMatch.Add(m4);
 				}
 
-				if (matches > ans) {
+				if (matches > ans) 
+				{
 					ans = matches;
 					mProbe = probeMatch;
 					mCandidate = candidateMatch;
@@ -132,14 +133,20 @@ namespace FingerprintRecognitionV2.Util.Comparator
 		 * */
 		private bool Init(Fingerprint probe, Fingerprint candidate)
 		{
-			mTriplets.Clear();
-			mPairs.Clear();
-			probeDupes.Clear();
-			candidateDupes.Clear();
+			if (CheckInputData(probe) && CheckInputData(candidate)) 
+			{
+				mTriplets.Clear();
+				mPairs.Clear();
+				probeDupes.Clear();
+				candidateDupes.Clear();
+				return true;
+			}
+			return false;
+		}
 
-			// check whether these 2 fingerprints satisfy the contraints
-
-			return true;
+		private bool CheckInputData(Fingerprint f)
+		{
+			return Param.MinMinutiae <= f.Minutiae.Count && f.Minutiae.Count <= Param.MaxMinutiae;
 		}
 
 		private void LocalMatching(Fingerprint probe, Fingerprint candidate)
