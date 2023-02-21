@@ -82,8 +82,14 @@ class Program
             break;
 
         case "match-nn":
-            // program match-nn
-            PrintHelp();
+            try { threads = Convert.ToInt32(a[1]); } 
+            catch (Exception e) { PrintHelp(); break; }
+
+            // program match-nn threads img-dir dat-dir ans-dir
+            if (a.Length == 5)
+                MatchManyMany(threads, a[2], a[3], a[4]);
+            else
+                PrintHelp();
             break;
 
         default:
@@ -182,10 +188,11 @@ class Program
         });
 
         // get best match
-        int ansInd = 0, ansScore = -1;
+        int ansInd = 0, ansScore = 0;
         for (int i = 0; i < score.Length; i++) if (score[i] >= ansScore) 
         {
-            ansInd = i; ansScore = score[i];
+            ansInd = i; 
+            ansScore = score[i];
         }
 
         // return
@@ -196,9 +203,50 @@ class Program
     /**
      * @ matching section - Many to Many
      * */
-    static void MatchManyMany(int threads, string dImg, string dData, string dAns)
+    static void MatchManyMany(int threads, string dImg, string dDat, string dAns)
     {
-        
+        // directories handling
+        string[] fnames = Directory.GetFiles(dImg);
+        int len = fnames.Length;
+        for (int i = 0; i < len; i++)
+            fnames[i] = Path.GetFileName(fnames[i]);
+        Directory.CreateDirectory(dAns);
+
+        // load fingerprints
+        Fingerprint[] fps = new Fingerprint[len];
+        for (int i = 0; i < len; i++)
+            fps[i] = new(Path.Join(dDat, fnames[i] + ".inp"));
+
+        // prep
+        int[,] ans = new int[len, 2];   // { index, value }
+
+        // allocate threads
+        Threading<Matcher>(len, threads, (mtch, i) =>
+        {
+            for (int j = 0; j < len; j++) if (i != j)
+            {
+                int score = mtch.Match(fps[i], fps[j]);
+                if (score >= ans[i, 1])
+                {
+                    ans[i, 0] = j;
+                    ans[i, 1] = score;
+                }
+            }
+        });
+
+        // writing results
+        for (int i = 0; i < len; i++)
+        {
+            int j = ans[i, 0];
+            string fProbe = Path.Join(dImg, fnames[i]),
+                   fCandi = Path.Join(dImg, fnames[j]);
+            string fAns = Path.Join(dAns, string.Format(
+                "{0}-{1}.png", 
+                Path.GetFileNameWithoutExtension(fnames[i]),
+                Path.GetFileNameWithoutExtension(fnames[j])
+            ));
+            MatchOneOne(fProbe, fCandi, fps[i], fps[j], fAns);
+        }
     }
 
     /** 
