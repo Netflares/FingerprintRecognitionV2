@@ -53,18 +53,19 @@ class Program
                 break;
 
             case "match-1n":
+                int threads = 1;
+                try 
+                { 
+                    threads = Convert.ToInt32(a[1]); 
+                } 
+                catch (Exception e) { PrintHelp(); break; }
+
                 // program match-1n thread-cnt probe-path candidate-dir ans-path
-                
                 if (a.Length == 5) 
-                {
-                    int threads = 1;
-                    try 
-                    { 
-                        threads = Convert.ToInt32(a[1]); 
-                    } 
-                    catch (Exception e) { PrintHelp(); break; }
-                    MatchOneMany(threads, a[2], a[3], a[4]);
-                }
+                    MatchOneMany(threads, a[2], a[3], "", a[4]);
+                // program match-1n thread-cnt probe-path candidate-dir candidate-data-dir ans-path
+                else if (a.Length == 6)
+                    MatchOneMany(threads, a[2], a[3], a[4], a[5]);
                 else
                     PrintHelp();
                 break;
@@ -128,7 +129,7 @@ class Program
     /**
      * @ matching section - One to Many
      * */
-    static void MatchOneMany(int threads, string fProbe, string dCandi, string fAns)
+    static void MatchOneMany(int threads, string fProbe, string dCandi, string dData, string fAns)
     {
         // process probe
         Processor proc = new();
@@ -139,6 +140,25 @@ class Program
         int[] score = new int[fCandidates.Length];
 
         // allocate threads
+        if (dData.Length == 0)
+            ProcAndMatchOneMany(probe, threads, fCandidates, score);
+        else 
+            MatchOneMany(probe, threads, fCandidates, dData, score);
+
+        // get best match
+        int ansInd = 0, ansScore = -1;
+        for (int i = 0; i < score.Length; i++) if (score[i] >= ansScore) 
+        {
+            ansInd = i; ansScore = score[i];
+        }
+
+        // return
+        Fingerprint ans = ProcFingerprint(proc, fCandidates[ansInd]);
+        MatchOneOne(fProbe, fCandidates[ansInd], probe, ans, fAns);
+    }
+
+    static void ProcAndMatchOneMany(Fingerprint probe, int threads, string[] fCandidates, int[] score)
+    {
         int threadSize = (fCandidates.Length + threads - 1) / threads;   // ceil(a / b)
         Parallel.For(0, threads, (t) =>
         {
@@ -151,17 +171,22 @@ class Program
                 score[l] = mtch.Match(probe, candidate);
             }
         });
+    }
 
-        // get best match
-        int ansInd = 0, ansScore = -1;
-        for (int i = 0; i < score.Length; i++) if (score[i] >= ansScore) 
+    static void MatchOneMany(Fingerprint probe, int threads, string[] fCandidates, string dData, int[] score)
+    {
+        int threadSize = (fCandidates.Length + threads - 1) / threads;   // ceil(a / b)
+        Parallel.For(0, threads, (t) => 
         {
-            ansInd = i; ansScore = score[i];
-        }
-
-        // return
-        Fingerprint ans = ProcFingerprint(proc, fCandidates[ansInd]);
-        MatchOneOne(fProbe, fCandidates[ansInd], probe, ans, fAns);
+            int l = t * threadSize, r = Math.Min((t + 1) * threadSize, fCandidates.Length);
+            Matcher mtch = new();
+            for (; l < r; l++)
+            {
+                string data = Path.Join(dData, Path.GetFileName(fCandidates[l]) + ".inp");
+                Fingerprint candidate = new(data);
+                score[l] = mtch.Match(probe, candidate);
+            }
+        });
     }
 
     /** 
