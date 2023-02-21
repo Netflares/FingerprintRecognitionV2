@@ -35,56 +35,63 @@ class Program
      * */
     static int Main(string[] a)
     {
-        // implement the cli later
-        if (a.Length > 0)
-        {
-            switch (a[0])
-            {
-            case "deb":
-                Debug();
-                break;
-
-            case "match-11":
-                // program match-11 img1-path img2-path ans-path
-                if (a.Length == 4)
-                    MatchOneOne(a[1], a[2], a[3]);
-                else
-                    PrintHelp();
-                break;
-
-            case "match-1n":
-                int threads = 1;
-                try 
-                { 
-                    threads = Convert.ToInt32(a[1]); 
-                } 
-                catch (Exception e) { PrintHelp(); break; }
-
-                // program match-1n thread-cnt probe-path candidate-dir ans-path
-                if (a.Length == 5) 
-                    MatchOneMany(threads, a[2], a[3], "", a[4]);
-                // program match-1n thread-cnt probe-path candidate-dir candidate-data-dir ans-path
-                else if (a.Length == 6)
-                    MatchOneMany(threads, a[2], a[3], a[4], a[5]);
-                else
-                    PrintHelp();
-                break;
-
-            case "match-nn":
-                // program match-nn
-                PrintHelp();
-                break;
-
-            default:
-                PrintHelp();
-                break;
-            }
-        }
-        else
+        if (a.Length == 0) 
         {
             PrintHelp();
+            return 0;
+        }
+
+        Stopwatch timer = new();
+        timer.Start();
+
+        int threads = 1;
+        switch (a[0])
+        {
+        case "deb":
+            Debug();
+            break;
+
+        case "extract":
+            try { threads = Convert.ToInt32(a[1]); } 
+            catch (Exception e) { PrintHelp(); break; }
+
+            // program extract threads img-dir ans-dir
+            if (a.Length == 4)
+                ExtractMinutiae(threads, a[2], a[3]);
+            else 
+                PrintHelp();
+            break;
+
+        case "match-11":
+            // program match-11 img1-path img2-path ans-path
+            if (a.Length == 4)
+                MatchOneOne(a[1], a[2], a[3]);
+            else
+                PrintHelp();
+            break;
+
+        case "match-1n":
+            try { threads = Convert.ToInt32(a[1]); } 
+            catch (Exception e) { PrintHelp(); break; }
+
+            // program match-1n threads probe-path candidate-dir candidate-data-dir ans-path
+            if (a.Length == 6)
+                MatchOneMany(threads, a[2], a[3], a[4], a[5]);
+            else
+                PrintHelp();
+            break;
+
+        case "match-nn":
+            // program match-nn
+            PrintHelp();
+            break;
+
+        default:
+            PrintHelp();
+            break;
         }
         
+        PrintTime(timer, "program ended in");
         return 0;
     }
 
@@ -96,10 +103,37 @@ class Program
     /**
      * @ pre-processing section
      * */
+    static void PreProcess(int threads, string dImg, string dAns)
+    {
+        string[] imgs = Directory.GetFiles(dImg);
+        Directory.CreateDirectory(dAns);
+
+        // allocate threads
+        Threading<Processor>(imgs.Length, threads, (proc, i) =>
+        {
+            string ansPath = Path.Join(dAns, Path.GetFileName(imgs[i]));
+            proc.Process(new Image<Gray, byte>(imgs[i]));
+            CvInvoke.Imwrite(ansPath, MatConverter.Bool2Img(proc.SkeletonMat));
+        });
+    }
 
     /**
      * @ minutiae extraction section
      * */
+    static void ExtractMinutiae(int threads, string dImg, string dAns)
+    {
+        string[] imgs = Directory.GetFiles(dImg);
+        Directory.CreateDirectory(dAns);
+
+        // allocate threads
+        Threading<Processor>(imgs.Length, threads, (proc, i) => 
+        {
+            string ansPath = Path.Join(dAns, Path.GetFileName(imgs[i]) + ".inp");
+            proc.Process(new Image<Gray, byte>(imgs[i]));
+            proc.PrepareForExtraction();
+            MinutiaeExtractor.ExtractAndExport(ansPath, proc.SkeletonMat, proc.SegmentMsk);
+        });
+    }
 
     /**
      * @ matching section - One to One
@@ -140,10 +174,12 @@ class Program
         int[] score = new int[fCandidates.Length];
 
         // allocate threads
-        if (dData.Length == 0)
-            ProcAndMatchOneMany(probe, threads, fCandidates, score);
-        else 
-            MatchOneMany(probe, threads, fCandidates, dData, score);
+        Threading<Matcher>(fCandidates.Length, threads, (mtch, i) => 
+        {
+            string data = Path.Join(dData, Path.GetFileName(fCandidates[i]) + ".inp");
+            Fingerprint candidate = new(data);
+            score[i] = mtch.Match(probe, candidate);
+        });
 
         // get best match
         int ansInd = 0, ansScore = -1;
@@ -157,36 +193,12 @@ class Program
         MatchOneOne(fProbe, fCandidates[ansInd], probe, ans, fAns);
     }
 
-    static void ProcAndMatchOneMany(Fingerprint probe, int threads, string[] fCandidates, int[] score)
+    /**
+     * @ matching section - Many to Many
+     * */
+    static void MatchManyMany(int threads, string dImg, string dData, string dAns)
     {
-        int threadSize = (fCandidates.Length + threads - 1) / threads;   // ceil(a / b)
-        Parallel.For(0, threads, (t) =>
-        {
-            int l = t * threadSize, r = Math.Min((t + 1) * threadSize, fCandidates.Length);
-            Processor proc = new();
-            Matcher mtch = new();
-            for (; l < r; l++) 
-            {
-                Fingerprint candidate = ProcFingerprint(proc, fCandidates[l]);
-                score[l] = mtch.Match(probe, candidate);
-            }
-        });
-    }
-
-    static void MatchOneMany(Fingerprint probe, int threads, string[] fCandidates, string dData, int[] score)
-    {
-        int threadSize = (fCandidates.Length + threads - 1) / threads;   // ceil(a / b)
-        Parallel.For(0, threads, (t) => 
-        {
-            int l = t * threadSize, r = Math.Min((t + 1) * threadSize, fCandidates.Length);
-            Matcher mtch = new();
-            for (; l < r; l++)
-            {
-                string data = Path.Join(dData, Path.GetFileName(fCandidates[l]) + ".inp");
-                Fingerprint candidate = new(data);
-                score[l] = mtch.Match(probe, candidate);
-            }
-        });
+        
     }
 
     /** 
@@ -200,6 +212,20 @@ class Program
         return new(dat);
     }
 
+    static void Threading<T>(int size, int threads, Action<T, int> f) where T: new()
+    {
+        int threadSize = (size + threads - 1) / threads;   // ceil(a / b)
+        Parallel.For(0, threads, (t) => 
+        {
+            int l = t * threadSize, r = Math.Min((t + 1) * threadSize, size);
+            T obj = new();
+            for (; l < r; l++) f(obj, l);
+        });
+    }
+
+    /**
+     * @ debug tools
+     * */
     static void Debug()
     {
 
