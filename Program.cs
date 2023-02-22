@@ -51,6 +51,17 @@ class Program
             Debug();
             break;
 
+        case "preproc":
+            try { threads = Convert.ToInt32(a[1]); } 
+            catch (Exception e) { PrintHelp(); break; }
+
+            // program preproc threads img-dir ans-dir
+            if (a.Length == 4)
+                PreProcess(threads, a[2], a[3]);
+            else 
+                PrintHelp();
+            break;
+
         case "extract":
             try { threads = Convert.ToInt32(a[1]); } 
             catch (Exception e) { PrintHelp(); break; }
