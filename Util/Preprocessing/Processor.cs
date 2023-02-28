@@ -55,13 +55,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 			// gabor filter
             gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
-
-            // skeletonization
-            ZhangBruteThinning.Thinning(SkeletonMat);
 		}
 
 		public void PrepareForExtraction() 
 		{
+			ZhangBruteThinning.Thinning(SkeletonMat);
             morp4.Erose(SegmentMsk, Param.BlockSize);
             Segmentation.Padding(SegmentMsk, Param.BlockSize);
 		}
