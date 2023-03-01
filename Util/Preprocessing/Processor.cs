@@ -56,7 +56,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 			// gabor filter
             gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
-            cleaner.Clean(SkeletonMat, 1);
+            cleaner.Clean(SkeletonMat, Param.GaborCleanerFilterRadius);
 		}
 
 		public void PrepareForExtraction() 

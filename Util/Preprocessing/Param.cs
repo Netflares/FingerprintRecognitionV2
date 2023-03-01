@@ -10,5 +10,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		// Gabor Filter Attributes
 		static public readonly double
 			AngleInc = Math.PI * 4 / 180;
+		static public readonly int 
+			GaborCleanerFilterRadius = 1;
 	}
 }
