@@ -63,6 +63,17 @@ class Program
                 PrintHelp();
             break;
 
+        case "skel":
+            try { threads = Convert.ToInt32(a[1]); } 
+            catch (Exception e) { PrintHelp(); break; }
+
+            // program skel threads minu img-dir ans-dir
+            if (a.Length == 5)
+                Skel(threads, a[2] == "true", a[3], a[4]);
+            else 
+                PrintHelp();
+            break;
+
         case "extract":
             try { threads = Convert.ToInt32(a[1]); } 
             catch (Exception e) { PrintHelp(); break; }
@@ -132,6 +143,29 @@ class Program
             string ansPath = Path.Join(dAns, Path.GetFileName(imgs[i]));
             proc.Process(new Image<Gray, byte>(imgs[i]));
             CvInvoke.Imwrite(ansPath, MatConverter.Bool2Img(proc.SkeletonMat));
+        });
+    }
+
+    static void Skel(int threads, bool minu, string dImg, string dAns)
+    {
+        string[] imgs = Directory.GetFiles(dImg);
+        Directory.CreateDirectory(dAns);
+
+        // allocate threads
+        Threading<Processor>(imgs.Length, threads, (proc, i) =>
+        {
+            string ansPath = Path.Join(dAns, Path.GetFileName(imgs[i]));
+            proc.Process(new Image<Gray, byte>(imgs[i]));
+            proc.PrepareForExtraction();
+            Image<Bgr, byte> img;
+
+            if (minu)
+                img = Visualization.VisualizeImage(
+                    proc.SkeletonMat, MinutiaeExtractor.Extract(proc.SkeletonMat, proc.SegmentMsk)
+                );
+            else
+                img = Visualization.Bool2Bgr(proc.SkeletonMat);
+            CvInvoke.Imwrite(ansPath, img);
         });
     }
 
