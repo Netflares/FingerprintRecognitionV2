@@ -26,6 +26,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		Orientation orientCalc = new();
 		Wavelength waveCalc = new();
 		GaborFilter gabor = new();
+		GaborCleaner cleaner = new();
 
 		/**
 		 * @ public methods
@@ -55,6 +56,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 			// gabor filter
             gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
+            cleaner.Clean(SkeletonMat, 1);
 		}
 
 		public void PrepareForExtraction() 
