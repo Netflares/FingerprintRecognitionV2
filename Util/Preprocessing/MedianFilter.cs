@@ -4,19 +4,22 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 {
     // clean the gabor image
     // by using a 3x3 median filter
-    public class GaborCleaner
+    public class MedianFilter
     {
         private int[,] p = new int[Param.Height, Param.Width];
 
-        public GaborCleaner() {}
+        public MedianFilter() {}
 
         /**
          * @ params
-         * 
          * src: the gabor image
          * k:   kernel size
+         * 
+         * @ usage
+         * reduces the noise of the gabor image
+         * with a simple median filter
          * */
-        public void Clean(bool[,] src, int k)
+        public void Exec(bool[,] src, int k)
         {
             int d = k<<1|1, req = d * d >> 1;
             if (k == 1) 
@@ -25,6 +28,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 BigK(src, k, req);
         }
 
+        /**
+         * @ tools
+         * */
         private void SmallK(bool[,] src, int req)
         {
             // build adj matrix

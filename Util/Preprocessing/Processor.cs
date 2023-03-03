@@ -26,7 +26,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		Orientation orientCalc = new();
 		Wavelength waveCalc = new();
 		GaborFilter gabor = new();
-		GaborCleaner cleaner = new();
+		MedianFilter medianFilter = new();
+		LakeRemover lakeRemover = new();
 
 		/**
 		 * @ public methods
@@ -56,14 +57,15 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 			// gabor filter
             gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
-            cleaner.Clean(SkeletonMat, Param.GaborCleanerFilterRadius);
+            medianFilter.Exec(SkeletonMat, Param.GaborMedianFilterRadius);
 		}
 
 		public void PrepareForExtraction() 
 		{
-			ZhangBruteThinning.Thinning(SkeletonMat);
             morp4.Erose(SegmentMsk, Param.BlockSize);
             Segmentation.Padding(SegmentMsk, Param.BlockSize);
+            // lakeRemover.Exec(SkeletonMat, SegmentMsk, Param.GaborMinimumLakeSize);
+            ZhangBruteThinning.Thinning(SkeletonMat);
 		}
 	}
 }
