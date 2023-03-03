@@ -36,11 +36,25 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
         static private double NormalizePixel(double px, double avg, double std)
         {
+            /*
+            This function takes a pixel and returns a normalized value
+
+            the new value will be positive if the pixel is background
+            otherwise, if the pixel is foreground, it will be negaive
+
+            Since the dataset which this repository works on
+            has white ridges and black background,
+            this function is implemented like this:
+
+            ```
             double coeff = Abs(px - avg) / std;
             // flip fg/bg color here
             if (px < avg) 
                 return coeff;   // positive --> background
             return -coeff;      // negative --> foreground
+            ```
+            */
+            return (avg - px) / std;
         }
 
         /** 
