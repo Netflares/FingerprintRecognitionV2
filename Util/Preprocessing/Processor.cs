@@ -56,16 +56,16 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			WaveLen = waveCalc.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
 
 			// gabor filter
-            gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
-            medianFilter.Exec(SkeletonMat, Param.GaborMedianFilterRadius);
+			gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
+			medianFilter.Exec(SkeletonMat, Param.GaborMedianFilterRadius);
 		}
 
 		public void PrepareForExtraction() 
 		{
-            morp4.Erose(SegmentMsk, Param.BlockSize);
-            Segmentation.Padding(SegmentMsk, Param.BlockSize);
-            // lakeRemover.Exec(SkeletonMat, SegmentMsk, Param.GaborMinimumLakeSize);
-            ZhangBruteThinning.Thinning(SkeletonMat);
+			morp4.Erose(SegmentMsk, Param.BlockSize);
+			Segmentation.Padding(SegmentMsk, Param.BlockSize);
+			// lakeRemover.Exec(SkeletonMat, SegmentMsk, Param.GaborMinimumLakeSize);
+			ZhangBruteThinning.Thinning(SkeletonMat);
 		}
 	}
 }
