@@ -18,6 +18,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * 
          * so its best not to use them at all
          * 
+         * update: now this function removes small islands as well
+         * 
          * @ params
          * 
          * src: The gabor image
@@ -29,11 +31,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             vst = new bool[Param.Height, Param.Width];
             for (int y = 1; y < Param.Height - 1; y++)
                 for (int x = 1; x < Param.Width - 1; x++)
-                    if (msk[y, x] && !src[y, x] && !vst[y, x]) 
-                        BFS(src, msk, vst, y, x, lim);
+                    if (msk[y, x] && !vst[y, x]) 
+                        BFS(src[y, x], src, msk, vst, y, x, lim);
         }
 
-        private void BFS(bool[,] src, bool[,] msk, bool[,] vst, int y0, int x0, int lim)
+        private void BFS(bool typ, bool[,] src, bool[,] msk, bool[,] vst, int y0, int x0, int lim)
         {
             List<int> h = new(lim + 1); // history ls
             Deque<int> q = new();
@@ -48,7 +50,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 for (int t = 0; t < 4; t++)
                 {
                     int ny = y + MorphologyR4.RY[t], nx = x + MorphologyR4.RX[t];
-                    if (msk[ny, nx] && !src[ny, nx] && !vst[ny, nx])
+                    if (msk[ny, nx] && src[ny, nx] == typ && !vst[ny, nx])
                     {
                         vst[ny, nx] = true;
                         q.PushBack(ny<<10|nx);
@@ -61,7 +63,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
             for (int i = 0; i < h.Count; i++)
             {
                 int y = h[i]>>10, x = h[i]&MSK;
-                src[y, x] = true;
+                src[y, x] = !typ;
             }
         }
     }
