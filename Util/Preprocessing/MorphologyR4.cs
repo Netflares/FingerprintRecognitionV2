@@ -56,7 +56,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         private bool[,] BFS(bool[,] src, bool tar, int bs)
         {
             Deque<Position> q = new();
-            Visited = new bool[Height, Width];
+            Array.Clear(Visited, 0, Visited.Length);
             InitDeque(q, src, tar);
 
             while (q.Count > 0)

@@ -28,7 +28,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */
         public void Exec(bool[,] src, bool[,] msk, int lim)
         {
-            vst = new bool[Param.Height, Param.Width];
+            Array.Clear(vst, 0, vst.Length);
             for (int y = 1; y < Param.Height - 1; y++)
                 for (int x = 1; x < Param.Width - 1; x++)
                     if (msk[y, x] && !vst[y, x]) 

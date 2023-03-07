@@ -34,6 +34,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 iterations--;
             }
             while (cnt > 0 && iterations > 0);
+            for (int y = 1; y < Height - 1; y++)
+                for (int x = 1; x < Width - 1; x++)
+                    src[y, x] = src[y, x] && Clean(src, y, x);
         }
 
         static private int Step(bool step, bool[,] tmp, bool[,] src)
