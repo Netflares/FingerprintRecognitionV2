@@ -25,11 +25,20 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         }
 
         /** 
-         * @ settings
+         * @ image properties
+         * */
+        static readonly int Height = Param.Height, Width = Param.Width, ImgSize = Param.Size;
+
+        /**
+         * @ relative cells settings
          * */
         static public readonly int[] RY = { -1, 0, 1, 0 };
         static public readonly int[] RX = { 0, 1, 0, -1 };
-        static readonly int Height = Param.Height, Width = Param.Width, ImgSize = Param.Size;
+        static public readonly int RC = 4;
+
+        protected virtual int GetRY(int t) => RY[t];
+        protected virtual int GetRX(int t) => RX[t];
+        protected virtual int GetRC() => RC;
 
         /** 
          * @ constructors
@@ -57,9 +66,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 if (cr.Depth == bs)
                     continue;
 
-                for (int t = 0; t < 4; t++)
+                for (int t = 0; t < GetRC(); t++)
                 {
-                    int nxtY = cr.Y + RY[t], nxtX = cr.X + RX[t];
+                    int nxtY = cr.Y + GetRY(t), nxtX = cr.X + GetRX(t);
                     if (nxtY < 0 || nxtX < 0 || Height <= nxtY || Width <= nxtX)
                         continue;
 
@@ -119,15 +128,15 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         /** 
          * @ supporting methods
          * */
-        static private void InitDeque(Deque<Position> q, bool[,] src, bool tar)
+        private void InitDeque(Deque<Position> q, bool[,] src, bool tar)
         {
             Iterator2D.Forward(1, 1, Height - 1, Width - 1, (y, x) =>
             {
                 if (src[y, x] != tar) return;
                 // assert src[y, x] == tar
-                for (int t = 0; t < 4; t++)
+                for (int t = 0; t < GetRC(); t++)
                 {
-                    int nxtY = y + RY[t], nxtX = x + RX[t];
+                    int nxtY = y + GetRY(t), nxtX = x + GetRX(t);
                     if (src[nxtY, nxtX] != tar)
                     {
                         // src[y, x] == margin
