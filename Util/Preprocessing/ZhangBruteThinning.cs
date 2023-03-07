@@ -14,13 +14,15 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * @ obj
          * */
         bool[,] tmp = new bool[Height, Width];
+        bool[,] exc = new bool[Height, Width];
+        MorphologyR8 morp8 = new();
 
         public ZhangBruteThinning() {}
 
         /**
          * @ zhang-suen
          * */
-        public void Thinning(bool[,] src)
+        public void Thinning(bool[,] src, bool[,] msk)
         {
             Array.Copy(src, tmp, src.Length);
             int cnt = 0;
@@ -34,6 +36,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 iterations--;
             }
             while (cnt > 0 && iterations > 0);
+            // removes blocks that havent been removed within these iterations
+            ExcludeBlocks(src, msk);
+            // apply the third rules set
             for (int y = 1; y < Height - 1; y++)
                 for (int x = 1; x < Width - 1; x++)
                     src[y, x] = src[y, x] && Clean(src, y, x);
@@ -90,9 +95,38 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * some blocks are not skeletonized after a fixed number of iterations
          * this function is to exclude them out
          * */
-        static private void ExcludeBlocks(bool[,] src, bool[,] msk)
+        private void ExcludeBlocks(bool[,] src, bool[,] msk)
         {
+            Array.Clear(exc, 0, exc.Length);
+            bool hasBlock = false;
+            Iterator2D.Forward(1, 1, Height - 1, Width - 1, (y, x) => 
+            {
+                if (src[y, x] && isBlock(src, y, x)) exc[y, x] = hasBlock = true;
+            });
+            if (!hasBlock) return;
 
+            morp8.Dilate(exc, MaxIterations + 1);
+            Iterator2D.PForward(1, 1, Height - 1, Width - 1, (y, x) =>
+            {
+                if (exc[y, x]) msk[y, x] = false;
+            });
+        }
+
+        static private bool isBlock(bool[,] src, int y, int x)
+        {
+            var p2 = src[y - 1, x];
+            var p3 = src[y - 1, x + 1];
+            var p4 = src[y, x + 1];
+            var p5 = src[y + 1, x + 1];
+            var p6 = src[y + 1, x];
+            var p7 = src[y + 1, x - 1];
+            var p8 = src[y, x - 1];
+            var p9 = src[y - 1, x - 1];
+
+            if (5 <= CountTrue(p2, p3, p4, p5, p6, p7, p8, p9))
+                if (1 <= CountTrue(!p2 && p3, !p3 && p4, !p4 && p5, !p5 && p6, !p6 && p7, !p7 && p8, !p8 && p9, !p9 && p2))
+                    return true;
+            return false;
         }
 
         /**

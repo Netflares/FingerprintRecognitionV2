@@ -66,7 +66,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			morp4.Erose(SegmentMsk, Param.BlockSize);
 			Segmentation.Padding(SegmentMsk, Param.BlockSize);
 			lakeRemover.Exec(SkeletonMat, SegmentMsk, Param.GaborMinimumLakeSize);
-			sker.Thinning(SkeletonMat);
+			sker.Thinning(SkeletonMat, SegmentMsk);
 		}
 	}
 }
