@@ -28,6 +28,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		GaborFilter gabor = new();
 		MedianFilter medianFilter = new();
 		LakeRemover lakeRemover = new();
+		ZhangBruteThinning sker = new();
 
 		/**
 		 * @ public methods
@@ -64,8 +65,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		{
 			morp4.Erose(SegmentMsk, Param.BlockSize);
 			Segmentation.Padding(SegmentMsk, Param.BlockSize);
-			// lakeRemover.Exec(SkeletonMat, SegmentMsk, Param.GaborMinimumLakeSize);
-			ZhangBruteThinning.Thinning(SkeletonMat);
+			lakeRemover.Exec(SkeletonMat, SegmentMsk, Param.GaborMinimumLakeSize);
+			sker.Thinning(SkeletonMat);
 		}
 	}
 }

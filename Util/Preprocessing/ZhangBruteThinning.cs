@@ -1,7 +1,8 @@
+using FingerprintRecognitionV2.MatTool;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {
-	static public class ZhangBruteThinning
+	public class ZhangBruteThinning
 	{
         /**
          * @ consts
@@ -10,26 +11,29 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         static readonly int MaxIterations = 7;
 
         /**
+         * @ obj
+         * */
+        bool[,] tmp = new bool[Height, Width];
+
+        public ZhangBruteThinning() {}
+
+        /**
          * @ zhang-suen
          * */
-        static public void Thinning(bool[,] src)
+        public void Thinning(bool[,] src)
         {
-            var tmp = (bool[,])src.Clone();
+            Array.Copy(src, tmp, src.Length);
             int cnt = 0;
             int iterations = MaxIterations;
             do  // the missing iteration
             {
                 cnt = Step(false, tmp, src);
-                tmp = (bool[,])src.Clone();
+                Array.Copy(src, tmp, src.Length);
                 cnt += Step(true, tmp, src);
-                tmp = (bool[,])src.Clone();
+                Array.Copy(src, tmp, src.Length);
                 iterations--;
             }
             while (cnt > 0 && iterations > 0);
-            // apply the third rules set
-            for (int y = 1; y < Height - 1; y++)
-                for (int x = 1; x < Width - 1; x++)
-                    src[y, x] = src[y, x] && Clean(src, y, x);
         }
 
         static private int Step(bool step, bool[,] tmp, bool[,] src)
@@ -80,8 +84,15 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
         }
 
         /**
-         * @ additional skeleton enhancement
-         * 
+         * some blocks are not skeletonized after a fixed number of iterations
+         * this function is to exclude them out
+         * */
+        static private void ExcludeBlocks(bool[,] src, bool[,] msk)
+        {
+
+        }
+
+        /**
          * the skeleton image built by Zhang-Suen algorithm is, unfortunately,
          * imperfect
          * 
@@ -90,9 +101,6 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */
         static public bool Clean(bool[,] src, int y, int x) 
         {
-            // take p1 - a 1 cell
-            // decide whether it would continue be a 1 cell
-
             var p2 = src[y - 1, x];
             var p3 = src[y - 1, x + 1];
             var p4 = src[y, x + 1];
