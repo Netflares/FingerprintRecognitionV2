@@ -46,10 +46,12 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 			// segmentation
 			Segmentation.CreateMask(NormMat, SegmentMsk, Param.BlockSize);
-			if (smoothMsk) Segmentation.SmoothMask(SegmentMsk, Param.BlockSize, morp4);
 
 			// orientation
 			orientCalc.Create(NormMat, OrientMat, OrientCerMat);
+
+			// smoothing (must be called before wavelength calculation)
+			HandleSmoothing(smoothMsk);
 
 			// wavelength (frequency)
 			Normalization.ExcludeBackground(NormMat, SegmentMsk);
@@ -66,6 +68,25 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			Segmentation.Padding(SegmentMsk, Param.BlockSize);
 			lakeRemover.Exec(SkeletonMat, SegmentMsk, Param.GaborMinimumLakeSize);
 			sker.Thinning(SkeletonMat, SegmentMsk);
+		}
+
+		private void HandleSmoothing(bool smoothMsk)
+		{
+			if (smoothMsk) 
+			{
+				/**
+				 * if you want the gabor/skeleton image to look nice for display
+				 * you'd want to smooth the mask
+				 * */
+				Segmentation.SmoothMask(SegmentMsk, Param.BlockSize, morp4);
+			}
+			else
+			{
+				/**
+				 * otherwise, if you want the mask to contain only useful information
+				 * don't smooth it
+				 * */
+			}
 		}
 	}
 }
