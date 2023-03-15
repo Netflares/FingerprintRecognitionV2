@@ -3,9 +3,14 @@
 
 This repository consists of 3 modules:
 
-- A fingerprint pre-processing chain based on image filtering algorithms
+- A fingerprint pre-processing chain
 - An algorithm for extracting fingerprint’s features, which are called “minutiae”
 - A one-to-one fingerprint matching algorithm. 
+
+And it will propose at least 2 more modules in the near future:
+
+- Fingerprint Quality Validation
+- Fingerprint Pattern Categorization 
 
 # 2. Dataset
 
