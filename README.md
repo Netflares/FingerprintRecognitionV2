@@ -104,20 +104,39 @@ For example:
 ```C#
 // create a new Util.PreprocessingMultithread.Processor object
 Processor proc = new();
+
 // load a fingerprint image
 Image<Gray, byte> src = new("fingerprint-image.png");
+
 // process it
 proc.Process(src);
-// export the fingerprint's skeleton
-CvInvoke.Imwrite("skeleton.png", MatConverter.Bool2Img(proc.SkeletonMat));
-// export the fingerprint's minutiae
-proc.PrepareForExtraction();
-MinutiaeExtractor.ExtractAndExport("data-1.inp", proc.SkeletonMat, proc.SegmentMsk);
 
-// load fingerprint's data & match them
-Fingerprint probe = new("data-1.inp");
-Fingerprint candidate = new("data-2.inp");
-Console.WriteLine(Matcher.Match(probe, candidate)); // can be visualized via Matcher.DebugMatch(probe, candidate, probeMatchResult, candidateMatchResult)
+// export the fingerprint's gabor image
+Image<Gray, byte> gabor = MatConverter.Bool2Img(proc.SkeletonMat);  // not yet a skeleton
+CvInvoke.Imwrite("gabor.png", gabor);
+
+// export the fingerprint's minutiae & write it to a file named "data.inp"
+proc.PrepareForExtraction();
+MinutiaeExtractor.ExtractAndExport("data.inp", proc.SkeletonMat, proc.SegmentMsk);
+
+// after calling "proc.PrepareForExtraction()", the SkeletonMat property becomes a Skeleton Image
+// you may extract it
+Image<Gray, byte> skel = MatConverter.Bool2Img(proc.SkeletonMat);   // now it's a skeleton
+CvInvoke.Imwrite("skeleton.png", skel);
+
+// load fingerprint's data
+Fingerprint probe = new("data-1.inp");      // data exported from "img-1.png"
+Fingerprint candidate = new("data-2.inp");  // data exported from "img-2.png"
+Matcher matcher = new();
+
+// only print match result
+Console.WriteLine(matcher.Match(probe, candidate));
+
+// match & visualize
+List<Minutia> mf = new(), mg = new();
+int matchScore = matcher.Match(probe, candidate, ref mf, ref mg);
+Image<Bgr, byte> visual = Visualization.VisualizeComparison("img-1.png", "img-2.png", ImgHeight, ImgWidth, mf, mg);
+CvInvoke.Imwrite("comparison.png", visual);
 ```
 
 # 7. Directories
