@@ -7,12 +7,11 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 	{
 		/** 
 		 * @ public fields
-		 * 
-		 * are used for storing result images
 		 * */
 		public double[,] NormMat = new double[Param.Height, Param.Width];
 		public bool[,] SegmentMsk = new bool[Param.Height, Param.Width];
 		public double[,] OrientMat = new double[Param.Height / Param.BlockSize, Param.Width / Param.BlockSize];
+		public double[,] OrientCerMat = new double[Param.Height / Param.BlockSize, Param.Width / Param.BlockSize];
 		public bool[,] SkeletonMat = new bool[Param.Height, Param.Width];
 
 		public double WaveLen;
@@ -39,7 +38,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		}
 
 		// process results will be stored in those public fields
-		public void Process(Image<Gray, byte> src)
+		public void Process(Image<Gray, byte> src, bool smoothMsk = true)
 		{
 			// @ usage: remove finger pressure differences
 			// @ result: avg(NormMat) = 0, std(NormMat) = 1
@@ -47,10 +46,10 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 
 			// segmentation
 			Segmentation.CreateMask(NormMat, SegmentMsk, Param.BlockSize);
-			Segmentation.SmoothMask(SegmentMsk, Param.BlockSize, morp4);
+			if (smoothMsk) Segmentation.SmoothMask(SegmentMsk, Param.BlockSize, morp4);
 
 			// orientation
-			orientCalc.Create(NormMat, OrientMat);
+			orientCalc.Create(NormMat, OrientMat, OrientCerMat);
 
 			// wavelength (frequency)
 			Normalization.ExcludeBackground(NormMat, SegmentMsk);
