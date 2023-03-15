@@ -83,6 +83,10 @@ Again, the program is single-thread, which ensures the average time for each com
 | ![04](_doc/images/cmp-showcase-04.png) | ![05](_doc/images/cmp-showcase-05.png) |
 | ![06](_doc/images/cmp-showcase-06.png) | ![07](_doc/images/cmp-showcase-07.png) |
 
+In the dataset, it's common that there's only one front version of a fingerprint and multiple versions of that same fingerprint in various angles. Regardless, the program is proven to accurately match these pairs of fingerprints.
+
+The program also shows a decent resistance to noises, either by eliminating them, or by reconstructing them.
+
 ### Benchmark - Performance
 
 - Executed $500 \times 499 = 249500$ comparisons: $37.738$ s
