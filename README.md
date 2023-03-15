@@ -102,10 +102,29 @@ Because I haven't made a cli yet, just edit `Program.cs` for the time being.
 For example:
 
 ```C#
+
+// include necessary headers
+using Emgu.CV;
+using Emgu.CV.Structure;
+using FingerprintRecognitionV2.Util;
+using FingerprintRecognitionV2.MatTool;
+using FingerprintRecognitionV2.DataStructure;
+using FingerprintRecognitionV2.Util.Comparator;
+using FingerprintRecognitionV2.Util.FeaturesExtractor;
+using FingerprintRecognitionV2.Util.Preprocessing;
+
+// these variables are temporary
+// you should check `Util/Preprocessing/Param.cs` before using this program
+const int ImgHeight = 480;
+const int ImgWidth = 320;
+
 // create a new Util.PreprocessingMultithread.Processor object
 Processor proc = new();
 
 // load a fingerprint image
+// this program works with images that have white foreground/black background as default
+// to change this, modify `Util/Preprocessing/Normalization.cs`
+// there should be a guide there.
 Image<Gray, byte> src = new("fingerprint-image.png");
 
 // process it
@@ -137,6 +156,7 @@ List<Minutia> mf = new(), mg = new();
 int matchScore = matcher.Match(probe, candidate, ref mf, ref mg);
 Image<Bgr, byte> visual = Visualization.VisualizeComparison("img-1.png", "img-2.png", ImgHeight, ImgWidth, mf, mg);
 CvInvoke.Imwrite("comparison.png", visual);
+
 ```
 
 # 7. Directories
