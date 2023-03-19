@@ -11,7 +11,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		public double[,] NormMat = new double[Param.Height, Param.Width];
 		public bool[,] SegmentMsk = new bool[Param.Height, Param.Width];
 		public double[,] OrientMat = new double[Param.Height / Param.BlockSize, Param.Width / Param.BlockSize];
-		public double[,] OrientCerMat = new double[Param.Height / Param.BlockSize, Param.Width / Param.BlockSize];
+		public double[,] OCLMat = new double[Param.Height / Param.BlockSize, Param.Width / Param.BlockSize];
 		public bool[,] SkeletonMat = new bool[Param.Height, Param.Width];
 
 		public double WaveLen;
@@ -48,8 +48,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			Segmentation.CreateMask(NormMat, SegmentMsk, Param.BlockSize);
 
 			// orientation
-			orientCalc.Create(NormMat, OrientMat, OrientCerMat);
+			orientCalc.Create(NormMat, OrientMat, OCLMat);
 
+			/*
 			// smoothing (must be called before wavelength calculation)
 			HandleSmoothing(smoothMsk);
 
@@ -60,6 +61,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			// gabor filter
 			gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
 			medianFilter.Exec(SkeletonMat, Param.GaborMedianFilterRadius);
+			*/
 		}
 
 		public void PrepareForExtraction() 

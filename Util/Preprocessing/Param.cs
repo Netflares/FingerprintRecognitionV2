@@ -7,6 +7,10 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			Height = 480, Width = 320, Size = Height * Width, 
 			BlockSize = 16;
 
+		// Orientation Certainty Level Threshold
+		static public readonly double
+			OCLThreshold = 0.5;
+
 		// Gabor Filter Attributes
 		static public readonly double
 			AngleInc = Math.PI * 4 / 180;
