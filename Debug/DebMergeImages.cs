@@ -7,10 +7,15 @@ namespace FingerprintRecognitionV2.Debug
 {
 	static class DebMergeImages
 	{
-		static public Image<Bgr, byte> DebOCL(string fImg, string fSke, string fOcl)
+		static public Image<Bgr, byte> DebOCL(string fImg, string fSke, string fOcl, bool[,]? msk = null, bool bin = false)
 		{
 			Image<Gray, byte> img = new(fImg), ocl = new(fOcl);
 			Image<Bgr, byte>  ans = new(fSke);
+
+			if (bin) Binarize(ocl);
+			if (msk != null) Iterator2D.Forward(msk, (y, x) => ocl[y, x] = new Gray(
+					(Convert.ToInt32(!msk[y, x]) * 255) | Convert.ToInt32(ocl[y, x].Intensity)
+			));
 
 			Iterator2D.Forward(img, (y, x) => 
 			{
@@ -25,6 +30,16 @@ namespace FingerprintRecognitionV2.Debug
 				}
 			});
 			return ans;
+		}
+
+		static private void Binarize(Image<Gray, byte> ocl)
+		{
+			double thresh = FingerprintRecognitionV2.Util.Preprocessing.Param.OCLThreshold * 255;
+			Iterator2D.Forward(ocl, (y, x) => 
+			{
+				double lvl = ocl[y, x].Intensity <= thresh ? 0 : 255;
+				ocl[y, x] = new Gray(lvl);
+			});
 		}
 	}
 }
