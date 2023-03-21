@@ -42,4 +42,31 @@ namespace FingerprintRecognitionV2.Debug
 			});
 		}
 	}
+
+
+	/*
+	paste this to Program::Debug()
+	
+	static void Debug() {
+		string dImg = "_dat/set/", dSke = "_dat/ske/", dOcl = "_dat/ocl/", dAns = "_dat/ocl05-msk-visual/";
+
+		string[] imgs = Directory.GetFiles(dImg);
+		Directory.CreateDirectory(dAns);
+
+		// allocate threads
+		Threading<Processor>(imgs.Length, 5, (proc, i) =>
+		{
+			proc.Process(new Image<Gray, byte>(imgs[i]), false);
+
+			string fname = Path.GetFileName(imgs[i]);
+			string ansPath = Path.Join(dAns, fname);
+			
+			Image<Bgr, byte> ans = FingerprintRecognitionV2.Debug.DebMergeImages.DebOCL(
+				dImg + fname, dSke + fname, dOcl + fname, proc.SegmentMsk, true
+			);
+
+			CvInvoke.Imwrite(ansPath, ans);
+		});
+	}
+	*/
 }
