@@ -66,6 +66,8 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 a /= BlockArea;
                 b /= BlockArea;
                 c /= BlockArea;
+                // about this "eigenvalues of covariance matrix":
+                // https://math.stackexchange.com/questions/23596/why-is-the-eigenvector-of-a-covariance-matrix-equal-to-a-principal-component
                 double sumPart = a + b, sqrtPart = Sqrt((a-b)*(a-b) + 4*c*c);
                 ocl[i, j] = (sumPart - sqrtPart) / (sumPart + sqrtPart);
             });
