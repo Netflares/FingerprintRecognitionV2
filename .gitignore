@@ -8,3 +8,4 @@ obj
 # ignore local files
 *.exe
 *.log
+DebugObj.cs

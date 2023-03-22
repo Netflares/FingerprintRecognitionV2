@@ -49,7 +49,7 @@ class Program
         switch (a[0])
         {
         case "deb":
-            Debug();
+            Debug(a);
             break;
 
         case "preproc":
@@ -320,9 +320,9 @@ class Program
     /**
      * @ debug tools
      * */
-    static void Debug()
+    static void Debug(string[] a)
     {
-
+        DebugObj.Exc(a);
     }
 
     static void PrintTime(Stopwatch timer, string m)
