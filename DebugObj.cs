@@ -9,6 +9,6 @@ static class DebugObj
 {
 	static public void Exc(string[] args) 
 	{
-
+		Image<Gray, byte> img = new(args[1]);
 	}
 }
