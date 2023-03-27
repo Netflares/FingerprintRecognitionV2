@@ -22,20 +22,18 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		 * allocate memory zone for this class's components
 		 * */
 		MorphologyR4 morp4 = new();
+		MorphologyR8 morp8 = new();
 		Orientation orientCalc = new();
 		Wavelength waveCalc = new();
 		GaborFilter gabor = new();
 		MedianFilter medianFilter = new();
 		LakeRemover lakeRemover = new();
-		ZhangBruteThinning sker = new();
+		ZhangBruteThinning sker;
 
 		/**
 		 * @ public methods
 		 * */
-		public Processor()
-		{
-
-		}
+		public Processor() { sker = new(morp8); }
 
 		// process results will be stored in those public fields
 		public void Process(Image<Gray, byte> src, bool smoothMsk = true)
@@ -78,7 +76,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 				 * if you want the gabor/skeleton image to look nice for display
 				 * you'd want to smooth the mask
 				 * */
-				Segmentation.SmoothMask(SegmentMsk, Param.BlockSize, morp4);
+				morp8.Open(SegmentMsk, Param.BlockSize);
+				morp4.Open(SegmentMsk, Param.BlockSize);
+				morp4.Close(SegmentMsk, Param.BlockSize);
 			}
 			else
 			{

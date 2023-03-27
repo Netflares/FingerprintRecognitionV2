@@ -16,15 +16,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 {
                     double avg = MatStatistic.SumBlock(norm, i, j, bs) / bsSqr;
                     double std = MatStatistic.StdBlock(norm, avg, i, j, bs);
-                    SpanIter.ForwardBlock(res, i, j, bs, std >= 0.2);
+                    SpanIter.ForwardBlock(res, i, j, bs, std >= 0.18);
                 }
             });
-        }
-
-        static public void SmoothMask(bool[,] src, int bs, MorphologyR4 morp)
-        {
-            morp.Open(src, bs<<1);  // heavily segmentated
-            morp.Close(src, bs);
         }
 
         // @ warning: temporary solution

@@ -15,9 +15,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * */
         bool[,] tmp = new bool[Height, Width];
         bool[,] exc = new bool[Height, Width];
-        MorphologyR8 morp8 = new();
+        MorphologyR8 morp8;
 
-        public ZhangBruteThinning() {}
+        public ZhangBruteThinning(MorphologyR8 m) { morp8 = m; }
 
         /**
          * @ zhang-suen
