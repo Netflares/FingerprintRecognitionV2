@@ -11,7 +11,6 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		public double[,] NormMat = new double[Param.Height, Param.Width];
 		public bool[,] SegmentMsk = new bool[Param.Height, Param.Width];
 		public double[,] OrientMat = new double[Param.Height / Param.BlockSize, Param.Width / Param.BlockSize];
-		public double[,] OCLMat = new double[Param.Height / Param.BlockSize, Param.Width / Param.BlockSize];
 		public bool[,] SkeletonMat = new bool[Param.Height, Param.Width];
 
 		public double WaveLen;
@@ -29,14 +28,16 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 		MedianFilter medianFilter = new();
 		LakeRemover lakeRemover = new();
 		ZhangBruteThinning sker;
-
-		/**
-		 * @ public methods
-		 * */
 		public Processor() { sker = new(morp8); }
 
-		// process results will be stored in those public fields
-		public void Process(Image<Gray, byte> src, bool smoothMsk = true)
+		/**
+		 * @ usage:
+		 * process image and store results in some public fields
+		 * 
+		 * returns true --> image process successfully
+		 * otherwise    --> image too bad to process
+		 * */
+		public bool Process(Image<Gray, byte> src, bool smoothMsk = true)
 		{
 			// @ usage: remove finger pressure differences
 			// @ result: avg(NormMat) = 0, std(NormMat) = 1
@@ -46,7 +47,7 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			Segmentation.CreateMask(NormMat, SegmentMsk, Param.BlockSize);
 
 			// orientation
-			orientCalc.Create(NormMat, OrientMat, OCLMat);
+			orientCalc.Create(NormMat, OrientMat, SegmentMsk);
 
 			// smoothing (must be called before wavelength calculation)
 			HandleSmoothing(smoothMsk);
@@ -54,10 +55,12 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
 			// wavelength (frequency)
 			Normalization.ExcludeBackground(NormMat, SegmentMsk);
 			WaveLen = waveCalc.GetMedianWavelength(NormMat, OrientMat, SegmentMsk);
+			if (WaveLen == -1) return false;
 
 			// gabor filter
 			gabor.Apply(NormMat, OrientMat, WaveLen, SegmentMsk, SkeletonMat);
 			medianFilter.Exec(SkeletonMat, Param.GaborMedianFilterRadius);
+			return true;
 		}
 
 		public void PrepareForExtraction() 

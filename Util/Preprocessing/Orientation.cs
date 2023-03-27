@@ -22,10 +22,9 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
          * @ params
          * norm: the normalized image, size (Height * Width)
          * res:  an orientation image, size ((Height / BlockSize) * (Width / BlockSize))
-         * ocl:  Orientation Certainty Level, same size as `res`; documented here:
-         *       https://www.hindawi.com/journals/misy/2015/401975
+         * msk:  the mask to mark blocks with low OCL out
          * */
-        public void Create(double[,] norm, double[,] res, double[,] ocl)
+        public void Create(double[,] norm, double[,] res, bool[,] msk)
         {
             sobel.SobelY(norm, GY);
             sobel.SobelX(norm, GX);
@@ -53,8 +52,13 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
              * orientation certainty level calculation, equations (1)(2)(3) of:
              * https://www.hindawi.com/journals/misy/2015/401975
              * */
-            Iterator2D.Forward(ocl, (i, j) => 
+            Iterator2D.Forward(res, (i, j) => 
             {
+                // `msk` is not smoothed yet
+                // so if the top-left pixel of this block is masked out
+                // the whole block is masked out
+                if (!msk[i * Param.BlockSize, j * Param.BlockSize]) return;
+
                 double a = 0, b = 0, c = 0;
                 Iterator2D.ForwardBlock(norm, i, j, Param.BlockSize, (y, x) =>
                 {
@@ -69,7 +73,12 @@ namespace FingerprintRecognitionV2.Util.Preprocessing
                 // about this "eigenvalues of covariance matrix":
                 // https://math.stackexchange.com/questions/23596/why-is-the-eigenvector-of-a-covariance-matrix-equal-to-a-principal-component
                 double sumPart = a + b, sqrtPart = Sqrt((a-b)*(a-b) + 4*c*c);
-                ocl[i, j] = (sumPart - sqrtPart) / (sumPart + sqrtPart);
+                double ocl = (sumPart - sqrtPart) / (sumPart + sqrtPart);
+
+                if (ocl > Param.OCLThreshold) Iterator2D.ForwardBlock(msk, i, j, Param.BlockSize, (y, x) =>
+                {
+                    msk[y, x] = false;
+                });
             });
         }
     }

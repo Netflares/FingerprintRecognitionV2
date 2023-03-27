@@ -141,8 +141,8 @@ class Program
         Threading<Processor>(imgs.Length, threads, (proc, i) =>
         {
             string ansPath = Path.Join(dAns, Path.GetFileName(imgs[i]));
-            proc.Process(new Image<Gray, byte>(imgs[i]));
-            CvInvoke.Imwrite(ansPath, MatConverter.Bool2Img(proc.SkeletonMat));
+            if ( proc.Process(new Image<Gray, byte>(imgs[i])) )
+                CvInvoke.Imwrite(ansPath, MatConverter.Bool2Img(proc.SkeletonMat));
         });
     }
 
@@ -155,7 +155,7 @@ class Program
         Threading<Processor>(imgs.Length, threads, (proc, i) =>
         {
             string ansPath = Path.Join(dAns, Path.GetFileName(imgs[i]));
-            proc.Process(new Image<Gray, byte>(imgs[i]));
+            if ( !proc.Process(new Image<Gray, byte>(imgs[i])) ) return;
             proc.PrepareForExtraction();
             Image<Bgr, byte> img;
 
@@ -181,7 +181,7 @@ class Program
         Threading<Processor>(imgs.Length, threads, (proc, i) => 
         {
             string ansPath = Path.Join(dAns, Path.GetFileName(imgs[i]) + ".inp");
-            proc.Process(new Image<Gray, byte>(imgs[i]));
+            if ( !proc.Process(new Image<Gray, byte>(imgs[i])) ) return;
             proc.PrepareForExtraction();
             MinutiaeExtractor.ExtractAndExport(ansPath, proc.SkeletonMat, proc.SegmentMsk);
         });
@@ -300,7 +300,8 @@ class Program
      * */
     static Fingerprint ProcFingerprint(Processor proc, string f)
     {
-        proc.Process(new Image<Gray, byte>(f));
+        if (!proc.Process(new Image<Gray, byte>(f))) 
+            return new(new List<Minutia>());
         proc.PrepareForExtraction();
         List<Minutia> dat = MinutiaeExtractor.Extract(proc.SkeletonMat, proc.SegmentMsk);
         return new(dat);
