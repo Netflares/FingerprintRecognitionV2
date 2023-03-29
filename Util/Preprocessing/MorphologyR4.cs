@@ -3,148 +3,170 @@ using FingerprintRecognitionV2.MatTool;
 
 namespace FingerprintRecognitionV2.Util.Preprocessing
 {
-    /**
-     * @ usage:
-     * 
-     * apply morphology operations via a dirty circle kernel
-     * the input image MUST HAVE THE SAME SIZE as declared in ProcImg
-     * */
-    public class MorphologyR4
-    {
-        // used for deque
-        private class Position
-        {
-            public int Y, X, Depth;
+	/**
+	 * @ usage:
+	 * 
+	 * apply morphology operations via a dirty circle kernel
+	 * the input image MUST HAVE THE SAME SIZE as declared in ProcImg
+	 * */
+	public class MorphologyR4
+	{
+		// used for deque
+		private class Position
+		{
+			public int Y, X, Depth;
 
-            public Position(int y, int x, int d)
-            {
-                Y = y;
-                X = x;
-                Depth = d;
-            }
-        }
+			public Position(int y, int x, int d)
+			{
+				Y = y;
+				X = x;
+				Depth = d;
+			}
+		}
 
-        /** 
-         * @ image properties
-         * */
-        static readonly int Height = Param.Height, Width = Param.Width, ImgSize = Param.Size;
+		/** 
+		 * @ image properties
+		 * */
+		static readonly int Height = Param.Height, Width = Param.Width, ImgSize = Param.Size;
 
-        /**
-         * @ relative cells settings
-         * */
-        static public readonly int[] RY = { -1, 0, 1, 0 };
-        static public readonly int[] RX = { 0, 1, 0, -1 };
-        static public readonly int RC = 4;
+		/**
+		 * @ relative cells settings
+		 * */
+		static public readonly int[] RY = { -1, 0, 1, 0 };
+		static public readonly int[] RX = { 0, 1, 0, -1 };
+		static public readonly int RC = 4;
 
-        protected virtual int GetRY(int t) => RY[t];
-        protected virtual int GetRX(int t) => RX[t];
-        protected virtual int GetRC() => RC;
+		protected virtual int GetRY(int t) => RY[t];
+		protected virtual int GetRX(int t) => RX[t];
+		protected virtual int GetRC() => RC;
 
-        /** 
-         * @ constructors
-         * */
-        bool[,] Visited = new bool[Height, Width];
+		/**
+		 * @ this
+		 * */
+		bool[,] vst = new bool[Height + Param.MorphologyPadding, Width + Param.MorphologyPadding];
 
-        public MorphologyR4()
-        {
+		public MorphologyR4() {}
 
-        }
+		/**
+		 * @ simple methods
+		 * */
+		public void Erose(bool[,] src, int dep) 
+		{
+			BFS(src, false, dep);	// dilates `0` cells
+			for (int y = 0; y < Height; y++)
+				for (int x = 0; x < Width; x++)
+					src[y, x] &= !vst[y, x];
+		}
 
-        /** 
-         * @ core
-         * */
-        private bool[,] BFS(bool[,] src, bool tar, int bs)
-        {
-            Deque<Position> q = new();
-            Array.Clear(Visited, 0, Visited.Length);
-            InitDeque(q, src, tar);
+		public void Dilate(bool[,] src, int dep)
+		{
+			BFS(src, true, dep);	// dilates `0` cells
+			for (int y = 0; y < Height; y++)
+				for (int x = 0; x < Width; x++)
+					src[y, x] |= vst[y, x];
+		}
 
-            while (q.Count > 0)
-            {
-                Position cr = q.First();
-                q.PopFront();
-                if (cr.Depth == bs)
-                    continue;
+		// dilates `tar` cells
+		private void BFS(bool[,] src, bool tar, int dep) 
+		{
+			Array.Clear(vst, 0, vst.Length);
+			Deque<Position> q = InitDeque(src, tar);
+			while (q.Count > 0)
+			{
+				Position cr = q.Front();
+				q.PopFront();
+				for (int t = 0; t < GetRC(); t++) 
+				{
+					int ny = cr.Y + GetRY(t), nx = cr.X + GetRX(t);
+					if (
+						0 <= ny && ny < Height && 0 <= nx && nx < Width &&
+						src[ny, nx] != tar &&
+						!vst[ny, nx]
+					) {
+						vst[ny, nx] = true;
+						if (cr.Depth < dep) q.PushBack(new(ny, nx, cr.Depth + 1));
+					}
+				}
+			}
+		}
 
-                for (int t = 0; t < GetRC(); t++)
-                {
-                    int nxtY = cr.Y + GetRY(t), nxtX = cr.X + GetRX(t);
-                    if (nxtY < 0 || nxtX < 0 || Height <= nxtY || Width <= nxtX)
-                        continue;
+		/**
+		 * @ open & close
+		 * */
+		public void Open(bool[,] src, int dep)
+		{
+			Array.Clear(vst, 0, vst.Length);
+			BurnToVst(src, dep);
+			VstBFS(false, dep, dep);	// erose
+			VstBFS(true, dep, dep);		// dilate
 
-                    if (src[nxtY, nxtX] != tar && !Visited[nxtY, nxtX])
-                    {
-                        Visited[nxtY, nxtX] = true;
-                        q.PushBack(new(nxtY, nxtX, cr.Depth + 1));
-                    }
-                }
-            }
+			Iterator2D.Forward(src, (y, x) => src[y, x] = vst[y + dep, x + dep]);
+		}
 
-            return Visited; // returns a reference
-        }
+		// dilate -> erose
+		public void Close(bool[,] src, int dep)
+		{
+			Array.Clear(vst, 0, vst.Length);
+			BurnToVst(src, dep);
+			VstBFS(true, dep, dep);		// dilate
+			VstBFS(false, dep, dep);	// erose
 
-        // modifies `src` directly
-        unsafe public void Dilate(bool[,] src, int bs)
-        {
-            bool[,] res = BFS(src, true, bs);   // dilate `1` cells
+			Iterator2D.Forward(src, (y, x) => src[y, x] = vst[y + dep, x + dep]);
+		}
 
-            Span<bool> srcSpan; fixed (bool* p = src) srcSpan = new(p, ImgSize);
-            Span<bool> resSpan; fixed (bool* p = res) resSpan = new(p, ImgSize);
+		private void VstBFS(bool tar, int dep, int pad)
+		{
+			int h = Height + (pad<<1), w = Width + (pad<<1);
+			Deque<Position> q = InitDeque(vst, tar);
 
-            int i = 0;
-            while (i < ImgSize)
-                // if (resSpan[i]) srcSpan[i] = true;
-                srcSpan[i] |= resSpan[i++];
-        }
+			while (q.Count > 0) 
+			{
+				Position cr = q.Front();
+				q.PopFront();
+				for (int t = 0; t < GetRC(); t++)
+				{
+					int ny = cr.Y + GetRY(t), nx = cr.X + GetRX(t);
+					if (
+						0 <= ny && ny < h && 0 <= nx && nx < w &&
+						vst[ny, nx] != tar
+					) {
+						vst[ny, nx] = tar;
+						if (cr.Depth < dep) q.PushBack(new(ny, nx, cr.Depth + 1));
+					}
+				}
+			}
+		}
 
-        // modifies `src` directly
-        unsafe public void Erose(bool[,] src, int bs)
-        {
-            bool[,] res = BFS(src, false, bs);    // dilate `0` cells
+		/**
+		 * @ utils
+		 * */
+		private Deque<Position> InitDeque(bool[,] src, bool tar) 
+		{
+			int h = src.GetLength(0), w = src.GetLength(1);
+			Deque<Position> q = new();
 
-            Span<bool> srcSpan; fixed (bool* p = src) srcSpan = new(p, ImgSize);
-            Span<bool> resSpan; fixed (bool* p = res) resSpan = new(p, ImgSize);
+			Iterator2D.Forward(src, (y, x) => 
+			{
+				if (src[y, x] != tar) 
+					return;	// not the one we want to dilate
 
-            int i = 0;
-            while (i < ImgSize)
-                // if (srcSpan[i] && resSpan[i]) srcSpan[i] = false;
-                srcSpan[i] &= !resSpan[i++];
-        }
+				for (int t = 0; t < GetRC(); t++) {
+					int ny = y + GetRY(t), nx = x + GetRX(t);
+					if (ny < 0 || nx < 0 || ny >= h || nx >= w) continue;
+					// src[y, x] is adjacent to a cell of different color
+					if (src[ny, nx] != tar) 
+					{
+						q.PushBack(new(y, x, 0));
+						return;
+					}
+				}
+			});
+			return q;
+		}
 
-        // modifies `src` directly
-        unsafe public void Open(bool[,] src, int bs)
-        {
-            Erose(src, bs);
-            Dilate(src, bs);
-        }
-
-        // modifies `src` directly
-        unsafe public void Close(bool[,] src, int bs)
-        {
-            Dilate(src, bs);
-            Erose(src, bs);
-        }
-
-        /** 
-         * @ supporting methods
-         * */
-        private void InitDeque(Deque<Position> q, bool[,] src, bool tar)
-        {
-            Iterator2D.Forward(1, 1, Height - 1, Width - 1, (y, x) =>
-            {
-                if (src[y, x] != tar) return;
-                // assert src[y, x] == tar
-                for (int t = 0; t < GetRC(); t++)
-                {
-                    int nxtY = y + GetRY(t), nxtX = x + GetRX(t);
-                    if (src[nxtY, nxtX] != tar)
-                    {
-                        // src[y, x] == margin
-                        q.PushBack(new(y, x, 0));
-                        return;
-                    }
-                }
-            });
-        }
-    }
+		private void BurnToVst(bool[,] src, int p) 
+		{
+			Iterator2D.Forward(src, (y, x) => vst[y + p, x + p] = src[y, x]);
+		}
+	}
 }
