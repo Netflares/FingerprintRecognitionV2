@@ -118,7 +118,7 @@ using FingerprintRecognitionV2.Util.Preprocessing;
 const int ImgHeight = 480;
 const int ImgWidth = 320;
 
-// create a new Util.PreprocessingMultithread.Processor object
+// create a new FingerprintRecognitionV2.Util.Processor object
 Processor proc = new();
 
 // load a fingerprint image
