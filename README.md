@@ -67,14 +67,14 @@ Algorithm: [Improving Fingerprint Verification Using Minutiae Triplets](https://
 
 This benchmark uses the same dataset as the one in the **Pre-processing** section. The program is then challenged:
 
-- Given $N$ fingerprints. For each fingerprint, find another one that is of a same finger.
+- Given $500$ fingerprint images. For each image, find another one that is of a same finger.
 - Because the project aims at fingerprint recognition, not fingerprint grouping, each comparison must be one-to-one. Thus, for this dataset, there are $500 \times 499$ comparisons expected.
 
 Again, the program is single-thread, which ensures the average time for each comparison is accurate and reliable. Each comparison is performed one after another. There is no paralleled process.
 
 ### Benchmark - Accuracy
 
-481 out of 500 given fingerprints successfully found an accurate match. That makes the accuracy of **96.2%**, or **3.8%** mismatch rate. Here are some of the matches:
+488 out of 500 given fingerprints successfully found an accurate match. That makes the accuracy of **97.6%**, or **2.4%** mismatch rate. Here are some of the matches:
 
 |                                        |                                        |
 | -------------------------------------- | -------------------------------------- |
