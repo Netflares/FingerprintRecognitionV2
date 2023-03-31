@@ -25,7 +25,7 @@ namespace FingerprintRecognitionV2.Util.FeaturesExtractor
             {
                 List<int> pts = AngleExtract(mat, r, step[i]);
                 if (pts.Count != 1) return new();  // this is a noise
-                res.Add(Geometry.Alpha(r, r, pts[0] >> 8, pts[0] & MSK));
+                res.Add(Geometry.Alpha(pts[0] >> 8, pts[0] & MSK, r, r));
             }
 
             return res;
